@@ -1,0 +1,768 @@
+{% extends "base.html" %}
+
+{% block title %}Game - {{ game.group.name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center space-x-3">
+                <a href="{{ url_for('groups.view', group_id=game.group_id) }}" class="inline-flex items-center p-2 text-gray-400 hover:text-gray-600 rounded-full">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">{{ game.datetime.strftime('%A, %B %d') }}</h1>
+                    <p class="text-gray-600">{{ game.datetime.strftime('%I:%M %p') }}</p>
+                </div>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{{ game.status.title() }}</span>
+            </div>
+            
+            {% if membership.is_admin %}
+            <div class="flex space-x-2">
+                {% if game.status == 'upcoming' and not game.is_poll_locked() %}
+                <form method="POST" action="{{ url_for('games.lock_poll', game_id=game.id) }}" class="inline">
+                    <button type="submit" class="inline-flex items-center px-3 py-2 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <i class="fas fa-lock mr-1"></i>
+                        Lock Poll
+                    </button>
+                </form>
+                {% endif %}
+                
+                {% if game.status == 'upcoming' %}
+                <a href="{{ url_for('games.manage_teams', game_id=game.id) }}" class="inline-flex items-center px-3 py-2 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    <i class="fas fa-users mr-1"></i>
+                    Form Teams
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+
+        {% if game.location %}
+        <div class="mb-4 flex items-center text-gray-600">
+            <i class="fas fa-map-marker-alt mr-2 text-blue-500"></i>
+            <span>{{ game.location }}</span>
+        </div>
+        {% endif %}
+
+        {% if game.notes %}
+        <div class="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+            <div class="flex items-start">
+                <i class="fas fa-sticky-note text-gray-400 mt-1 mr-3"></i>
+                <p class="text-gray-900">{{ game.notes }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Match Score -->
+        {% if (team_a_players or team_b_players) %}
+        <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border border-gray-200 p-8 mb-6">
+            <div class="text-center">
+                <!-- Match Status -->
+                {% set is_game_day = true %}
+                {% if is_game_day and game.status != 'finished' %}
+                <div class="mb-4 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                    <i class="fas fa-calendar-check mr-2"></i>
+                    Game Day - Track Stats
+                </div>
+                {% elif game.status == 'finished' %}
+                <div class="mb-4 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    Final Score
+                </div>
+                {% else %}
+                <div class="mb-4 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                    <i class="fas fa-clock mr-2"></i>
+                    Upcoming Match
+                </div>
+                {% endif %}
+
+                <!-- Score Display -->
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-4">
+                    <div class="grid grid-cols-3 items-center gap-4">
+                        <!-- Team A -->
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-users text-blue-600 text-xl"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-1">Team A</h3>
+                            <p class="text-xs text-gray-500">{{ team_a_players|length }} players</p>
+                        </div>
+                        
+                        <!-- Score -->
+                        <div class="text-center">
+                            <div class="text-6xl font-bold text-gray-900 font-mono">
+                                <span class="text-blue-600">{{ score.team_a }}</span>
+                                <span class="text-gray-300 mx-2">:</span>
+                                <span class="text-red-600">{{ score.team_b }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Team B -->
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-users text-red-600 text-xl"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900 mb-1">Team B</h3>
+                            <p class="text-xs text-gray-500">{{ team_b_players|length }} players</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Match Info -->
+                <div class="text-center text-sm text-gray-600">
+                    <i class="fas fa-calendar mr-1"></i>
+                    {{ game.datetime.strftime('%A, %B %d at %I:%M %p') }}
+                    {% if game.location %}
+                    <span class="mx-2">•</span>
+                    <i class="fas fa-map-marker-alt mr-1"></i>
+                    {{ game.location }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="space-y-6">
+                <!-- Availability Poll -->
+                {% if game.status == 'upcoming' %}
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-200 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <div class="flex items-center space-x-3">
+                            <div class="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-poll text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">Player Availability</h3>
+                                <p class="text-xs text-gray-600">Cast your vote to help plan the match</p>
+                            </div>
+                        </div>
+                        {% if game.poll_lock_datetime %}
+                        <div class="text-right">
+                            <div class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                <i class="fas fa-clock mr-1"></i>
+                                Locks {{ game.poll_lock_datetime.strftime('%m/%d at %I:%M %p') }}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if not game.is_poll_locked() %}
+                    <!-- Voting Buttons -->
+                    <form method="POST" action="{{ url_for('games.vote_availability', game_id=game.id) }}" class="mb-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <button 
+                                type="submit" 
+                                name="status" 
+                                value="in"
+                                class="group relative overflow-hidden {{ 'bg-green-500 text-white border-green-500 shadow-lg transform scale-105' if user_vote and user_vote.status == 'in' else 'bg-white text-gray-700 border-gray-300 hover:border-green-400 hover:bg-green-50' }} py-6 px-4 text-center rounded-xl border-2 font-medium transition-all duration-200"
+                            >
+                                <div class="flex items-center justify-center mb-2">
+                                    <div class="w-8 h-8 {{ 'bg-white text-green-500' if user_vote and user_vote.status == 'in' else 'bg-green-100 text-green-600' }} rounded-full flex items-center justify-center">
+                                        <i class="fas fa-check text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="text-lg font-bold">I'M IN</div>
+                                <div class="text-sm opacity-90 mt-1">{{ availability_counts.in }} player{{ 's' if availability_counts.in != 1 else '' }}</div>
+                                {% if user_vote and user_vote.status == 'in' %}
+                                <div class="absolute top-2 right-2">
+                                    <i class="fas fa-star text-yellow-300"></i>
+                                </div>
+                                {% endif %}
+                            </button>
+                            
+                            <button 
+                                type="submit" 
+                                name="status" 
+                                value="maybe"
+                                class="group relative overflow-hidden {{ 'bg-yellow-500 text-white border-yellow-500 shadow-lg transform scale-105' if user_vote and user_vote.status == 'maybe' else 'bg-white text-gray-700 border-gray-300 hover:border-yellow-400 hover:bg-yellow-50' }} py-6 px-4 text-center rounded-xl border-2 font-medium transition-all duration-200"
+                            >
+                                <div class="flex items-center justify-center mb-2">
+                                    <div class="w-8 h-8 {{ 'bg-white text-yellow-500' if user_vote and user_vote.status == 'maybe' else 'bg-yellow-100 text-yellow-600' }} rounded-full flex items-center justify-center">
+                                        <i class="fas fa-question text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="text-lg font-bold">MAYBE</div>
+                                <div class="text-sm opacity-90 mt-1">{{ availability_counts.maybe }} player{{ 's' if availability_counts.maybe != 1 else '' }}</div>
+                                {% if user_vote and user_vote.status == 'maybe' %}
+                                <div class="absolute top-2 right-2">
+                                    <i class="fas fa-star text-yellow-300"></i>
+                                </div>
+                                {% endif %}
+                            </button>
+                            
+                            <button 
+                                type="submit" 
+                                name="status" 
+                                value="out"
+                                class="group relative overflow-hidden {{ 'bg-red-500 text-white border-red-500 shadow-lg transform scale-105' if user_vote and user_vote.status == 'out' else 'bg-white text-gray-700 border-gray-300 hover:border-red-400 hover:bg-red-50' }} py-6 px-4 text-center rounded-xl border-2 font-medium transition-all duration-200"
+                            >
+                                <div class="flex items-center justify-center mb-2">
+                                    <div class="w-8 h-8 {{ 'bg-white text-red-500' if user_vote and user_vote.status == 'out' else 'bg-red-100 text-red-600' }} rounded-full flex items-center justify-center">
+                                        <i class="fas fa-times text-sm"></i>
+                                    </div>
+                                </div>
+                                <div class="text-lg font-bold">CAN'T MAKE IT</div>
+                                <div class="text-sm opacity-90 mt-1">{{ availability_counts.out }} player{{ 's' if availability_counts.out != 1 else '' }}</div>
+                                {% if user_vote and user_vote.status == 'out' %}
+                                <div class="absolute top-2 right-2">
+                                    <i class="fas fa-star text-yellow-300"></i>
+                                </div>
+                                {% endif %}
+                            </button>
+                        </div>
+                    </form>
+                        {% else %}
+                        <div class="mb-4 p-3 bg-gray-100 rounded text-center text-gray-900">
+                            Poll is locked
+                        </div>
+                        {% endif %}
+
+                        <div class="space-y-3">
+                            <div class="flex flex-wrap gap-2">
+                                <strong class="text-gray-900">IN:</strong>
+                                {% for player in in_players %}
+                                    <span class="px-2.5 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+                                        {{ player.display_name }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                            
+                            {% if availability_counts.in < 6 %}
+                            <div class="text-xs text-yellow-600 flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                Low turnout ({{ availability_counts.in }} players confirmed)
+                            </div>
+                            {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Tabbed Team Rosters -->
+                {% if team_a_players or team_b_players %}
+                <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                    <!-- Tab Navigation -->
+                    <div class="border-b border-gray-200">
+                        <nav class="flex" aria-label="Team Tabs">
+                            <button 
+                                id="team-a-tab" 
+                                onclick="switchTeamTab('team-a')" 
+                                class="team-tab-button flex-1 py-4 px-6 text-center font-semibold text-blue-600 border-b-2 border-blue-500 bg-blue-50 transition-all"
+                            >
+                                <div class="flex items-center justify-center space-x-3">
+                                    <div class="w-6 h-6 bg-blue-500 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-users text-white text-xs"></i>
+                                    </div>
+                                    <span>Team A</span>
+                                    <span class="text-sm bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                                        {{ team_a_players|length }}
+                                    </span>
+                                </div>
+                            </button>
+                            <button 
+                                id="team-b-tab" 
+                                onclick="switchTeamTab('team-b')" 
+                                class="team-tab-button flex-1 py-4 px-6 text-center font-semibold text-gray-600 border-b-2 border-transparent hover:bg-gray-50 transition-all"
+                            >
+                                <div class="flex items-center justify-center space-x-3">
+                                    <div class="w-6 h-6 bg-red-500 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-users text-white text-xs"></i>
+                                    </div>
+                                    <span>Team B</span>
+                                    <span class="text-sm bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+                                        {{ team_b_players|length }}
+                                    </span>
+                                </div>
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- Team A Content -->
+                    <div id="team-a-content" class="team-tab-content p-4">
+                        {% set is_game_day = true %}
+                        {% if membership.is_admin and is_game_day %}
+                        <div class="mb-3 text-xs text-gray-600 bg-yellow-50 border border-yellow-200 rounded p-2">
+                            <i class="fas fa-crown text-yellow-600 mr-1"></i>
+                            Admin controls active
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Team A Header -->
+                        <div class="grid grid-cols-7 gap-3 text-xs font-semibold text-gray-600 mb-3 pb-2 border-b">
+                            <div class="col-span-2">Player</div>
+                            <div class="text-center">Goals</div>
+                            <div class="text-center">Assists</div>
+                            <div class="text-center">Own Goals</div>
+                            <div class="text-center">POTM</div>
+                            <div class="text-center">Total</div>
+                        </div>
+                        
+                        <!-- Team A Players -->
+                        <div class="space-y-2">
+                            {% for player in team_a_players %}
+                            {% set player_goals = events|selectattr('scorer_id', 'equalto', player.id)|selectattr('event_type', 'equalto', 'goal')|list|length %}
+                            {% set player_assists = events|selectattr('assist_id', 'equalto', player.id)|list|length %}
+                            {% set player_own_goals = events|selectattr('scorer_id', 'equalto', player.id)|selectattr('event_type', 'equalto', 'own_goal')|list|length %}
+                            <div class="grid grid-cols-7 gap-3 items-center p-3 border-b">
+                                <!-- Player Info -->
+                                <div class="col-span-2 flex items-center space-x-2">
+                                    <div class="h-8 w-8 bg-blue-200 rounded-full flex items-center justify-center">
+                                        <span class="text-xs font-bold text-blue-800">
+                                            {{ player.display_name[0].upper() }}
+                                        </span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">{{ player.display_name }}</span>
+                                </div>
+                                
+                                <!-- Goals Column -->
+                                <div class="text-center">
+                                    {% if membership.is_admin and is_game_day %}
+                                    <div class="flex items-center justify-center space-x-1">
+                                        <button onclick="removeGoal('{{ player.id }}')" class="w-4 h-4 bg-red-100 hover:bg-red-200 text-red-600 rounded text-xs">-</button>
+                                        <span class="text-lg font-bold text-gray-900">{{ player_goals }}</span>
+                                        <button onclick="addGoal('{{ player.id }}')" class="w-4 h-4 bg-green-100 hover:bg-green-200 text-green-600 rounded text-xs">+</button>
+                                    </div>
+                                    {% else %}
+                                    <span class="text-lg font-bold text-gray-900">{{ player_goals }}</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Assists Column -->
+                                <div class="text-center">
+                                    {% if membership.is_admin and is_game_day %}
+                                    <div class="flex items-center justify-center space-x-1">
+                                        <button onclick="removeAssist('{{ player.id }}')" class="w-4 h-4 bg-red-100 hover:bg-red-200 text-red-600 rounded text-xs">-</button>
+                                        <span class="text-lg font-bold text-gray-900">{{ player_assists }}</span>
+                                        <button onclick="addAssist('{{ player.id }}')" class="w-4 h-4 bg-green-100 hover:bg-green-200 text-green-600 rounded text-xs">+</button>
+                                    </div>
+                                    {% else %}
+                                    <span class="text-lg font-bold text-gray-900">{{ player_assists }}</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Own Goals Column -->
+                                <div class="text-center">
+                                    {% if membership.is_admin and is_game_day %}
+                                    <div class="flex items-center justify-center space-x-1">
+                                        <button onclick="removeOwnGoal('{{ player.id }}')" class="w-4 h-4 bg-red-100 hover:bg-red-200 text-red-600 rounded text-xs">-</button>
+                                        <span class="text-lg font-bold text-orange-700">{{ player_own_goals }}</span>
+                                        <button onclick="addOwnGoal('{{ player.id }}')" class="w-4 h-4 bg-orange-100 hover:bg-orange-200 text-orange-600 rounded text-xs">+</button>
+                                    </div>
+                                    {% else %}
+                                    <span class="text-lg font-bold text-orange-700">{{ player_own_goals }}</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- POTM Vote Column -->
+                                <div class="text-center">
+                                    {% set current_user_participated = current_user in team_a_players + team_b_players %}
+                                    {% if current_user_participated and is_game_day %}
+                                    <button onclick="votePOTM('{{ player.id }}')" class="w-8 h-8 {{ 'bg-yellow-200 text-yellow-800 ring-1 ring-yellow-400' if user_potm_vote and user_potm_vote.voted_for_id == player.id else 'bg-gray-100 hover:bg-yellow-100 text-gray-600' }} rounded-full">
+                                        <i class="fas fa-star text-xs"></i>
+                                    </button>
+                                    {% else %}
+                                    <div class="w-8 h-8 bg-gray-50 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-star text-gray-300 text-xs"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Total Column -->
+                                <div class="text-center">
+                                    <span class="text-sm font-bold text-blue-600">{{ player_goals + player_assists }}</span>
+                                    <div class="text-xs text-gray-500">G+A</div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Team B Content -->
+                    <div id="team-b-content" class="team-tab-content p-4 hidden">
+                        {% set is_game_day = true %}
+                        {% if membership.is_admin and is_game_day %}
+                        <div class="mb-3 text-xs text-gray-600 bg-yellow-50 border border-yellow-200 rounded p-2">
+                            <i class="fas fa-crown text-yellow-600 mr-1"></i>
+                            Admin controls active
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Team B Header -->
+                        <div class="grid grid-cols-7 gap-3 text-xs font-semibold text-gray-600 mb-3 pb-2 border-b">
+                            <div class="col-span-2">Player</div>
+                            <div class="text-center">Goals</div>
+                            <div class="text-center">Assists</div>
+                            <div class="text-center">Own Goals</div>
+                            <div class="text-center">POTM</div>
+                            <div class="text-center">Total</div>
+                        </div>
+                        
+                        <!-- Team B Players -->
+                        <div class="space-y-2">
+                            {% for player in team_b_players %}
+                            {% set player_goals = events|selectattr('scorer_id', 'equalto', player.id)|selectattr('event_type', 'equalto', 'goal')|list|length %}
+                            {% set player_assists = events|selectattr('assist_id', 'equalto', player.id)|list|length %}
+                            {% set player_own_goals = events|selectattr('scorer_id', 'equalto', player.id)|selectattr('event_type', 'equalto', 'own_goal')|list|length %}
+                            <div class="grid grid-cols-7 gap-3 items-center p-3 border-b">
+                                <!-- Player Info -->
+                                <div class="col-span-2 flex items-center space-x-2">
+                                    <div class="h-8 w-8 bg-red-200 rounded-full flex items-center justify-center">
+                                        <span class="text-xs font-bold text-red-800">
+                                            {{ player.display_name[0].upper() }}
+                                        </span>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">{{ player.display_name }}</span>
+                                </div>
+                                
+                                <!-- Goals Column -->
+                                <div class="text-center">
+                                    {% if membership.is_admin and is_game_day %}
+                                    <div class="flex items-center justify-center space-x-1">
+                                        <button onclick="removeGoal('{{ player.id }}')" class="w-4 h-4 bg-red-100 hover:bg-red-200 text-red-600 rounded text-xs">-</button>
+                                        <span class="text-lg font-bold text-gray-900">{{ player_goals }}</span>
+                                        <button onclick="addGoal('{{ player.id }}')" class="w-4 h-4 bg-green-100 hover:bg-green-200 text-green-600 rounded text-xs">+</button>
+                                    </div>
+                                    {% else %}
+                                    <span class="text-lg font-bold text-gray-900">{{ player_goals }}</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Assists Column -->
+                                <div class="text-center">
+                                    {% if membership.is_admin and is_game_day %}
+                                    <div class="flex items-center justify-center space-x-1">
+                                        <button onclick="removeAssist('{{ player.id }}')" class="w-4 h-4 bg-red-100 hover:bg-red-200 text-red-600 rounded text-xs">-</button>
+                                        <span class="text-lg font-bold text-gray-900">{{ player_assists }}</span>
+                                        <button onclick="addAssist('{{ player.id }}')" class="w-4 h-4 bg-green-100 hover:bg-green-200 text-green-600 rounded text-xs">+</button>
+                                    </div>
+                                    {% else %}
+                                    <span class="text-lg font-bold text-gray-900">{{ player_assists }}</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Own Goals Column -->
+                                <div class="text-center">
+                                    {% if membership.is_admin and is_game_day %}
+                                    <div class="flex items-center justify-center space-x-1">
+                                        <button onclick="removeOwnGoal('{{ player.id }}')" class="w-4 h-4 bg-red-100 hover:bg-red-200 text-red-600 rounded text-xs">-</button>
+                                        <span class="text-lg font-bold text-orange-700">{{ player_own_goals }}</span>
+                                        <button onclick="addOwnGoal('{{ player.id }}')" class="w-4 h-4 bg-orange-100 hover:bg-orange-200 text-orange-600 rounded text-xs">+</button>
+                                    </div>
+                                    {% else %}
+                                    <span class="text-lg font-bold text-orange-700">{{ player_own_goals }}</span>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- POTM Vote Column -->
+                                <div class="text-center">
+                                    {% set current_user_participated = current_user in team_a_players + team_b_players %}
+                                    {% if current_user_participated and is_game_day %}
+                                    <button onclick="votePOTM('{{ player.id }}')" class="w-8 h-8 {{ 'bg-yellow-200 text-yellow-800 ring-1 ring-yellow-400' if user_potm_vote and user_potm_vote.voted_for_id == player.id else 'bg-gray-100 hover:bg-yellow-100 text-gray-600' }} rounded-full">
+                                        <i class="fas fa-star text-xs"></i>
+                                    </button>
+                                    {% else %}
+                                    <div class="w-8 h-8 bg-gray-50 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-star text-gray-300 text-xs"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Total Column -->
+                                <div class="text-center">
+                                    <span class="text-sm font-bold text-red-600">{{ player_goals + player_assists }}</span>
+                                    <div class="text-xs text-gray-500">G+A</div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+
+            <div class="space-y-6">
+                <!-- POTM Results (Show for finished games) -->
+                {% if potm_results and game.status == 'finished' %}
+                <div class="bg-white rounded-lg border border-gray-200 p-6">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="h-12 w-12 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-trophy text-yellow-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Player of the Match Results</h3>
+                            <p class="text-xs text-gray-500">Voted by match participants</p>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        {% for result in potm_results %}
+                        <div class="flex justify-between items-center p-4 rounded-lg {{ 'bg-gradient-to-r from-yellow-50 to-yellow-100 border-2 border-yellow-200' if loop.first else 'bg-gray-50 border border-gray-200' }}">
+                            <div class="flex items-center space-x-3">
+                                {% if loop.first %}
+                                <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-crown text-white"></i>
+                                </div>
+                                {% else %}
+                                <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                                    <span class="text-sm font-bold text-gray-600">{{ loop.index }}</span>
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <span class="{{ 'font-bold text-yellow-900' if loop.first else 'font-medium text-gray-900' }}">
+                                        {{ result.display_name }}
+                                    </span>
+                                    {% if loop.first %}
+                                    <div class="text-xs text-yellow-700 font-medium">Player of the Match Winner</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-lg font-bold {{ 'text-yellow-800' if loop.first else 'text-gray-700' }}">{{ result.votes }}</div>
+                                <div class="text-xs text-gray-500">vote{{ 's' if result.votes != 1 else '' }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Enhanced team roster functionality
+function addGoal(playerId) {
+    console.log('Adding goal for player:', playerId);
+    try {
+        // Create form and submit
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("games.add_event", game_id=game.id) }}';
+        
+        // Add hidden fields
+        const fields = [
+            {name: 'event_type', value: 'goal'},
+            {name: 'scorer_id', value: playerId}
+        ];
+        
+        fields.forEach(field => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = field.name;
+            input.value = field.value;
+            form.appendChild(input);
+        });
+        
+        console.log('Submitting goal form:', form.action);
+        document.body.appendChild(form);
+        form.submit();
+    } catch (error) {
+        console.error('Error adding goal:', error);
+        showToast('Error adding goal. Please try again.', 'error');
+    }
+}
+
+function removeGoal(playerId) {
+    console.log('Removing goal for player:', playerId);
+    try {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("games.remove_event", game_id=game.id) }}';
+        
+        const fields = [
+            {name: 'action', value: 'remove_goal'},
+            {name: 'player_id', value: playerId}
+        ];
+        
+        fields.forEach(field => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = field.name;
+            input.value = field.value;
+            form.appendChild(input);
+        });
+        
+        console.log('Submitting remove goal form:', form.action);
+        document.body.appendChild(form);
+        form.submit();
+    } catch (error) {
+        console.error('Error removing goal:', error);
+        showToast('Error removing goal. Please try again.', 'error');
+    }
+}
+
+function addAssist(playerId) {
+    console.log('Adding assist for player:', playerId);
+    try {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("games.add_assist", game_id=game.id) }}';
+        
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'assist_player_id';
+        input.value = playerId;
+        form.appendChild(input);
+        
+        console.log('Submitting assist form:', form.action);
+        document.body.appendChild(form);
+        form.submit();
+    } catch (error) {
+        console.error('Error adding assist:', error);
+        showToast('Error adding assist. Please try again.', 'error');
+    }
+}
+
+function removeAssist(playerId) {
+    console.log('Removing assist for player:', playerId);
+    try {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("games.remove_event", game_id=game.id) }}';
+        
+        const fields = [
+            {name: 'action', value: 'remove_assist'},
+            {name: 'player_id', value: playerId}
+        ];
+        
+        fields.forEach(field => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = field.name;
+            input.value = field.value;
+            form.appendChild(input);
+        });
+        
+        console.log('Submitting remove assist form:', form.action);
+        document.body.appendChild(form);
+        form.submit();
+    } catch (error) {
+        console.error('Error removing assist:', error);
+        showToast('Error removing assist. Please try again.', 'error');
+    }
+}
+
+function addOwnGoal(playerId) {
+    console.log('Adding own goal for player:', playerId);
+    try {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("games.add_event", game_id=game.id) }}';
+        
+        const fields = [
+            {name: 'event_type', value: 'own_goal'},
+            {name: 'scorer_id', value: playerId}
+        ];
+        
+        fields.forEach(field => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = field.name;
+            input.value = field.value;
+            form.appendChild(input);
+        });
+        
+        console.log('Submitting own goal form:', form.action);
+        document.body.appendChild(form);
+        form.submit();
+    } catch (error) {
+        console.error('Error adding own goal:', error);
+        showToast('Error adding own goal. Please try again.', 'error');
+    }
+}
+
+function removeOwnGoal(playerId) {
+    console.log('Removing own goal for player:', playerId);
+    try {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ url_for("games.remove_event", game_id=game.id) }}';
+        
+        const fields = [
+            {name: 'action', value: 'remove_goal'},
+            {name: 'player_id', value: playerId}
+        ];
+        
+        fields.forEach(field => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = field.name;
+            input.value = field.value;
+            form.appendChild(input);
+        });
+        
+        console.log('Submitting remove own goal form:', form.action);
+        document.body.appendChild(form);
+        form.submit();
+    } catch (error) {
+        console.error('Error removing own goal:', error);
+        showToast('Error removing own goal. Please try again.', 'error');
+    }
+}
+
+function votePOTM(playerId) {
+    // Create form and submit POTM vote
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '{{ url_for("games.vote_potm", game_id=game.id) }}';
+    
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'voted_for_id';
+    input.value = playerId;
+    form.appendChild(input);
+    
+    document.body.appendChild(form);
+    form.submit();
+}
+
+// Team tab switching functionality
+function switchTeamTab(teamId) {
+    // Hide all team content
+    const contents = document.querySelectorAll('.team-tab-content');
+    contents.forEach(content => content.classList.add('hidden'));
+    
+    // Show selected team content
+    document.getElementById(teamId + '-content').classList.remove('hidden');
+    
+    // Update tab button styles
+    const buttons = document.querySelectorAll('.team-tab-button');
+    buttons.forEach(button => {
+        button.classList.remove('text-blue-600', 'border-blue-500', 'bg-blue-50', 'text-red-600', 'border-red-500', 'bg-red-50');
+        button.classList.add('text-gray-600', 'border-transparent');
+        // Update badge colors
+        const badge = button.querySelector('span:last-child');
+        if (badge) {
+            badge.classList.remove('bg-blue-100', 'text-blue-800', 'bg-red-100', 'text-red-800');
+            badge.classList.add('bg-gray-100', 'text-gray-600');
+        }
+    });
+    
+    // Highlight active tab
+    const activeButton = document.getElementById(teamId + '-tab');
+    const badge = activeButton.querySelector('span:last-child');
+    
+    if (teamId === 'team-a') {
+        activeButton.classList.remove('text-gray-600', 'border-transparent');
+        activeButton.classList.add('text-blue-600', 'border-blue-500', 'bg-blue-50');
+        if (badge) {
+            badge.classList.remove('bg-gray-100', 'text-gray-600');
+            badge.classList.add('bg-blue-100', 'text-blue-800');
+        }
+    } else {
+        activeButton.classList.remove('text-gray-600', 'border-transparent');
+        activeButton.classList.add('text-red-600', 'border-red-500', 'bg-red-50');
+        if (badge) {
+            badge.classList.remove('bg-gray-100', 'text-gray-600');
+            badge.classList.add('bg-red-100', 'text-red-800');
+        }
+    }
+}
+
+// Toast notifications are now handled globally by base.html
+</script>
+{% endblock %}

@@ -1,0 +1,1636 @@
+{% extends "base.html" %}
+
+{% block title %}Form Teams - Game{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center space-x-3">
+                <a href="{{ url_for('games.view', game_id=game.id) }}" class="inline-flex items-center p-2 text-gray-400 hover:text-gray-600 rounded-full">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Form Teams</h1>
+                    <p class="text-sm text-gray-600 mt-1">
+                        <i class="fas fa-crown text-yellow-500 mr-1"></i>
+                        Admin Only - Organize players into balanced teams
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <form method="POST" class="space-y-6">
+                    <!-- Formation Selection -->
+                    <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                        <h3 class="text-lg font-semibold text-green-800 mb-4 flex items-center">
+                            <i class="fas fa-futbol mr-2"></i>
+                            Formation & Field Setup
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <!-- Formation Selector -->
+                            <div>
+                                <label for="formation" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Select Formation
+                                </label>
+                                <select id="formation" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                                    <option value="4-4-2">4-4-2 (Classic)</option>
+                                    <option value="4-3-3">4-3-3 (Attacking)</option>
+                                    <option value="3-5-2">3-5-2 (Wing Play)</option>
+                                    <option value="4-5-1">4-5-1 (Defensive)</option>
+                                    <option value="3-4-3">3-4-3 (Ultra Attack)</option>
+                                    <option value="5-3-2">5-3-2 (Counter Attack)</option>
+                                </select>
+                            </div>
+                            
+                            <!-- View Toggle -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    View Mode
+                                </label>
+                                <div class="flex space-x-2">
+                                    <button type="button" id="list-view" class="view-toggle active px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
+                                        <i class="fas fa-list mr-1"></i> List
+                                    </button>
+                                    <button type="button" id="field-view" class="view-toggle px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
+                                        <i class="fas fa-futbol mr-1"></i> Field
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- List View (Original) -->
+                    <div id="list-view-content" class="grid md:grid-cols-3 gap-6">
+                        <!-- Available Players -->
+                        <div class="bg-white rounded-lg border border-gray-200 p-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Available Players ({{ in_players|length }})</h3>
+                                <div id="available-players" class="space-y-2 min-h-[200px]">
+                                    {% for player in in_players %}
+                                    {% if player not in current_team_a and player not in current_team_b %}
+                                    <div 
+                                        class="player-item p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors" 
+                                        data-player-id="{{ player.id }}"
+                                        draggable="true"
+                                    >
+                                        <div class="flex items-center space-x-2">
+                                            <div class="h-7 w-7 bg-gray-100 rounded-full flex items-center justify-center">
+                                                <span class="text-xs font-medium text-gray-700">
+                                                    {{ player.display_name[0].upper() }}
+                                                </span>
+                                            </div>
+                                            <span class="text-gray-900">{{ player.display_name }}</span>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                        </div>
+
+                        <!-- Team A -->
+                        <div class="bg-white rounded-lg border border-gray-200 p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold text-blue-600">Team A</h3>
+                                <span id="team-a-count" class="text-sm text-gray-500">0 players</span>
+                            </div>
+                            
+                            <!-- Team A Ratings -->
+                            <div id="team-a-ratings" class="bg-blue-100 rounded-lg p-3 mb-4 hidden">
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="flex justify-between">
+                                        <span class="text-blue-700">Attack:</span>
+                                        <span id="team-a-attack" class="font-semibold text-blue-800">-</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-blue-700">Midfield:</span>
+                                        <span id="team-a-midfield" class="font-semibold text-blue-800">-</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-blue-700">Defense:</span>
+                                        <span id="team-a-defense" class="font-semibold text-blue-800">-</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-blue-700">Pace:</span>
+                                        <span id="team-a-pace" class="font-semibold text-blue-800">-</span>
+                                    </div>
+                                </div>
+                                <div class="border-t border-blue-200 mt-2 pt-2">
+                                    <div class="flex justify-between">
+                                        <span class="text-blue-700 font-medium">Overall:</span>
+                                        <span id="team-a-overall" class="font-bold text-blue-800">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="team-a" class="space-y-2 min-h-[200px] p-3 border-2 border-dashed border-blue-300 rounded-lg bg-blue-50">
+                                    {% for player in current_team_a %}
+                                    <div 
+                                        class="player-item p-3 bg-blue-100 border border-blue-200 rounded-lg cursor-pointer" 
+                                        data-player-id="{{ player.id }}"
+                                        draggable="true"
+                                    >
+                                        <div class="flex items-center space-x-2">
+                                            <div class="h-7 w-7 bg-blue-200 rounded-full flex items-center justify-center">
+                                                <span class="text-xs font-medium text-blue-800">
+                                                    {{ player.display_name[0].upper() }}
+                                                </span>
+                                            </div>
+                                            <span class="text-gray-900 font-medium">{{ player.display_name }}</span>
+                                        </div>
+                                        <input type="hidden" name="team_a" value="{{ player.id }}">
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                        </div>
+
+                        <!-- Team B -->
+                        <div class="bg-white rounded-lg border border-gray-200 p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-semibold text-red-600">Team B</h3>
+                                <span id="team-b-count" class="text-sm text-gray-500">0 players</span>
+                            </div>
+                            
+                            <!-- Team B Ratings -->
+                            <div id="team-b-ratings" class="bg-red-100 rounded-lg p-3 mb-4 hidden">
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <div class="flex justify-between">
+                                        <span class="text-red-700">Attack:</span>
+                                        <span id="team-b-attack" class="font-semibold text-red-800">-</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-red-700">Midfield:</span>
+                                        <span id="team-b-midfield" class="font-semibold text-red-800">-</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-red-700">Defense:</span>
+                                        <span id="team-b-defense" class="font-semibold text-red-800">-</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-red-700">Pace:</span>
+                                        <span id="team-b-pace" class="font-semibold text-red-800">-</span>
+                                    </div>
+                                </div>
+                                <div class="border-t border-red-200 mt-2 pt-2">
+                                    <div class="flex justify-between">
+                                        <span class="text-red-700 font-medium">Overall:</span>
+                                        <span id="team-b-overall" class="font-bold text-red-800">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="team-b" class="space-y-2 min-h-[200px] p-3 border-2 border-dashed border-red-300 rounded-lg bg-red-50">
+                                    {% for player in current_team_b %}
+                                    <div 
+                                        class="player-item p-3 bg-red-100 border border-red-200 rounded-lg cursor-pointer" 
+                                        data-player-id="{{ player.id }}"
+                                        draggable="true"
+                                    >
+                                        <div class="flex items-center space-x-2">
+                                            <div class="h-7 w-7 bg-red-200 rounded-full flex items-center justify-center">
+                                                <span class="text-xs font-medium text-red-800">
+                                                    {{ player.display_name[0].upper() }}
+                                                </span>
+                                            </div>
+                                            <span class="text-gray-900 font-medium">{{ player.display_name }}</span>
+                                        </div>
+                                        <input type="hidden" name="team_b" value="{{ player.id }}">
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Field View -->
+                    <div id="field-view-content" class="hidden">
+                        <!-- Soccer Field Container -->
+                        <div class="soccer-field-wrapper bg-gradient-to-b from-green-600 to-green-700 rounded-xl p-6 shadow-2xl">
+                            <!-- Field -->
+                            <div class="soccer-field relative bg-green-400 mx-auto rounded-lg overflow-hidden shadow-inner" 
+                                 style="max-width: 100%; width: 800px; height: 533px; background: linear-gradient(90deg, #22c55e 0%, #16a34a 50%, #22c55e 100%);">
+                                
+                                <!-- Field markings -->
+                                <svg class="absolute inset-0 w-full h-full" viewBox="0 0 800 533" preserveAspectRatio="none">
+                                    <!-- Outer boundary -->
+                                    <rect x="10" y="10" width="780" height="513" fill="none" stroke="white" stroke-width="3"/>
+                                    
+                                    <!-- Center line -->
+                                    <line x1="400" y1="10" x2="400" y2="523" stroke="white" stroke-width="3"/>
+                                    
+                                    <!-- Center circle -->
+                                    <circle cx="400" cy="266" r="60" fill="none" stroke="white" stroke-width="3"/>
+                                    <circle cx="400" cy="266" r="2" fill="white"/>
+                                    
+                                    <!-- Left penalty area -->
+                                    <rect x="10" y="166" width="100" height="200" fill="none" stroke="white" stroke-width="3"/>
+                                    <!-- Left goal area -->
+                                    <rect x="10" y="216" width="40" height="100" fill="none" stroke="white" stroke-width="3"/>
+                                    <!-- Left penalty spot -->
+                                    <circle cx="100" cy="266" r="2" fill="white"/>
+                                    
+                                    <!-- Right penalty area -->
+                                    <rect x="690" y="166" width="100" height="200" fill="none" stroke="white" stroke-width="3"/>
+                                    <!-- Right goal area -->
+                                    <rect x="750" y="216" width="40" height="100" fill="none" stroke="white" stroke-width="3"/>
+                                    <!-- Right penalty spot -->
+                                    <circle cx="700" cy="266" r="2" fill="white"/>
+                                    
+                                    <!-- Corner arcs -->
+                                    <path d="M 20 20 A 10 10 0 0 0 30 10" fill="none" stroke="white" stroke-width="2"/>
+                                    <path d="M 20 513 A 10 10 0 0 1 30 523" fill="none" stroke="white" stroke-width="2"/>
+                                    <path d="M 780 20 A 10 10 0 0 1 770 10" fill="none" stroke="white" stroke-width="2"/>
+                                    <path d="M 780 513 A 10 10 0 0 0 770 523" fill="none" stroke="white" stroke-width="2"/>
+                                </svg>
+                                
+                                <!-- Goals -->
+                                <div class="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-2 w-4 h-24 bg-white rounded-l"></div>
+                                <div class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-2 w-4 h-24 bg-white rounded-r"></div>
+                                
+                                <!-- Team A Formation Positions -->
+                                <div class="formation-positions absolute inset-0" data-team="A">
+                                    <!-- Positions will be dynamically generated here -->
+                                </div>
+                                
+                                <!-- Team B Formation Positions -->
+                                <div class="formation-positions absolute inset-0" data-team="B">
+                                    <!-- Positions will be dynamically generated here -->
+                                </div>
+                                
+                                <!-- Team Labels -->
+                                <div class="absolute bottom-4 left-6 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                                    Team A
+                                </div>
+                                <div class="absolute bottom-4 right-6 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                                    Team B
+                                </div>
+                            </div>
+                            
+                            <!-- Field Legend -->
+                            <div class="mt-4 flex justify-center space-x-6 text-sm text-white">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-4 h-4 bg-yellow-400 border-2 border-white rounded-full"></div>
+                                    <span>Goalkeeper</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+                                    <span>Defender</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-4 h-4 bg-blue-500 border-2 border-white rounded-full"></div>
+                                    <span>Midfielder</span>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-4 h-4 bg-red-500 border-2 border-white rounded-full"></div>
+                                    <span>Forward</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Player Pool -->
+                        <div class="mt-6 bg-white rounded-xl shadow-lg border border-gray-200">
+                            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 rounded-t-xl">
+                                <h4 class="text-lg font-semibold text-gray-900 flex items-center">
+                                    <i class="fas fa-users mr-3 text-blue-600"></i>
+                                    Player Pool
+                                </h4>
+                                <p class="text-sm text-gray-600 mt-1">Drag players onto the field to position them</p>
+                            </div>
+                            
+                            <div class="p-6">
+                                <div id="field-available-players" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+                                    {% for player in in_players %}
+                                    {% if player not in current_team_a and player not in current_team_b %}
+                                    <div 
+                                        class="player-card unassigned p-3 bg-gray-50 border-2 border-gray-200 rounded-lg cursor-move hover:bg-gray-100 hover:border-gray-300 transition-all duration-200 shadow-sm hover:shadow-md" 
+                                        data-player-id="{{ player.id }}"
+                                        draggable="true"
+                                    >
+                                        <div class="text-center">
+                                            <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center mx-auto mb-2 text-white font-bold">
+                                                {{ player.display_name[0].upper() }}
+                                            </div>
+                                            <div class="text-sm font-medium text-gray-900 truncate">{{ player.display_name }}</div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                    
+                                    <!-- Existing team players -->
+                                    {% for player in current_team_a %}
+                                    <div 
+                                        class="player-card team-a p-3 bg-blue-50 border-2 border-blue-300 rounded-lg cursor-move hover:bg-blue-100 hover:border-blue-400 transition-all duration-200 shadow-sm hover:shadow-md" 
+                                        data-player-id="{{ player.id }}"
+                                        draggable="true"
+                                    >
+                                        <div class="text-center">
+                                            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-2 text-white font-bold">
+                                                {{ player.display_name[0].upper() }}
+                                            </div>
+                                            <div class="text-sm font-medium text-blue-900 truncate">{{ player.display_name }}</div>
+                                        </div>
+                                        <input type="hidden" name="team_a" value="{{ player.id }}">
+                                    </div>
+                                    {% endfor %}
+                                    
+                                    {% for player in current_team_b %}
+                                    <div 
+                                        class="player-card team-b p-3 bg-red-50 border-2 border-red-300 rounded-lg cursor-move hover:bg-red-100 hover:border-red-400 transition-all duration-200 shadow-sm hover:shadow-md" 
+                                        data-player-id="{{ player.id }}"
+                                        draggable="true"
+                                    >
+                                        <div class="text-center">
+                                            <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-2 text-white font-bold">
+                                                {{ player.display_name[0].upper() }}
+                                            </div>
+                                            <div class="text-sm font-medium text-red-900 truncate">{{ player.display_name }}</div>
+                                        </div>
+                                        <input type="hidden" name="team_b" value="{{ player.id }}">
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center space-y-4 pt-4">
+                        <!-- Algorithm Selection -->
+                        <div class="bg-gray-50 rounded-lg p-4 w-full max-w-2xl">
+                            <h4 class="text-sm font-semibold text-gray-900 mb-3 text-center">
+                                <i class="fas fa-robot mr-2"></i>
+                                AI-Powered Team Balancing
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <!-- Smart Draft (Default) -->
+                                <div class="relative">
+                                    <input type="radio" id="smart-draft" name="balance-algorithm" value="smart_draft" class="sr-only" checked>
+                                    <label for="smart-draft" class="algorithm-option block p-3 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-blue-50 hover:border-blue-300 transition-all">
+                                        <div class="text-center">
+                                            <i class="fas fa-brain text-blue-600 text-lg mb-2"></i>
+                                            <div class="text-sm font-medium text-gray-900">Smart Draft</div>
+                                            <div class="text-xs text-gray-600 mt-1">Traditional + Intelligence</div>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <!-- Multi-Armed Bandit -->
+                                <div class="relative">
+                                    <input type="radio" id="bandit" name="balance-algorithm" value="bandit" class="sr-only">
+                                    <label for="bandit" class="algorithm-option block p-3 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-purple-50 hover:border-purple-300 transition-all">
+                                        <div class="text-center">
+                                            <i class="fas fa-chart-line text-purple-600 text-lg mb-2"></i>
+                                            <div class="text-sm font-medium text-gray-900">Bandit ML</div>
+                                            <div class="text-xs text-gray-600 mt-1">Learning Algorithm</div>
+                                        </div>
+                                    </label>
+                                </div>
+                                
+                                <!-- Simulated Annealing -->
+                                <div class="relative">
+                                    <input type="radio" id="simulated-annealing" name="balance-algorithm" value="simulated_annealing" class="sr-only">
+                                    <label for="simulated-annealing" class="algorithm-option block p-3 bg-white border border-gray-300 rounded-lg cursor-pointer hover:bg-green-50 hover:border-green-300 transition-all">
+                                        <div class="text-center">
+                                            <i class="fas fa-fire text-green-600 text-lg mb-2"></i>
+                                            <div class="text-sm font-medium text-gray-900">Annealing</div>
+                                            <div class="text-xs text-gray-600 mt-1">Optimization ML</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Algorithm Description -->
+                            <div class="mt-3">
+                                <div id="algorithm-description" class="text-xs text-gray-600 text-center p-2 bg-blue-100 rounded">
+                                    <i class="fas fa-info-circle mr-1"></i>
+                                    Balances teams using player attributes, historical performance, recent form, and participation reliability
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Balance Button -->
+                        <button type="button" id="auto-balance" class="inline-flex items-center px-6 py-3 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-sm">
+                            <i class="fas fa-brain mr-2"></i>
+                            <span id="balance-button-text">Smart Balance Teams</span>
+                        </button>
+                        
+                        <!-- Results Display -->
+                        <div id="balance-results" class="hidden mt-3 p-3 bg-gray-100 rounded-lg text-center max-w-md">
+                            <div class="text-xs text-gray-600">
+                                <span id="method-used"></span>
+                                <span id="fitness-score" class="ml-2"></span>
+                                <span id="iterations-used" class="ml-2"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3 justify-center pt-2">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                            <i class="fas fa-save mr-2"></i>
+                            Publish Teams
+                        </button>
+                        <a href="{{ url_for('games.view', game_id=game.id) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            <i class="fas fa-times mr-2"></i>
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Drag and drop functionality
+let draggedElement = null;
+
+document.querySelectorAll('.player-item').forEach(item => {
+    item.addEventListener('dragstart', function(e) {
+        draggedElement = this;
+        this.style.opacity = '0.7';
+        this.style.transform = 'scale(0.98)';
+    });
+
+    item.addEventListener('dragend', function(e) {
+        this.style.opacity = '1';
+        this.style.transform = 'scale(1)';
+        draggedElement = null;
+    });
+
+    item.addEventListener('click', function(e) {
+        if (this.parentElement.id === 'team-a') {
+            movePlayer(this, 'available-players');
+        } else if (this.parentElement.id === 'team-b') {
+            movePlayer(this, 'available-players');
+        } else {
+            // Move to team with fewer players
+            const teamACount = document.querySelectorAll('#team-a .player-item').length;
+            const teamBCount = document.querySelectorAll('#team-b .player-item').length;
+            const targetTeam = teamACount <= teamBCount ? 'team-a' : 'team-b';
+            movePlayer(this, targetTeam);
+        }
+    });
+});
+
+['available-players', 'team-a', 'team-b'].forEach(containerId => {
+    const container = document.getElementById(containerId);
+    
+    container.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.style.backgroundColor = '#f1f5f9';
+        this.style.borderColor = '#94a3b8';
+    });
+
+    container.addEventListener('dragleave', function(e) {
+        if (containerId === 'team-a') {
+            this.style.backgroundColor = '#eff6ff';
+            this.style.borderColor = '#93c5fd';
+        } else if (containerId === 'team-b') {
+            this.style.backgroundColor = '#fef2f2';
+            this.style.borderColor = '#fca5a5';
+        } else {
+            this.style.backgroundColor = '';
+        }
+    });
+
+    container.addEventListener('drop', function(e) {
+        e.preventDefault();
+        if (containerId === 'team-a') {
+            this.style.backgroundColor = '#eff6ff';
+            this.style.borderColor = '#93c5fd';
+        } else if (containerId === 'team-b') {
+            this.style.backgroundColor = '#fef2f2';
+            this.style.borderColor = '#fca5a5';
+        } else {
+            this.style.backgroundColor = '';
+        }
+        if (draggedElement) {
+            movePlayer(draggedElement, containerId);
+        }
+    });
+});
+
+function movePlayer(playerElement, targetContainerId) {
+    const targetContainer = document.getElementById(targetContainerId);
+    const playerId = playerElement.getAttribute('data-player-id');
+    
+    // Remove existing hidden input
+    const existingInput = playerElement.querySelector('input[type="hidden"]');
+    if (existingInput) {
+        existingInput.remove();
+    }
+    
+    // Update styling and add new hidden input if needed
+    playerElement.className = 'player-item p-3 border rounded-lg cursor-pointer transition-colors';
+    
+    if (targetContainerId === 'team-a') {
+        playerElement.className += ' bg-blue-100 border-blue-200';
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'team_a';
+        hiddenInput.value = playerId;
+        playerElement.appendChild(hiddenInput);
+    } else if (targetContainerId === 'team-b') {
+        playerElement.className += ' bg-red-100 border-red-200';
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'team_b';
+        hiddenInput.value = playerId;
+        playerElement.appendChild(hiddenInput);
+    } else {
+        playerElement.className += ' border-gray-300 hover:bg-gray-50';
+    }
+    
+    targetContainer.appendChild(playerElement);
+    
+    // Update team counts and ratings
+    updateTeamCounts();
+    updateTeamRatings();
+}
+
+function updateTeamCounts() {
+    const teamACount = document.querySelectorAll('#team-a .player-item').length;
+    const teamBCount = document.querySelectorAll('#team-b .player-item').length;
+    
+    document.getElementById('team-a-count').textContent = `${teamACount} player${teamACount !== 1 ? 's' : ''}`;
+    document.getElementById('team-b-count').textContent = `${teamBCount} player${teamBCount !== 1 ? 's' : ''}`;
+}
+
+function updateTeamRatings() {
+    // Show/hide rating sections based on whether teams have players
+    const teamACount = document.querySelectorAll('#team-a .player-item').length;
+    const teamBCount = document.querySelectorAll('#team-b .player-item').length;
+    
+    const teamARatings = document.getElementById('team-a-ratings');
+    const teamBRatings = document.getElementById('team-b-ratings');
+    
+    if (teamACount > 0) {
+        teamARatings.classList.remove('hidden');
+    } else {
+        teamARatings.classList.add('hidden');
+    }
+    
+    if (teamBCount > 0) {
+        teamBRatings.classList.remove('hidden');
+    } else {
+        teamBRatings.classList.add('hidden');
+    }
+    
+    // Only fetch ratings if both teams have players
+    if (teamACount > 0 || teamBCount > 0) {
+        fetchTeamRatings();
+    }
+}
+
+function fetchTeamRatings() {
+    // Get current team compositions
+    const teamAPlayers = Array.from(document.querySelectorAll('#team-a .player-item')).map(el => el.getAttribute('data-player-id'));
+    const teamBPlayers = Array.from(document.querySelectorAll('#team-b .player-item')).map(el => el.getAttribute('data-player-id'));
+    
+    // Create temporary form data to send current team state
+    const formData = new FormData();
+    teamAPlayers.forEach(id => formData.append('team_a', id));
+    teamBPlayers.forEach(id => formData.append('team_b', id));
+    
+    fetch(`/games/{{ game.id }}/team-ratings`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateRatingDisplay('team-a', data.team_a_ratings);
+            updateRatingDisplay('team-b', data.team_b_ratings);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching team ratings:', error);
+    });
+}
+
+function updateRatingDisplay(teamPrefix, ratings) {
+    document.getElementById(`${teamPrefix}-attack`).textContent = ratings.attack;
+    document.getElementById(`${teamPrefix}-midfield`).textContent = ratings.midfield;
+    document.getElementById(`${teamPrefix}-defense`).textContent = ratings.defense;
+    document.getElementById(`${teamPrefix}-pace`).textContent = ratings.pace;
+    document.getElementById(`${teamPrefix}-overall`).textContent = ratings.overall;
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateTeamCounts();
+    updateTeamRatings();
+});
+
+// Algorithm selection handling
+document.querySelectorAll('input[name="balance-algorithm"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        // Update visual selection
+        document.querySelectorAll('.algorithm-option').forEach(option => {
+            option.classList.remove('ring-2', 'ring-blue-500', 'ring-purple-500', 'ring-green-500', 'bg-blue-50', 'bg-purple-50', 'bg-green-50');
+            option.classList.add('bg-white');
+        });
+        
+        const selectedLabel = document.querySelector(`label[for="${this.id}"]`);
+        const selectedValue = this.value;
+        
+        // Apply color scheme based on selection
+        if (selectedValue === 'smart_draft') {
+            selectedLabel.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50');
+            document.getElementById('balance-button-text').textContent = 'Smart Balance Teams';
+            updateAlgorithmDescription('Balances teams using player attributes, historical performance, recent form, and participation reliability', 'bg-blue-100');
+        } else if (selectedValue === 'bandit') {
+            selectedLabel.classList.add('ring-2', 'ring-purple-500', 'bg-purple-50');
+            document.getElementById('balance-button-text').textContent = 'ML Bandit Balance';
+            updateAlgorithmDescription('Uses Multi-Armed Bandit machine learning to explore different balancing strategies and learn the most effective approach', 'bg-purple-100');
+        } else if (selectedValue === 'simulated_annealing') {
+            selectedLabel.classList.add('ring-2', 'ring-green-500', 'bg-green-50');
+            document.getElementById('balance-button-text').textContent = 'ML Annealing Balance';
+            updateAlgorithmDescription('Advanced optimization algorithm that iteratively improves team balance by accepting and rejecting player swaps', 'bg-green-100');
+        }
+    });
+});
+
+function updateAlgorithmDescription(text, bgClass) {
+    const desc = document.getElementById('algorithm-description');
+    desc.textContent = '';
+    desc.className = `text-xs text-gray-600 text-center p-2 rounded ${bgClass}`;
+    desc.innerHTML = `<i class="fas fa-info-circle mr-1"></i>${text}`;
+}
+
+// Initialize first option as selected
+document.getElementById('smart-draft').checked = true;
+document.querySelector('label[for="smart-draft"]').classList.add('ring-2', 'ring-blue-500', 'bg-blue-50');
+
+// Auto balance teams using selected algorithm
+document.getElementById('auto-balance').addEventListener('click', function() {
+    const button = this;
+    const originalText = button.innerHTML;
+    const selectedAlgorithm = document.querySelector('input[name="balance-algorithm"]:checked').value;
+    
+    console.log('Auto-balance clicked! Selected algorithm:', selectedAlgorithm);
+    
+    // Show loading state based on algorithm
+    button.disabled = true;
+    let loadingText = '<i class="fas fa-spinner fa-spin mr-2"></i>';
+    
+    if (selectedAlgorithm === 'bandit') {
+        loadingText += 'ML Learning...';
+    } else if (selectedAlgorithm === 'simulated_annealing') {
+        loadingText += 'Optimizing...';
+    } else {
+        loadingText += 'Analyzing players...';
+    }
+    
+    button.innerHTML = loadingText;
+    
+    // Call the balancing API with selected algorithm
+    console.log('Making API call to:', `/games/{{ game.id }}/auto-balance`);
+    console.log('Request body:', JSON.stringify({algorithm: selectedAlgorithm}));
+    
+    fetch(`/games/{{ game.id }}/auto-balance`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            algorithm: selectedAlgorithm
+        })
+    })
+    .then(response => {
+        console.log('API Response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('API Response data:', data);
+        if (data.success) {
+            // Check current view mode
+            const isFieldView = !document.getElementById('field-view-content').classList.contains('hidden');
+            
+            if (isFieldView) {
+                // Clear all positioned players in field view
+                document.querySelectorAll('.positioned-player').forEach(player => {
+                    movePlayerToAvailable(player);
+                });
+                
+                // Auto-balance doesn't position on field, just assigns to teams
+                // Show message to user about manual positioning
+                showToast(`${data.method} completed! Drag players to specific positions on the field.`, 'success');
+                
+                // Update available players styling to show team assignments
+                data.team_a.forEach(player => {
+                    const playerElement = document.querySelector(`[data-player-id="${player.id}"]`);
+                    if (playerElement && !playerElement.classList.contains('positioned-player')) {
+                        playerElement.className = 'field-player-item team-a-player p-2 bg-blue-100 border border-blue-300 rounded-lg cursor-pointer hover:bg-blue-50 transition-colors shadow-sm';
+                        // Add hidden input for team assignment
+                        const existingInput = playerElement.querySelector('input[type="hidden"]');
+                        if (existingInput) existingInput.remove();
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'team_a';
+                        hiddenInput.value = player.id;
+                        playerElement.appendChild(hiddenInput);
+                    }
+                });
+                
+                data.team_b.forEach(player => {
+                    const playerElement = document.querySelector(`[data-player-id="${player.id}"]`);
+                    if (playerElement && !playerElement.classList.contains('positioned-player')) {
+                        playerElement.className = 'field-player-item team-b-player p-2 bg-red-100 border border-red-300 rounded-lg cursor-pointer hover:bg-red-50 transition-colors shadow-sm';
+                        // Add hidden input for team assignment
+                        const existingInput = playerElement.querySelector('input[type="hidden"]');
+                        if (existingInput) existingInput.remove();
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'team_b';
+                        hiddenInput.value = player.id;
+                        playerElement.appendChild(hiddenInput);
+                    }
+                });
+            } else {
+                // Original list view behavior
+                document.querySelectorAll('#team-a .player-item, #team-b .player-item').forEach(player => {
+                    movePlayer(player, 'available-players');
+                });
+                
+                // Assign players to balanced teams
+                data.team_a.forEach(player => {
+                    const playerElement = document.querySelector(`[data-player-id="${player.id}"]`);
+                    if (playerElement) {
+                        movePlayer(playerElement, 'team-a');
+                    }
+                });
+                
+                data.team_b.forEach(player => {
+                    const playerElement = document.querySelector(`[data-player-id="${player.id}"]`);
+                    if (playerElement) {
+                        movePlayer(playerElement, 'team-b');
+                    }
+                });
+                
+                // Show success message
+                showToast(`Teams balanced using ${data.method}!`, 'success');
+            }
+            
+            // Update ratings displays with the returned data
+            updateRatingDisplay('team-a', data.team_a_ratings);
+            updateRatingDisplay('team-b', data.team_b_ratings);
+            
+            // Update team counts
+            updateTeamCounts();
+            
+            // Show results
+            showBalanceResults(data);
+        } else {
+            showToast(data.error || 'Failed to balance teams', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error balancing teams:', error);
+        console.error('Full error details:', error);
+        showToast('Error balancing teams: ' + error.message, 'error');
+    })
+    .finally(() => {
+        // Restore button
+        button.disabled = false;
+        button.innerHTML = originalText;
+    });
+});
+
+function showBalanceResults(data) {
+    const resultsDiv = document.getElementById('balance-results');
+    const methodSpan = document.getElementById('method-used');
+    const fitnessSpan = document.getElementById('fitness-score');
+    const iterationsSpan = document.getElementById('iterations-used');
+    
+    methodSpan.textContent = `Method: ${data.method}`;
+    
+    if (data.fitness_score) {
+        fitnessSpan.textContent = `| Fitness: ${data.fitness_score.toFixed(2)}/10.0`;
+        fitnessSpan.classList.remove('hidden');
+    } else {
+        fitnessSpan.classList.add('hidden');
+    }
+    
+    if (data.iterations) {
+        iterationsSpan.textContent = `| Iterations: ${data.iterations}`;
+        iterationsSpan.classList.remove('hidden');
+    } else {
+        iterationsSpan.classList.add('hidden');
+    }
+    
+    resultsDiv.classList.remove('hidden');
+    
+    // Hide results after 10 seconds
+    setTimeout(() => {
+        resultsDiv.classList.add('hidden');
+    }, 10000);
+}
+
+// View toggle functionality
+document.getElementById('list-view').addEventListener('click', function() {
+    switchToView('list');
+});
+
+document.getElementById('field-view').addEventListener('click', function() {
+    switchToView('field');
+});
+
+function switchToView(view) {
+    const listViewBtn = document.getElementById('list-view');
+    const fieldViewBtn = document.getElementById('field-view');
+    const listContent = document.getElementById('list-view-content');
+    const fieldContent = document.getElementById('field-view-content');
+    
+    if (view === 'list') {
+        listViewBtn.classList.add('active', 'bg-blue-100', 'border-blue-300', 'text-blue-700');
+        listViewBtn.classList.remove('hover:bg-gray-50');
+        fieldViewBtn.classList.remove('active', 'bg-blue-100', 'border-blue-300', 'text-blue-700');
+        fieldViewBtn.classList.add('hover:bg-gray-50');
+        
+        listContent.classList.remove('hidden');
+        fieldContent.classList.add('hidden');
+    } else {
+        fieldViewBtn.classList.add('active', 'bg-blue-100', 'border-blue-300', 'text-blue-700');
+        fieldViewBtn.classList.remove('hover:bg-gray-50');
+        listViewBtn.classList.remove('active', 'bg-blue-100', 'border-blue-300', 'text-blue-700');
+        listViewBtn.classList.add('hover:bg-gray-50');
+        
+        listContent.classList.add('hidden');
+        fieldContent.classList.remove('hidden');
+        
+        // Initialize field view
+        updateFormation();
+    }
+}
+
+// Formation configurations with pixel coordinates for 800x533 field
+const formations = {
+    '4-4-2': {
+        'A': {
+            'GK': [{left: '80px', top: '266px', label: 'GK'}],
+            'DEF': [
+                {left: '170px', top: '133px', label: 'RB'}, 
+                {left: '170px', top: '216px', label: 'CB'}, 
+                {left: '170px', top: '316px', label: 'CB'}, 
+                {left: '170px', top: '400px', label: 'LB'}
+            ],
+            'MID': [
+                {left: '310px', top: '160px', label: 'RM'}, 
+                {left: '310px', top: '240px', label: 'CM'}, 
+                {left: '310px', top: '293px', label: 'CM'}, 
+                {left: '310px', top: '373px', label: 'LM'}
+            ],
+            'FWD': [
+                {left: '370px', top: '196px', label: 'ST'}, 
+                {left: '370px', top: '337px', label: 'ST'}
+            ]
+        },
+        'B': {
+            'GK': [{left: '720px', top: '266px', label: 'GK'}],
+            'DEF': [
+                {left: '630px', top: '133px', label: 'LB'}, 
+                {left: '630px', top: '216px', label: 'CB'}, 
+                {left: '630px', top: '316px', label: 'CB'}, 
+                {left: '630px', top: '400px', label: 'RB'}
+            ],
+            'MID': [
+                {left: '490px', top: '160px', label: 'LM'}, 
+                {left: '490px', top: '240px', label: 'CM'}, 
+                {left: '490px', top: '293px', label: 'CM'}, 
+                {left: '490px', top: '373px', label: 'RM'}
+            ],
+            'FWD': [
+                {left: '430px', top: '196px', label: 'ST'}, 
+                {left: '430px', top: '337px', label: 'ST'}
+            ]
+        }
+    },
+    '4-3-3': {
+        'A': {
+            'GK': [{left: '80px', top: '266px', label: 'GK'}],
+            'DEF': [
+                {left: '170px', top: '120px', label: 'RB'}, 
+                {left: '170px', top: '200px', label: 'CB'}, 
+                {left: '170px', top: '333px', label: 'CB'}, 
+                {left: '170px', top: '413px', label: 'LB'}
+            ],
+            'MID': [
+                {left: '310px', top: '176px', label: 'CM'}, 
+                {left: '310px', top: '266px', label: 'CM'}, 
+                {left: '310px', top: '357px', label: 'CM'}
+            ],
+            'FWD': [
+                {left: '370px', top: '120px', label: 'RW'}, 
+                {left: '370px', top: '266px', label: 'ST'}, 
+                {left: '370px', top: '413px', label: 'LW'}
+            ]
+        },
+        'B': {
+            'GK': [{left: '720px', top: '266px', label: 'GK'}],
+            'DEF': [
+                {left: '630px', top: '120px', label: 'LB'}, 
+                {left: '630px', top: '200px', label: 'CB'}, 
+                {left: '630px', top: '333px', label: 'CB'}, 
+                {left: '630px', top: '413px', label: 'RB'}
+            ],
+            'MID': [
+                {left: '490px', top: '176px', label: 'CM'}, 
+                {left: '490px', top: '266px', label: 'CM'}, 
+                {left: '490px', top: '357px', label: 'CM'}
+            ],
+            'FWD': [
+                {left: '430px', top: '120px', label: 'LW'}, 
+                {left: '430px', top: '266px', label: 'ST'}, 
+                {left: '430px', top: '413px', label: 'RW'}
+            ]
+        }
+    },
+    '3-5-2': {
+        'A': {
+            'GK': [{left: '80px', top: '266px', label: 'GK'}],
+            'DEF': [
+                {left: '170px', top: '160px', label: 'CB'}, 
+                {left: '170px', top: '266px', label: 'CB'}, 
+                {left: '170px', top: '373px', label: 'CB'}
+            ],
+            'MID': [
+                {left: '250px', top: '100px', label: 'RWB'}, 
+                {left: '310px', top: '186px', label: 'CM'}, 
+                {left: '310px', top: '266px', label: 'CM'}, 
+                {left: '310px', top: '347px', label: 'CM'}, 
+                {left: '250px', top: '433px', label: 'LWB'}
+            ],
+            'FWD': [
+                {left: '370px', top: '213px', label: 'ST'}, 
+                {left: '370px', top: '320px', label: 'ST'}
+            ]
+        },
+        'B': {
+            'GK': [{left: '720px', top: '266px', label: 'GK'}],
+            'DEF': [
+                {left: '630px', top: '160px', label: 'CB'}, 
+                {left: '630px', top: '266px', label: 'CB'}, 
+                {left: '630px', top: '373px', label: 'CB'}
+            ],
+            'MID': [
+                {left: '550px', top: '100px', label: 'LWB'}, 
+                {left: '490px', top: '186px', label: 'CM'}, 
+                {left: '490px', top: '266px', label: 'CM'}, 
+                {left: '490px', top: '347px', label: 'CM'}, 
+                {left: '550px', top: '433px', label: 'RWB'}
+            ],
+            'FWD': [
+                {left: '430px', top: '213px', label: 'ST'}, 
+                {left: '430px', top: '320px', label: 'ST'}
+            ]
+        }
+    },
+    '4-5-1': {
+        'A': {
+            'GK': [{left: '80px', top: '266px', label: 'GK'}],
+            'DEF': [
+                {left: '170px', top: '120px', label: 'RB'}, 
+                {left: '170px', top: '200px', label: 'CB'}, 
+                {left: '170px', top: '333px', label: 'CB'}, 
+                {left: '170px', top: '413px', label: 'LB'}
+            ],
+            'MID': [
+                {left: '270px', top: '100px', label: 'RM'}, 
+                {left: '310px', top: '186px', label: 'CM'}, 
+                {left: '310px', top: '266px', label: 'CM'}, 
+                {left: '310px', top: '347px', label: 'CM'}, 
+                {left: '270px', top: '433px', label: 'LM'}
+            ],
+            'FWD': [
+                {left: '370px', top: '266px', label: 'ST'}
+            ]
+        },
+        'B': {
+            'GK': [{left: '720px', top: '266px', label: 'GK'}],
+            'DEF': [
+                {left: '630px', top: '120px', label: 'LB'}, 
+                {left: '630px', top: '200px', label: 'CB'}, 
+                {left: '630px', top: '333px', label: 'CB'}, 
+                {left: '630px', top: '413px', label: 'RB'}
+            ],
+            'MID': [
+                {left: '530px', top: '100px', label: 'LM'}, 
+                {left: '490px', top: '186px', label: 'CM'}, 
+                {left: '490px', top: '266px', label: 'CM'}, 
+                {left: '490px', top: '347px', label: 'CM'}, 
+                {left: '530px', top: '433px', label: 'RM'}
+            ],
+            'FWD': [
+                {left: '430px', top: '266px', label: 'ST'}
+            ]
+        }
+    },
+    '3-4-3': {
+        'A': {
+            'GK': [{left: '80px', top: '266px', label: 'GK'}],
+            'DEF': [
+                {left: '170px', top: '160px', label: 'CB'}, 
+                {left: '170px', top: '266px', label: 'CB'}, 
+                {left: '170px', top: '373px', label: 'CB'}
+            ],
+            'MID': [
+                {left: '310px', top: '146px', label: 'CM'}, 
+                {left: '310px', top: '230px', label: 'CM'}, 
+                {left: '310px', top: '303px', label: 'CM'}, 
+                {left: '310px', top: '387px', label: 'CM'}
+            ],
+            'FWD': [
+                {left: '370px', top: '120px', label: 'RW'}, 
+                {left: '370px', top: '266px', label: 'ST'}, 
+                {left: '370px', top: '413px', label: 'LW'}
+            ]
+        },
+        'B': {
+            'GK': [{left: '720px', top: '266px', label: 'GK'}],
+            'DEF': [
+                {left: '630px', top: '160px', label: 'CB'}, 
+                {left: '630px', top: '266px', label: 'CB'}, 
+                {left: '630px', top: '373px', label: 'CB'}
+            ],
+            'MID': [
+                {left: '490px', top: '146px', label: 'CM'}, 
+                {left: '490px', top: '230px', label: 'CM'}, 
+                {left: '490px', top: '303px', label: 'CM'}, 
+                {left: '490px', top: '387px', label: 'CM'}
+            ],
+            'FWD': [
+                {left: '430px', top: '120px', label: 'LW'}, 
+                {left: '430px', top: '266px', label: 'ST'}, 
+                {left: '430px', top: '413px', label: 'RW'}
+            ]
+        }
+    },
+    '5-3-2': {
+        'A': {
+            'GK': [{left: '80px', top: '266px', label: 'GK'}],
+            'DEF': [
+                {left: '170px', top: '80px', label: 'RB'}, 
+                {left: '170px', top: '160px', label: 'CB'}, 
+                {left: '170px', top: '266px', label: 'CB'}, 
+                {left: '170px', top: '373px', label: 'CB'}, 
+                {left: '170px', top: '453px', label: 'LB'}
+            ],
+            'MID': [
+                {left: '310px', top: '186px', label: 'CM'}, 
+                {left: '310px', top: '266px', label: 'CM'}, 
+                {left: '310px', top: '347px', label: 'CM'}
+            ],
+            'FWD': [
+                {left: '370px', top: '213px', label: 'ST'}, 
+                {left: '370px', top: '320px', label: 'ST'}
+            ]
+        },
+        'B': {
+            'GK': [{left: '720px', top: '266px', label: 'GK'}],
+            'DEF': [
+                {left: '630px', top: '80px', label: 'LB'}, 
+                {left: '630px', top: '160px', label: 'CB'}, 
+                {left: '630px', top: '266px', label: 'CB'}, 
+                {left: '630px', top: '373px', label: 'CB'}, 
+                {left: '630px', top: '453px', label: 'RB'}
+            ],
+            'MID': [
+                {left: '490px', top: '186px', label: 'CM'}, 
+                {left: '490px', top: '266px', label: 'CM'}, 
+                {left: '490px', top: '347px', label: 'CM'}
+            ],
+            'FWD': [
+                {left: '430px', top: '213px', label: 'ST'}, 
+                {left: '430px', top: '320px', label: 'ST'}
+            ]
+        }
+    }
+};
+
+// Formation change handler
+document.getElementById('formation').addEventListener('change', function() {
+    updateFormation();
+});
+
+function updateFormation() {
+    const selectedFormation = document.getElementById('formation').value;
+    const formationConfig = formations[selectedFormation];
+    
+    // Save currently positioned players before clearing
+    const positionedPlayers = [];
+    document.querySelectorAll('.positioned-player').forEach(player => {
+        positionedPlayers.push({
+            element: player.cloneNode(true),
+            team: player.closest('.formation-positions').getAttribute('data-team'),
+            playerId: player.getAttribute('data-player-id')
+        });
+        // Move player back to available pool temporarily
+        movePlayerToAvailable(player);
+    });
+    
+    // Clear existing position slots
+    document.querySelectorAll('.formation-positions').forEach(container => {
+        container.innerHTML = '';
+    });
+    
+    // Create position slots for both teams
+    ['A', 'B'].forEach(team => {
+        const container = document.querySelector(`.formation-positions[data-team="${team}"]`);
+        const teamConfig = formationConfig[team];
+        
+        Object.entries(teamConfig).forEach(([position, positions]) => {
+            positions.forEach((pos, index) => {
+                const slot = document.createElement('div');
+                slot.className = `position-slot ${position.toLowerCase()}`;
+                slot.setAttribute('data-position', position);
+                slot.setAttribute('data-team', team);
+                slot.setAttribute('data-position-short', pos.label);
+                
+                // Apply positioning using absolute positioning
+                slot.style.left = pos.left;
+                slot.style.top = pos.top;
+                slot.style.position = 'absolute';
+                
+                // Add position label
+                const label = document.createElement('div');
+                label.className = 'position-label';
+                label.textContent = pos.label;
+                slot.appendChild(label);
+                
+                // Add drop functionality
+                addDropFunctionality(slot);
+                
+                container.appendChild(slot);
+            });
+        });
+    });
+    
+    // Show message about formation change
+    if (positionedPlayers.length > 0) {
+        showToast(`Formation changed to ${selectedFormation}. Previously positioned players moved to player pool.`, 'info');
+    }
+}
+
+function getPositionLabel(position, index) {
+    const labels = {
+        'GK': ['GK'],
+        'DEF': ['CB', 'CB', 'LB', 'RB', 'CB'],
+        'MID': ['CM', 'CM', 'LM', 'RM', 'CDM'],
+        'FWD': ['ST', 'LW', 'RW', 'CF', 'ST']
+    };
+    return labels[position][index] || position;
+}
+
+// Field drag and drop functionality
+let fieldDraggedElement = null;
+
+// Add drag functionality to player cards
+function initializeFieldDragDrop() {
+    document.querySelectorAll('.player-card').forEach(item => {
+        item.addEventListener('dragstart', function(e) {
+            fieldDraggedElement = this;
+            this.style.opacity = '0.7';
+            this.style.transform = 'scale(0.95)';
+        });
+
+        item.addEventListener('dragend', function(e) {
+            this.style.opacity = '1';
+            this.style.transform = '';
+            fieldDraggedElement = null;
+        });
+    });
+}
+
+function addDropFunctionality(slot) {
+    slot.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('drop-active');
+    });
+
+    slot.addEventListener('dragleave', function(e) {
+        this.classList.remove('drop-active');
+    });
+
+    slot.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('drop-active');
+        
+        if (fieldDraggedElement) {
+            const team = this.getAttribute('data-team');
+            const position = this.getAttribute('data-position');
+            const playerId = fieldDraggedElement.getAttribute('data-player-id');
+            
+            // Position validation (optional - could add player attribute checking)
+            const validationResult = validatePlayerPosition(playerId, position);
+            
+            // Check if slot is already occupied
+            const existingPlayer = this.querySelector('.field-player-item');
+            if (existingPlayer) {
+                // Move existing player back to available
+                movePlayerToAvailable(existingPlayer);
+            }
+            
+            // Move player to position
+            movePlayerToPosition(fieldDraggedElement, this, team, position);
+            
+            // Show position suggestion if not ideal
+            if (!validationResult.ideal) {
+                showPositionHint(validationResult.message);
+            }
+        }
+    });
+}
+
+function movePlayerToPosition(playerElement, positionSlot, team, position) {
+    // Update player styling based on team
+    playerElement.className = `player-card positioned-player`;
+    
+    if (team === 'A') {
+        playerElement.classList.add('team-a');
+    } else {
+        playerElement.classList.add('team-b');
+    }
+    
+    // Update hidden input for form submission
+    const existingInput = playerElement.querySelector('input[type="hidden"]');
+    if (existingInput) {
+        existingInput.remove();
+    }
+    
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = team === 'A' ? 'team_a' : 'team_b';
+    hiddenInput.value = playerElement.getAttribute('data-player-id');
+    playerElement.appendChild(hiddenInput);
+    
+    // Position player in slot
+    positionSlot.appendChild(playerElement);
+    
+    // Re-initialize drag and drop for the positioned player
+    playerElement.addEventListener('dragstart', function(e) {
+        fieldDraggedElement = this;
+        this.style.opacity = '0.7';
+    });
+    
+    playerElement.addEventListener('dragend', function(e) {
+        this.style.opacity = '1';
+        fieldDraggedElement = null;
+    });
+    
+    // Update team counts and ratings
+    updateTeamCounts();
+    updateTeamRatings();
+}
+
+function movePlayerToAvailable(playerElement) {
+    // Reset player styling to unassigned
+    playerElement.className = 'player-card unassigned p-3 bg-gray-50 border-2 border-gray-200 rounded-lg cursor-move hover:bg-gray-100 hover:border-gray-300 transition-all duration-200 shadow-sm hover:shadow-md';
+    
+    // Remove hidden input
+    const existingInput = playerElement.querySelector('input[type="hidden"]');
+    if (existingInput) {
+        existingInput.remove();
+    }
+    
+    // Move back to available players
+    document.getElementById('field-available-players').appendChild(playerElement);
+    
+    // Re-initialize drag and drop for the available player
+    playerElement.addEventListener('dragstart', function(e) {
+        fieldDraggedElement = this;
+        this.style.opacity = '0.7';
+        this.style.transform = 'scale(0.95)';
+    });
+    
+    playerElement.addEventListener('dragend', function(e) {
+        this.style.opacity = '1';
+        this.style.transform = '';
+        fieldDraggedElement = null;
+    });
+    
+    // Update team counts and ratings
+    updateTeamCounts();
+    updateTeamRatings();
+}
+
+// Position validation
+function validatePlayerPosition(playerId, targetPosition) {
+    // This is a basic validation - in real implementation, 
+    // you could fetch player attributes and match against position
+    
+    // For now, just provide helpful hints
+    const suggestions = {
+        'GK': 'Consider players with high goalkeeping, handling, and distribution skills',
+        'DEF': 'Best for players with good tackling, marking, and defensive positioning',
+        'MID': 'Ideal for players with strong passing, vision, and stamina',
+        'FWD': 'Perfect for players with high shooting, pace, and finishing ability'
+    };
+    
+    return {
+        ideal: true, // Could implement actual checking here
+        message: suggestions[targetPosition] || 'Position assigned successfully'
+    };
+}
+
+function showPositionHint(message) {
+    // Create a temporary hint that fades after 3 seconds
+    const hint = document.createElement('div');
+    hint.className = 'fixed top-4 right-4 bg-blue-100 border border-blue-300 text-blue-800 px-4 py-2 rounded-lg text-sm z-50';
+    hint.innerHTML = `<i class="fas fa-info-circle mr-2"></i>${message}`;
+    
+    document.body.appendChild(hint);
+    
+    setTimeout(() => {
+        hint.style.opacity = '0';
+        hint.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => {
+            if (hint.parentNode) {
+                hint.parentNode.removeChild(hint);
+            }
+        }, 500);
+    }, 3000);
+}
+
+// Formation constraints validation
+function validateFormationConstraints() {
+    const selectedFormation = document.getElementById('formation').value;
+    const [defenders, midfielders, forwards] = selectedFormation.split('-').map(Number);
+    
+    // Count current positioned players
+    const teamACounts = {
+        'GK': document.querySelectorAll('.formation-positions[data-team="A"] .position-slot.gk .positioned-player').length,
+        'DEF': document.querySelectorAll('.formation-positions[data-team="A"] .position-slot.def .positioned-player').length,
+        'MID': document.querySelectorAll('.formation-positions[data-team="A"] .position-slot.mid .positioned-player').length,
+        'FWD': document.querySelectorAll('.formation-positions[data-team="A"] .position-slot.fwd .positioned-player').length
+    };
+    
+    const teamBCounts = {
+        'GK': document.querySelectorAll('.formation-positions[data-team="B"] .position-slot.gk .positioned-player').length,
+        'DEF': document.querySelectorAll('.formation-positions[data-team="B"] .position-slot.def .positioned-player').length,
+        'MID': document.querySelectorAll('.formation-positions[data-team="B"] .position-slot.mid .positioned-player').length,
+        'FWD': document.querySelectorAll('.formation-positions[data-team="B"] .position-slot.fwd .positioned-player').length
+    };
+    
+    const issues = [];
+    
+    // Check Team A
+    if (teamACounts.DEF > defenders) issues.push(`Team A has too many defenders (${teamACounts.DEF}/${defenders})`);
+    if (teamACounts.MID > midfielders) issues.push(`Team A has too many midfielders (${teamACounts.MID}/${midfielders})`);
+    if (teamACounts.FWD > forwards) issues.push(`Team A has too many forwards (${teamACounts.FWD}/${forwards})`);
+    
+    // Check Team B
+    if (teamBCounts.DEF > defenders) issues.push(`Team B has too many defenders (${teamBCounts.DEF}/${defenders})`);
+    if (teamBCounts.MID > midfielders) issues.push(`Team B has too many midfielders (${teamBCounts.MID}/${midfielders})`);
+    if (teamBCounts.FWD > forwards) issues.push(`Team B has too many forwards (${teamBCounts.FWD}/${forwards})`);
+    
+    return issues;
+}
+
+// Add formation validation warning
+function checkFormationCompliance() {
+    const issues = validateFormationConstraints();
+    const warningDiv = document.getElementById('formation-warning');
+    
+    if (issues.length > 0) {
+        if (!warningDiv) {
+            const warning = document.createElement('div');
+            warning.id = 'formation-warning';
+            warning.className = 'mt-2 p-2 bg-yellow-100 border border-yellow-300 text-yellow-800 rounded text-sm';
+            warning.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i>Formation issues: ${issues.join(', ')}`;
+            document.querySelector('.bg-green-50').appendChild(warning);
+        } else {
+            warningDiv.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i>Formation issues: ${issues.join(', ')}`;
+        }
+    } else if (warningDiv) {
+        warningDiv.remove();
+    }
+}
+
+// Initialize field drag and drop when switching to field view
+document.addEventListener('DOMContentLoaded', function() {
+    initializeFieldDragDrop();
+});
+
+// Toast notifications are now handled globally by base.html
+</script>
+
+<style>
+/* Field View Styles */
+.view-toggle.active {
+    background-color: #dbeafe;
+    border-color: #93c5fd;
+    color: #1e40af;
+}
+
+/* Soccer Field Styling */
+.soccer-field-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.soccer-field {
+    position: relative;
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 4px solid #fff;
+}
+
+/* Position Slots */
+.position-slot {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border: 3px solid white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.position-slot.gk {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    border-color: #fff;
+}
+
+.position-slot.def {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #fff;
+}
+
+.position-slot.mid {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-color: #fff;
+}
+
+.position-slot.fwd {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border-color: #fff;
+}
+
+.position-slot:hover {
+    transform: translate(-50%, -50%) scale(1.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    border-width: 4px;
+}
+
+.position-slot.drop-active {
+    transform: translate(-50%, -50%) scale(1.25);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+    border-color: #fbbf24;
+    border-width: 4px;
+    animation: pulse 0.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+.position-label {
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    pointer-events: none;
+    letter-spacing: 0.5px;
+}
+
+/* Player Cards */
+.player-card {
+    transition: all 0.2s ease;
+    cursor: grab;
+}
+
+.player-card:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+}
+
+.player-card:hover {
+    transform: translateY(-2px);
+}
+
+.player-card.unassigned:hover {
+    border-color: #6b7280;
+    background-color: #f9fafb;
+}
+
+.player-card.team-a:hover {
+    border-color: #2563eb;
+    background-color: #dbeafe;
+}
+
+.player-card.team-b:hover {
+    border-color: #dc2626;
+    background-color: #fee2e2;
+}
+
+/* Positioned Players on Field */
+.positioned-player {
+    position: absolute !important;
+    width: 60px !important;
+    height: 70px !important;
+    border-radius: 10px !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 20 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    cursor: grab !important;
+    padding: 4px !important;
+}
+
+.positioned-player:hover {
+    transform: translate(-50%, -50%) scale(1.1) !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.positioned-player.team-a {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+    border: 2px solid #1e40af !important;
+    color: white !important;
+}
+
+.positioned-player.team-b {
+    background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
+    border: 2px solid #991b1b !important;
+    color: white !important;
+}
+
+.positioned-player .text-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.positioned-player .w-10 {
+    width: 28px !important;
+    height: 28px !important;
+    margin-bottom: 2px !important;
+    font-size: 11px !important;
+}
+
+.positioned-player .text-sm {
+    font-size: 9px !important;
+    line-height: 1.1;
+    max-width: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Field responsiveness */
+@media (max-width: 1024px) {
+    .soccer-field {
+        width: 700px !important;
+        height: 467px !important;
+    }
+    
+    .position-slot {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .positioned-player {
+        width: 50px !important;
+        height: 60px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .soccer-field {
+        width: 600px !important;
+        height: 400px !important;
+    }
+    
+    .position-slot {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .positioned-player {
+        width: 45px !important;
+        height: 55px !important;
+    }
+    
+    .player-card {
+        padding: 2px !important;
+    }
+}
+
+/* Empty position slot styling */
+.position-slot:empty::after {
+    content: attr(data-position-short);
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 10px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+</style>
+{% endblock %}

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Create Group - FootMob{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-md mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="mx-auto h-16 w-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
+                <i class="fas fa-users text-white text-xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Create Your Group</h1>
+            <p class="text-gray-600">
+                Start organizing football matches with friends
+            </p>
+        </div>
+
+        <!-- Form -->
+        <div class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+            <form method="POST" class="space-y-6">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                        Group Name
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="name" 
+                            name="name" 
+                            required
+                            class="block w-full px-3 py-2 pl-10 border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            placeholder="e.g., Sunday Kickabout"
+                        >
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-futbol text-gray-400"></i>
+                        </div>
+                    </div>
+                    <p class="mt-1 text-xs text-gray-500">Choose a memorable name for your group</p>
+                </div>
+
+                <div>
+                    <label for="emoji" class="block text-sm font-medium text-gray-700 mb-2">
+                        Group Icon
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="emoji" 
+                            name="emoji" 
+                            value="⚽"
+                            maxlength="10"
+                            class="block w-full px-3 py-2 pl-10 border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-center text-2xl"
+                            placeholder="⚽"
+                        >
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-smile text-gray-400"></i>
+                        </div>
+                    </div>
+                    <p class="mt-1 text-xs text-gray-500">Pick an emoji to represent your group</p>
+                </div>
+
+                <div class="flex space-x-3 pt-4">
+                    <button type="submit" class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i class="fas fa-plus mr-2"></i>
+                        Create Group
+                    </button>
+                    <a href="{{ url_for('main.dashboard') }}" class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Help Section -->
+        <div class="bg-blue-50 rounded-lg p-6 border border-blue-100">
+            <h3 class="text-lg font-semibold text-blue-900 mb-4">
+                <i class="fas fa-lightbulb mr-2"></i>
+                What's next?
+            </h3>
+            <div class="space-y-4">
+                <div class="flex items-start space-x-3">
+                    <div class="h-6 w-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fas fa-check text-blue-600 text-xs"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-900">Invite Friends</h4>
+                        <p class="text-xs text-gray-600 mt-1">Share your invite code with friends to join your group</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <div class="h-6 w-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fas fa-check text-blue-600 text-xs"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-900">Schedule Games</h4>
+                        <p class="text-xs text-gray-600 mt-1">Plan matches and set dates for your group</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <div class="h-6 w-6 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <i class="fas fa-check text-blue-600 text-xs"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-900">Track Performance</h4>
+                        <p class="text-xs text-gray-600 mt-1">Keep scores and see player statistics</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('name').focus();
+});
+</script>
+{% endblock %}

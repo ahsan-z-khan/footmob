@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Create Account - FootMob{% endblock %}
+
+{% block auth_content %}
+<div class="w-full max-w-md mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <div class="mx-auto h-16 w-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
+            <i class="fas fa-futbol text-white text-xl"></i>
+        </div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
+        <p class="text-gray-600">
+            Join FootMob and start organizing amazing matches
+        </p>
+    </div>
+
+    <!-- Registration Form -->
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <form method="POST" class="space-y-6">
+            <div>
+                <label for="display_name" class="block text-sm font-medium text-gray-700 mb-2">
+                    Display Name
+                </label>
+                <div class="relative">
+                    <input 
+                        id="display_name" 
+                        name="display_name" 
+                        type="text" 
+                        autocomplete="name" 
+                        required 
+                        class="block w-full px-3 py-2 pl-10 border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        placeholder="How others will see you"
+                    >
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-id-card text-gray-400"></i>
+                    </div>
+                </div>
+                <p class="mt-1 text-xs text-gray-500">This will be shown to other players</p>
+            </div>
+
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
+                    Username
+                </label>
+                <div class="relative">
+                    <input 
+                        id="username" 
+                        name="username" 
+                        type="text" 
+                        autocomplete="username" 
+                        required 
+                        class="block w-full px-3 py-2 pl-10 border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        placeholder="Choose a unique username"
+                    >
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-user text-gray-400"></i>
+                    </div>
+                </div>
+                <p class="mt-1 text-xs text-gray-500">Used for signing in to your account</p>
+            </div>
+
+            <div class="grid grid-cols-1 gap-6">
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                        Password
+                    </label>
+                    <div class="relative">
+                        <input 
+                            id="password" 
+                            name="password" 
+                            type="password" 
+                            autocomplete="new-password" 
+                            required 
+                            minlength="6"
+                            class="block w-full px-3 py-2 pl-10 border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            placeholder="At least 6 characters"
+                        >
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <div class="flex items-center text-xs text-gray-500">
+                            <span id="password-strength-text">Enter a password</span>
+                        </div>
+                        <div class="mt-1 w-full bg-gray-200 rounded-full h-1.5">
+                            <div id="password-strength-bar" class="bg-gray-400 h-1.5 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-2">
+                        Confirm Password
+                    </label>
+                    <div class="relative">
+                        <input 
+                            id="confirm_password" 
+                            name="confirm_password" 
+                            type="password" 
+                            autocomplete="new-password" 
+                            required 
+                            minlength="6"
+                            class="block w-full px-3 py-2 pl-10 border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            placeholder="Re-enter your password"
+                        >
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-shield-alt text-gray-400"></i>
+                        </div>
+                    </div>
+                    <div id="password-match-indicator" class="mt-1 text-xs hidden">
+                        <!-- Password match indicator will be shown here -->
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <i class="fas fa-user-plus mr-2"></i>
+                Create Account
+            </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="relative mt-6">
+            <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-200"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+                <span class="bg-white px-2 text-gray-500">Already have an account?</span>
+            </div>
+        </div>
+
+        <!-- Sign In Link -->
+        <div class="mt-6 text-center">
+            <a href="{{ url_for('auth.login') }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 w-full">
+                <i class="fas fa-sign-in-alt mr-2"></i>
+                Sign In
+            </a>
+        </div>
+    </div>
+
+    <!-- Privacy Notice -->
+    <div class="mt-6 text-center">
+        <p class="text-xs text-gray-500">
+            By creating an account, you agree to organize respectful and fun football matches with other players.
+        </p>
+    </div>
+</div>
+
+<script>
+// Enhanced password validation and visual feedback
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('confirm_password');
+    const indicator = document.getElementById('password-match-indicator');
+    const strengthBar = document.getElementById('password-strength-bar');
+    const strengthText = document.getElementById('password-strength-text');
+    
+    function checkPasswordMatch() {
+        const password = passwordInput.value;
+        const confirm = confirmInput.value;
+        
+        if (confirm === '') {
+            indicator.classList.add('hidden');
+            confirmInput.classList.remove('border-green-500', 'border-red-500');
+            confirmInput.setCustomValidity('');
+            return;
+        }
+        
+        indicator.classList.remove('hidden');
+        
+        if (password === confirm) {
+            indicator.innerHTML = '<i class="fas fa-check text-green-600 mr-1"></i><span class="text-green-600">Passwords match</span>';
+            confirmInput.classList.add('border-green-500');
+            confirmInput.classList.remove('border-red-500');
+            confirmInput.setCustomValidity('');
+        } else {
+            indicator.innerHTML = '<i class="fas fa-times text-red-600 mr-1"></i><span class="text-red-600">Passwords do not match</span>';
+            confirmInput.classList.add('border-red-500');
+            confirmInput.classList.remove('border-green-500');
+            confirmInput.setCustomValidity('Passwords do not match');
+        }
+    }
+    
+    // Check password match on input
+    confirmInput.addEventListener('input', checkPasswordMatch);
+    passwordInput.addEventListener('input', function() {
+        if (confirmInput.value !== '') {
+            checkPasswordMatch();
+        }
+        updatePasswordStrength();
+    });
+    
+    // Auto-focus on first input
+    document.getElementById('display_name').focus();
+    
+    // Add visual feedback for password strength
+    function updatePasswordStrength() {
+        const password = passwordInput.value;
+        const length = password.length;
+        
+        if (length === 0) {
+            strengthBar.className = 'bg-gray-400 h-1.5 rounded-full';
+            strengthBar.style.width = '0%';
+            strengthText.textContent = 'Enter a password';
+            strengthText.className = 'text-xs text-gray-500';
+        } else if (length < 6) {
+            strengthBar.className = 'bg-red-500 h-1.5 rounded-full';
+            strengthBar.style.width = '30%';
+            strengthText.textContent = 'Too short';
+            strengthText.className = 'text-xs text-red-600';
+        } else if (length < 8) {
+            strengthBar.className = 'bg-yellow-500 h-1.5 rounded-full';
+            strengthBar.style.width = '60%';
+            strengthText.textContent = 'Could be stronger';
+            strengthText.className = 'text-xs text-yellow-600';
+        } else {
+            strengthBar.className = 'bg-green-500 h-1.5 rounded-full';
+            strengthBar.style.width = '100%';
+            strengthText.textContent = 'Strong password';
+            strengthText.className = 'text-xs text-green-600';
+        }
+    }
+});
+</script>
+{% endblock %}

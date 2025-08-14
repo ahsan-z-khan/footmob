@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}{{ group.name }} Members - FootMob{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <div class="flex items-center space-x-3">
+            <a href="{{ url_for('groups.view', group_id=group.id) }}" class="inline-flex items-center p-2 text-gray-400 hover:text-gray-600 rounded-full">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="h-8 w-8 bg-gray-100 rounded-lg flex items-center justify-center text-xl">
+                {{ group.emoji }}
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900">{{ group.name }} Members</h1>
+        </div>
+        {% if membership.is_admin %}
+        <a href="{{ url_for('invites.manage_invite', group_id=group.id) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+            <i class="fas fa-user-plus mr-2"></i>
+            Invite Members
+        </a>
+        {% endif %}
+    </div>
+
+    {% if membership.is_admin %}
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <i class="fas fa-info-circle text-blue-400"></i>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-blue-800">Admin Permissions</h3>
+                <div class="mt-2 text-sm text-blue-700">
+                    <p>As an admin, you can promote/demote members, form teams, create games, and manage post-game statistics like goals and assists.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="space-y-3">
+        {% for membership_item in memberships %}
+        <div class="bg-white rounded-lg border border-gray-200 p-6 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <div class="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <span class="text-sm font-semibold text-blue-700">
+                        {{ membership_item.user.display_name[0].upper() }}
+                    </span>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-gray-900">{{ membership_item.user.display_name }}</h3>
+                    <p class="text-sm text-gray-500">
+                        {% if membership_item.is_admin %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 mr-2">
+                            <i class="fas fa-crown mr-1"></i>
+                            Admin
+                        </span>
+                        {% else %}
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 mr-2">
+                            Member
+                        </span>
+                        {% endif %}
+                        Joined {{ membership_item.joined_at.strftime('%b %Y') }}
+                    </p>
+                </div>
+            </div>
+            
+            {% if membership.is_admin and membership_item.user.id != current_user.id %}
+            <div class="flex space-x-2">
+                {% if membership_item.is_admin %}
+                <form method="POST" action="{{ url_for('groups.demote_member', group_id=group.id, user_id=membership_item.user.id) }}" class="inline">
+                    <button type="submit" class="inline-flex items-center px-3 py-2 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <i class="fas fa-arrow-down mr-1"></i>
+                        Demote
+                    </button>
+                </form>
+                {% else %}
+                <form method="POST" action="{{ url_for('groups.promote_member', group_id=group.id, user_id=membership_item.user.id) }}" class="inline">
+                    <button type="submit" class="inline-flex items-center px-3 py-2 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        <i class="fas fa-arrow-up mr-1"></i>
+                        Promote
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

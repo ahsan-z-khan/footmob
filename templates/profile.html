@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - {{ current_user.display_name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Profile</h1>
+                <p class="text-gray-600 mt-1">Your FootMob profile and statistics</p>
+            </div>
+            <a href="{{ url_for('main.settings') }}" 
+               class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                <i class="fas fa-cog mr-2"></i>
+                Settings
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Profile Info -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg border border-gray-200 p-6">
+                    <div class="text-center">
+                        <!-- Avatar -->
+                        <div class="h-24 w-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl font-bold text-blue-600">
+                                {{ current_user.display_name[0].upper() }}
+                            </span>
+                        </div>
+                        
+                        <!-- User Info -->
+                        <h2 class="text-xl font-semibold text-gray-900 mb-1">{{ current_user.display_name }}</h2>
+                        <p class="text-sm text-gray-500 mb-2">@{{ current_user.username }}</p>
+                        <p class="text-xs text-gray-400">
+                            <i class="fas fa-calendar-plus mr-1"></i>
+                            Joined {{ current_user.created_at.strftime('%B %Y') }}
+                        </p>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <div class="grid grid-cols-2 gap-4 text-center">
+                            <div>
+                                <div class="text-2xl font-bold text-blue-600">{{ user_groups|length }}</div>
+                                <div class="text-xs text-gray-500">Group{{ 's' if user_groups|length != 1 else '' }}</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-green-600">{{ admin_groups|length }}</div>
+                                <div class="text-xs text-gray-500">Admin Role{{ 's' if admin_groups|length != 1 else '' }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Match Statistics -->
+                <div class="bg-white rounded-lg border border-gray-200 p-6">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="h-10 w-10 bg-green-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-chart-bar text-green-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Match Statistics</h3>
+                            <p class="text-sm text-gray-500">Your performance across all matches</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <!-- Goals -->
+                        <div class="text-center p-4 bg-blue-50 rounded-lg border border-blue-100">
+                            <div class="text-3xl font-bold text-blue-600 mb-2">{{ total_goals }}</div>
+                            <div class="text-sm font-medium text-blue-800">Goals</div>
+                            <div class="text-xs text-blue-600 mt-1">
+                                <i class="fas fa-futbol"></i>
+                            </div>
+                        </div>
+
+                        <!-- Assists -->
+                        <div class="text-center p-4 bg-green-50 rounded-lg border border-green-100">
+                            <div class="text-3xl font-bold text-green-600 mb-2">{{ total_assists }}</div>
+                            <div class="text-sm font-medium text-green-800">Assists</div>
+                            <div class="text-xs text-green-600 mt-1">
+                                <i class="fas fa-hands-helping"></i>
+                            </div>
+                        </div>
+
+                        <!-- Own Goals -->
+                        <div class="text-center p-4 bg-orange-50 rounded-lg border border-orange-100">
+                            <div class="text-3xl font-bold text-orange-600 mb-2">{{ total_own_goals }}</div>
+                            <div class="text-sm font-medium text-orange-800">Own Goals</div>
+                            <div class="text-xs text-orange-600 mt-1">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                        </div>
+
+                        <!-- POTM Awards -->
+                        <div class="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-100">
+                            <div class="text-3xl font-bold text-yellow-600 mb-2">{{ potm_wins }}</div>
+                            <div class="text-sm font-medium text-yellow-800">POTM Awards</div>
+                            <div class="text-xs text-yellow-600 mt-1">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Goals + Assists Total -->
+                    <div class="mt-6 pt-6 border-t border-gray-200">
+                        <div class="text-center">
+                            <div class="text-4xl font-bold text-gray-900 mb-2">{{ total_goals + total_assists }}</div>
+                            <div class="text-sm font-medium text-gray-600">Total Goal Contributions</div>
+                            <div class="text-xs text-gray-500 mt-1">Goals + Assists across all matches</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Groups -->
+                <div class="bg-white rounded-lg border border-gray-200 p-6">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-users text-purple-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">My Groups</h3>
+                            <p class="text-sm text-gray-500">Groups you're a member of</p>
+                        </div>
+                    </div>
+
+                    {% if user_groups %}
+                    <div class="space-y-4">
+                        {% for group in user_groups %}
+                        {% set is_admin = group in admin_groups %}
+                        <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center space-x-4">
+                                <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <span class="text-xl">{{ group.emoji }}</span>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">{{ group.name }}</h4>
+                                    <div class="flex items-center space-x-3 text-sm text-gray-500">
+                                        <span>
+                                            <i class="fas fa-users mr-1"></i>
+                                            {{ group.get_members()|length }} members
+                                        </span>
+                                        {% if is_admin %}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            <i class="fas fa-crown mr-1"></i>Admin
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <a href="{{ url_for('groups.view', group_id=group.id) }}" 
+                                   class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
+                                    View
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-12">
+                        <div class="h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-users text-gray-400 text-xl"></i>
+                        </div>
+                        <h4 class="text-lg font-medium text-gray-900 mb-2">No groups yet</h4>
+                        <p class="text-sm text-gray-500 mb-4">Join or create a group to start organizing matches</p>
+                        <div class="flex items-center justify-center space-x-3">
+                            <a href="{{ url_for('groups.create') }}" 
+                               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                <i class="fas fa-plus mr-2"></i>Create Group
+                            </a>
+                            <a href="{{ url_for('main.join_group') }}" 
+                               class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                <i class="fas fa-sign-in-alt mr-2"></i>Join Group
+                            </a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

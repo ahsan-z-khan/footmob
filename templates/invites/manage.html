@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Invite Members - {{ group.name }}{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-md mx-auto">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <div class="flex items-center space-x-3">
+                <a href="{{ url_for('groups.view', group_id=group.id) }}" class="inline-flex items-center p-2 text-gray-400 hover:text-gray-600 rounded-full">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h1 class="text-3xl font-bold text-gray-900">Invite Members</h1>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Share Invite Link</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Invite URL</label>
+                            <div class="flex">
+                                <input 
+                                    type="text" 
+                                    value="{{ invite_url }}" 
+                                    readonly
+                                    class="flex-1 block px-3 py-2 border border-gray-300 rounded-l-md bg-gray-50 text-gray-900 text-sm focus:outline-none"
+                                    id="invite-url"
+                                >
+                                <button 
+                                    onclick="copyToClipboard('invite-url')"
+                                    class="px-4 bg-blue-600 text-white rounded-r-md text-sm hover:bg-blue-700"
+                                    id="copy-url-button"
+                                >
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Invite Code</label>
+                            <div class="flex">
+                                <input 
+                                    type="text" 
+                                    value="{{ group.invite_code }}" 
+                                    readonly
+                                    class="flex-1 block px-3 py-2 border border-gray-300 rounded-l-md bg-gray-50 text-gray-900 text-lg font-mono text-center focus:outline-none"
+                                    id="invite-code"
+                                >
+                                <button 
+                                    onclick="copyToClipboard('invite-code')"
+                                    class="px-4 bg-blue-600 text-white rounded-r-md text-sm hover:bg-blue-700"
+                                    id="copy-code-button"
+                                >
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="bg-white rounded-lg border border-gray-200 p-6 text-center">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">QR Code</h3>
+                    <img 
+                        src="data:image/png;base64,{{ qr_code }}" 
+                        alt="QR Code" 
+                        class="mx-auto mb-3 border border-gray-200 rounded-lg"
+                        style="width: 200px; height: 200px;"
+                    >
+                <p class="text-xs text-gray-600">Scan to join the group</p>
+            </div>
+
+            <div class="text-center">
+                <form method="POST" action="{{ url_for('invites.regenerate_invite', group_id=group.id) }}" onsubmit="event.preventDefault(); confirmAction('This will invalidate the current invite link. Continue?', () => { this.submit(); }); return false;">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-red-300 text-sm font-medium rounded-md text-red-700 bg-white hover:bg-red-50">
+                        <i class="fas fa-sync mr-2"></i>
+                        Regenerate Invite Code
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard(elementId) {
+    const element = document.getElementById(elementId);
+    element.select();
+    element.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(element.value);
+    
+    // Show feedback
+    const button = element.nextElementSibling;
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+    button.classList.add('bg-green-600');
+    button.classList.remove('bg-blue-600');
+    
+    setTimeout(() => {
+        button.innerHTML = originalHTML;
+        button.classList.remove('bg-green-600');
+        button.classList.add('bg-blue-600');
+    }, 2000);
+}
+</script>
+{% endblock %}

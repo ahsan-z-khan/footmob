@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - FootMob{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden bg-gradient-to-r from-blue-600 via-blue-700 to-indigo-700">
+        <div class="absolute inset-0 bg-black opacity-10"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center">
+                <div class="flex items-center justify-center mb-6">
+                    <div class="h-16 w-16 bg-white bg-opacity-20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                        <i class="fas fa-futbol text-white text-2xl"></i>
+                    </div>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                    Welcome back, {{ current_user.display_name }}!
+                </h1>
+                <p class="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+                    Manage your football universe - organize matches, track performance, and build your community
+                </p>
+                
+                <!-- Quick Actions -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="{{ url_for('groups.create') }}" class="group inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-xl text-blue-700 bg-white hover:bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-200">
+                        <div class="mr-3 p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
+                            <i class="fas fa-plus text-blue-600"></i>
+                        </div>
+                        Create New Group
+                    </a>
+                    <a href="{{ url_for('main.join_group') }}" class="group inline-flex items-center px-8 py-4 border-2 border-white border-opacity-30 text-lg font-medium rounded-xl text-white hover:bg-white hover:bg-opacity-10 backdrop-blur-sm transition-all duration-200">
+                        <div class="mr-3 p-2 bg-white bg-opacity-20 rounded-lg group-hover:bg-opacity-30 transition-all">
+                            <i class="fas fa-user-plus text-white"></i>
+                        </div>
+                        Join with Code
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Decorative Elements -->
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 h-24 w-24 bg-white bg-opacity-10 rounded-full"></div>
+        <div class="absolute bottom-0 left-0 -mb-8 -ml-8 h-32 w-32 bg-white bg-opacity-5 rounded-full"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    {% if groups %}
+        <!-- Statistics Overview -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
+            <div class="relative overflow-hidden bg-gradient-to-br from-white via-blue-50 to-blue-100 rounded-xl shadow-lg border border-blue-100 p-6 transform hover:scale-105 transition-all duration-300">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-blue-200 to-transparent rounded-full opacity-20 transform translate-x-8 -translate-y-8"></div>
+                <div class="relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-users text-white text-lg"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold text-gray-900 mb-1">{{ groups|length }}</div>
+                            <div class="text-xs font-medium text-blue-600 uppercase tracking-wide">Active Group{{ 's' if groups|length != 1 else '' }}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center text-xs text-gray-600">
+                        <div class="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                        <span>All groups active</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative overflow-hidden bg-gradient-to-br from-white via-green-50 to-green-100 rounded-xl shadow-lg border border-green-100 p-6 transform hover:scale-105 transition-all duration-300">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-green-200 to-transparent rounded-full opacity-20 transform translate-x-8 -translate-y-8"></div>
+                <div class="relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-calendar text-white text-lg"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold text-gray-900 mb-1">{{ upcoming_games|length }}</div>
+                            <div class="text-xs font-medium text-green-600 uppercase tracking-wide">Upcoming Game{{ 's' if upcoming_games|length != 1 else '' }}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center text-xs text-gray-600">
+                        <div class="w-2 h-2 bg-orange-400 rounded-full mr-2"></div>
+                        <span>{% if upcoming_games|length > 0 %}Next up soon{% else %}Schedule new games{% endif %}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative overflow-hidden bg-gradient-to-br from-white via-purple-50 to-purple-100 rounded-xl shadow-lg border border-purple-100 p-6 transform hover:scale-105 transition-all duration-300">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-purple-200 to-transparent rounded-full opacity-20 transform translate-x-8 -translate-y-8"></div>
+                <div class="relative">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                            <i class="fas fa-user-friends text-white text-lg"></i>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold text-gray-900 mb-1">{{ total_members }}</div>
+                            <div class="text-xs font-medium text-purple-600 uppercase tracking-wide">Total Member{{ 's' if total_members != 1 else '' }}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center text-xs text-gray-600">
+                        <div class="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
+                        <span>Growing community</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Groups Grid -->
+        <div class="space-y-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Your Football Universe</h2>
+                    <p class="text-gray-600">Manage your groups and stay connected with your football community</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                        {{ groups|length }} active group{{ 's' if groups|length != 1 else '' }}
+                    </span>
+                </div>
+            </div>
+            
+            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {% for group in groups %}
+                    {% set member_count = group.get_members()|length %}
+                    {% set next_game = group.get_next_game() %}
+                    {% set last_game = group.get_last_game() %}
+                    
+                    <div class="group relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden cursor-pointer transform hover:scale-105 hover:shadow-xl transition-all duration-300" 
+                         onclick="window.location.href='{{ url_for('groups.view', group_id=group.id) }}'">
+                        
+                        <!-- Group Header with Gradient -->
+                        <div class="relative bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 p-6 text-white">
+                            <div class="absolute inset-0 bg-gradient-to-br from-transparent via-white to-white opacity-10"></div>
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full transform translate-x-16 -translate-y-16"></div>
+                            
+                            <div class="relative flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="h-16 w-16 bg-white bg-opacity-20 backdrop-blur-sm rounded-2xl flex items-center justify-center text-3xl shadow-lg">
+                                        {{ group.emoji }}
+                                    </div>
+                                    <div>
+                                        <h3 class="text-xl font-bold mb-1">
+                                            {{ group.name }}
+                                        </h3>
+                                        <div class="flex items-center text-blue-100">
+                                            <i class="fas fa-users mr-2 text-sm"></i>
+                                            <span class="text-sm font-medium">{{ member_count }} member{{ 's' if member_count != 1 else '' }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <i class="fas fa-arrow-right text-white text-opacity-70 group-hover:text-opacity-100 group-hover:translate-x-1 transition-all duration-300"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Card Content -->
+                        <div class="p-6">
+                            <!-- Game Information -->
+                            {% if next_game %}
+                                <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-4 mb-4 border border-green-100">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                                <i class="fas fa-calendar-check text-green-600 text-sm"></i>
+                                            </div>
+                                            <span class="text-sm font-bold text-green-900">Next Game</span>
+                                        </div>
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800 shadow-sm">{{ next_game.status.title() }}</span>
+                                    </div>
+                                    <div class="text-gray-800 font-bold text-sm mb-1">
+                                        {{ next_game.datetime.strftime('%a, %b %d at %I:%M %p') }}
+                                    </div>
+                                    {% if next_game.location %}
+                                        <div class="text-gray-600 text-xs flex items-center">
+                                            <i class="fas fa-map-marker-alt mr-2 text-green-500"></i>
+                                            {{ next_game.location }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% elif last_game and last_game.status == 'finished' %}
+                                {% set score = last_game.get_score() %}
+                                <div class="bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl p-4 mb-4 border border-gray-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                <i class="fas fa-trophy text-yellow-500 text-sm"></i>
+                                            </div>
+                                            <span class="text-sm font-bold text-gray-700">Last Match</span>
+                                        </div>
+                                        <span class="text-xs text-gray-500 font-medium">{{ last_game.datetime.strftime('%b %d') }}</span>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-gray-900 font-mono">
+                                            <span class="text-blue-600">{{ score.team_a }}</span>
+                                            <span class="text-gray-300 mx-2">-</span>
+                                            <span class="text-red-600">{{ score.team_b }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-6 text-center mb-4 border border-dashed border-gray-300">
+                                    <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                        <i class="fas fa-calendar-plus text-gray-400 text-xl"></i>
+                                    </div>
+                                    <p class="text-sm text-gray-500 font-medium">Ready for action</p>
+                                    <p class="text-xs text-gray-400 mt-1">Schedule your first game</p>
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Admin Actions -->
+                            {% set user_membership = current_user.memberships|selectattr('group_id', 'equalto', group.id)|first %}
+                            {% if user_membership and user_membership.is_admin %}
+                                <div class="flex space-x-3 pt-4 border-t border-gray-100" onclick="event.stopPropagation();">
+                                    <a href="{{ url_for('games.create', group_id=group.id) }}" 
+                                       class="flex-1 px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg text-center transition-colors duration-200 border border-blue-200">
+                                        <i class="fas fa-plus mr-2"></i>
+                                        New Game
+                                    </a>
+                                    <a href="{{ url_for('invites.manage_invite', group_id=group.id) }}" 
+                                       class="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-lg text-center transition-colors duration-200 border border-gray-200">
+                                        <i class="fas fa-user-plus mr-2"></i>
+                                        Invite
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="relative text-center py-20">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 overflow-hidden">
+                <div class="absolute -top-24 -left-24 w-48 h-48 bg-blue-100 rounded-full opacity-20"></div>
+                <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-purple-100 rounded-full opacity-20"></div>
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-green-100 rounded-full opacity-10"></div>
+            </div>
+            
+            <div class="relative">
+                <div class="mx-auto h-32 w-32 bg-gradient-to-br from-blue-100 to-blue-200 rounded-3xl flex items-center justify-center mb-8 shadow-lg">
+                    <i class="fas fa-users text-blue-600 text-4xl"></i>
+                </div>
+                <div class="max-w-2xl mx-auto">
+                    <h3 class="text-3xl font-bold text-gray-900 mb-4">Welcome to FootMob</h3>
+                    <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                        Your journey starts here! Create your first football group to organize epic matches with friends, 
+                        or join an existing community with an invite code.
+                    </p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-6 justify-center max-w-md mx-auto">
+                    <a href="{{ url_for('groups.create') }}" class="group inline-flex items-center px-8 py-4 border border-transparent text-lg font-semibold rounded-xl text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                        <div class="mr-3 p-2 bg-white bg-opacity-20 rounded-lg group-hover:bg-opacity-30 transition-all">
+                            <i class="fas fa-plus text-white"></i>
+                        </div>
+                        Create Group
+                    </a>
+                    <a href="{{ url_for('main.join_group') }}" class="group inline-flex items-center px-8 py-4 border-2 border-gray-300 text-lg font-semibold rounded-xl text-gray-700 bg-white hover:bg-gray-50 shadow-lg hover:shadow-xl hover:border-gray-400 transform hover:scale-105 transition-all duration-300">
+                        <div class="mr-3 p-2 bg-gray-100 rounded-lg group-hover:bg-gray-200 transition-all">
+                            <i class="fas fa-user-plus text-gray-600"></i>
+                        </div>
+                        Join with Code
+                    </a>
+                </div>
+                
+                <!-- Feature highlights -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-4xl mx-auto">
+                    <div class="text-center p-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <i class="fas fa-calendar-alt text-white text-xl"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-900 mb-2">Schedule Matches</h4>
+                        <p class="text-sm text-gray-600">Organize games with built-in availability polling</p>
+                    </div>
+                    <div class="text-center p-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <i class="fas fa-trophy text-white text-xl"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-900 mb-2">Track Performance</h4>
+                        <p class="text-sm text-gray-600">Keep scores, goals, assists and POTM awards</p>
+                    </div>
+                    <div class="text-center p-6">
+                        <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <i class="fas fa-users text-white text-xl"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-900 mb-2">Build Community</h4>
+                        <p class="text-sm text-gray-600">Invite friends and grow your football family</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

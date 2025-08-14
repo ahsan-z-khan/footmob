@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Join Group - FootMob{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-md mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="mx-auto h-16 w-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
+                <i class="fas fa-user-plus text-white text-xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Join a Group</h1>
+            <p class="text-gray-600">
+                Enter the invite code shared by your group admin
+            </p>
+        </div>
+
+        <!-- Join Form -->
+        <div class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+            <form method="POST" class="space-y-6">
+                <div>
+                    <label for="invite_code" class="block text-sm font-medium text-gray-700 mb-2">
+                        Invite Code
+                    </label>
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="invite_code" 
+                            name="invite_code" 
+                            required
+                            maxlength="8"
+                            class="block w-full px-3 py-3 pl-10 border border-gray-300 rounded-md text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-center text-xl font-mono uppercase tracking-widest font-semibold"
+                            placeholder="ABC123XY"
+                            style="text-transform: uppercase;"
+                        >
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-key text-gray-400"></i>
+                        </div>
+                    </div>
+                    <p class="mt-2 text-xs text-gray-500 flex items-center">
+                        <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+                        Invite codes are exactly 8 characters long
+                    </p>
+                </div>
+                
+                <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Join Group
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="relative mt-6">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-200"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="bg-white px-2 text-gray-500">or</span>
+                </div>
+            </div>
+
+            <!-- Alternative Action -->
+            <div class="text-center mt-6">
+                <p class="text-sm text-gray-600 mb-4">Don't have an invite code?</p>
+                <a href="{{ url_for('groups.create') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    <i class="fas fa-plus mr-2"></i>
+                    Create Your Own Group
+                </a>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="bg-blue-50 rounded-lg p-6 border border-blue-100">
+            <h3 class="text-lg font-semibold text-blue-900 mb-4">
+                <i class="fas fa-lightbulb mr-2"></i>
+                How it works
+            </h3>
+            <div class="space-y-4">
+                <div class="flex items-start space-x-4">
+                    <div class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-sm font-bold text-blue-600">1</span>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-900">Get Invite Code</h4>
+                        <p class="text-xs text-gray-600 mt-1">Ask your group admin for the invite code</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-4">
+                    <div class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-sm font-bold text-blue-600">2</span>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-900">Enter Code</h4>
+                        <p class="text-xs text-gray-600 mt-1">Enter the 8-character code above</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-4">
+                    <div class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span class="text-sm font-bold text-blue-600">3</span>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-900">Start Playing</h4>
+                        <p class="text-xs text-gray-600 mt-1">Start participating in games and activities</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Enhanced invite code input handling
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('invite_code');
+    
+    // Auto-uppercase and format invite code
+    input.addEventListener('input', function() {
+        let value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        this.value = value;
+        
+        // Add visual feedback
+        if (value.length === 8) {
+            this.classList.add('border-green-500', 'bg-green-50');
+            this.classList.remove('border-yellow-500', 'bg-yellow-50', 'border-red-500', 'bg-red-50');
+        } else if (value.length > 0) {
+            this.classList.add('border-yellow-500', 'bg-yellow-50');
+            this.classList.remove('border-green-500', 'bg-green-50', 'border-red-500', 'bg-red-50');
+        } else {
+            this.classList.remove('border-green-500', 'bg-green-50', 'border-yellow-500', 'bg-yellow-50', 'border-red-500', 'bg-red-50');
+        }
+    });
+    
+    // Auto-focus on page load
+    input.focus();
+    
+    // Handle paste events
+    input.addEventListener('paste', function(e) {
+        e.preventDefault();
+        const paste = (e.clipboardData || window.clipboardData).getData('text');
+        const cleaned = paste.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 8);
+        this.value = cleaned;
+        this.dispatchEvent(new Event('input'));
+    });
+});
+</script>
+{% endblock %}

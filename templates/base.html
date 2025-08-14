@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FootMob - Organize Football Matches{% endblock %}</title>
+    <!-- Tailwind CSS - Production ready version -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Tailwind configuration - suppress development warnings
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ['Inter', 'ui-sans-serif', 'system-ui']
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-full bg-gray-50">
+    <div class="h-full flex flex-col">
+        {% if current_user.is_authenticated %}
+        <!-- Main Application Layout -->
+        <header class="bg-white border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex h-16 items-center justify-between">
+                    <!-- Logo and Brand -->
+                    <div class="flex items-center">
+                        <a href="{{ url_for('main.dashboard') }}" class="flex items-center space-x-3">
+                            <div class="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-futbol text-white text-sm"></i>
+                            </div>
+                            <span class="text-xl font-semibold text-gray-900 hidden sm:block">FootMob</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Main Navigation -->
+                    <nav class="hidden md:flex items-center space-x-6">
+                        <a href="{{ url_for('main.dashboard') }}" 
+                           class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900 {% if request.endpoint == 'main.dashboard' %}border-b-2 border-blue-600{% endif %}">
+                            Dashboard
+                        </a>
+                    </nav>
+                    
+                    <!-- User Menu -->
+                    <div class="flex items-center space-x-4">
+                        <!-- Notification Bell -->
+                        <div class="relative">
+                            <button id="notification-bell" class="relative inline-flex items-center p-2 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-full">
+                                <i class="fas fa-bell text-lg"></i>
+                                <!-- Unread count badge -->
+                                <span id="notification-count" class="absolute -top-1 -right-1 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-500 rounded-full hidden">
+                                    0
+                                </span>
+                            </button>
+                            
+                            <!-- Notification Dropdown -->
+                            <div id="notification-dropdown" class="absolute right-0 z-50 mt-2 w-80 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 hidden">
+                                <div class="p-4 border-b border-gray-200">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-lg font-semibold text-gray-900">Notifications</h3>
+                                        <button id="mark-all-read" class="text-sm text-indigo-600 hover:text-indigo-800">Mark all read</button>
+                                    </div>
+                                </div>
+                                <div id="notification-list" class="max-h-96 overflow-y-auto">
+                                    <!-- Notifications will be loaded here -->
+                                    <div class="p-4 text-center text-gray-500">
+                                        <i class="fas fa-bell-slash text-2xl mb-2"></i>
+                                        <p>No notifications</p>
+                                    </div>
+                                </div>
+                                <div class="p-3 border-t border-gray-200 text-center">
+                                    <a href="#" class="text-sm text-indigo-600 hover:text-indigo-800">View all notifications</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hidden sm:flex items-center space-x-3">
+                            <div class="h-8 w-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                <span class="text-sm font-medium text-gray-700">
+                                    {{ current_user.display_name[0].upper() }}
+                                </span>
+                            </div>
+                            <div class="hidden lg:block">
+                                <div class="text-sm font-medium text-gray-900">{{ current_user.display_name }}</div>
+                                <div class="text-sm text-gray-500">Member</div>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <div class="dropdown relative">
+                                <button class="inline-flex items-center p-2 text-gray-400 hover:text-gray-600"
+                                        id="user-menu-button"
+                                        aria-expanded="false"
+                                        aria-haspopup="true">
+                                    <i class="fas fa-ellipsis-v text-sm"></i>
+                                </button>
+                                <div class="absolute right-0 z-50 mt-2 w-48 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 hidden"
+                                     id="user-menu-dropdown">
+                                    <div class="py-1">
+                                        <a href="{{ url_for('main.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <i class="fas fa-user mr-2"></i>Profile
+                                        </a>
+                                        <a href="{{ url_for('main.settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <i class="fas fa-cog mr-2"></i>Settings
+                                        </a>
+                                        <div class="border-t border-gray-100 my-1"></div>
+                                        <a href="{{ url_for('auth.logout') }}" 
+                                           class="block px-4 py-2 text-sm text-red-700 hover:bg-red-50">
+                                            <i class="fas fa-sign-out-alt mr-2"></i>Sign out
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Mobile Navigation -->
+        <div class="md:hidden bg-white border-b border-gray-200">
+            <div class="px-4">
+                <nav class="flex justify-center">
+                    <a href="{{ url_for('main.dashboard') }}" 
+                       class="flex flex-col items-center py-3 px-2 text-xs {% if request.endpoint == 'main.dashboard' %}text-blue-600{% else %}text-gray-500{% endif %}">
+                        <i class="fas fa-home text-lg mb-1"></i>
+                        <span class="font-medium">Dashboard</span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <main class="flex-1">
+            {% block content %}{% endblock %}
+        </main>
+        
+        {% else %}
+        <!-- Authentication Layout -->
+        <main class="flex-1 flex items-center justify-center p-4">
+            {% block auth_content %}{% endblock %}
+        </main>
+        {% endif %}
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-3 w-96 max-w-[calc(100vw-2rem)]">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="toast-item bg-white rounded-lg shadow-lg border border-gray-200 p-4 toast-slide-in">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                {% if category == 'error' %}
+                                    <div class="h-6 w-6 bg-red-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-exclamation text-red-600 text-xs"></i>
+                                    </div>
+                                {% elif category == 'success' %}
+                                    <div class="h-6 w-6 bg-green-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-check text-green-600 text-xs"></i>
+                                    </div>
+                                {% else %}
+                                    <div class="h-6 w-6 bg-blue-100 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-info text-blue-600 text-xs"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="ml-3 flex-1">
+                                <p class="text-sm font-medium text-gray-900">
+                                    {% if category == 'error' %}
+                                        Error
+                                    {% elif category == 'success' %}
+                                        Success
+                                    {% else %}
+                                        Notice
+                                    {% endif %}
+                                </p>
+                                <p class="mt-1 text-sm text-gray-500">{{ message }}</p>
+                            </div>
+                            <div class="ml-4 flex-shrink-0">
+                                <button type="button" class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none" onclick="removeToast(this)">
+                                    <i class="fas fa-times text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <style>
+        /* Simple slide animations using CSS transforms */
+        .toast-slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .toast-slide-out {
+            animation: slideOut 0.3s ease-out forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <script>
+        // Global toast function
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            
+            if (!container) {
+                console.error('Toast container not found');
+                return;
+            }
+            
+            // Create toast element with proper Tailwind classes
+            const toast = document.createElement('div');
+            toast.className = 'toast-item bg-white rounded-lg shadow-lg border border-gray-200 p-4 toast-slide-in';
+            
+            let iconClass, iconColor, iconBg, title;
+            if (type === 'error') {
+                iconClass = 'fas fa-exclamation';
+                iconColor = 'text-red-600';
+                iconBg = 'bg-red-100';
+                title = 'Error';
+            } else if (type === 'success') {
+                iconClass = 'fas fa-check';
+                iconColor = 'text-green-600';
+                iconBg = 'bg-green-100';
+                title = 'Success';
+            } else {
+                iconClass = 'fas fa-info';
+                iconColor = 'text-blue-600';
+                iconBg = 'bg-blue-100';
+                title = 'Notice';
+            }
+            
+            toast.innerHTML = `
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <div class="h-6 w-6 ${iconBg} rounded-full flex items-center justify-center">
+                            <i class="${iconClass} ${iconColor} text-xs"></i>
+                        </div>
+                    </div>
+                    <div class="ml-3 flex-1">
+                        <p class="text-sm font-medium text-gray-900">${title}</p>
+                        <p class="mt-1 text-sm text-gray-500">${message}</p>
+                    </div>
+                    <div class="ml-4 flex-shrink-0">
+                        <button type="button" class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none" onclick="removeToast(this)">
+                            <i class="fas fa-times text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Add to container
+            container.appendChild(toast);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                removeToast(toast.querySelector('button'));
+            }, 5000);
+        }
+        
+        // Global toast removal function
+        function removeToast(button) {
+            const toast = button.closest('.toast-item');
+            toast.classList.add('toast-slide-out');
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 300);
+        }
+        
+        // Global confirm function using toast-style modal
+        function confirmAction(message, callback) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 z-50 flex items-center justify-center p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <div class="h-10 w-10 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
+                                <i class="fas fa-question text-yellow-600"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-gray-900">Confirm Action</h3>
+                        </div>
+                        <p class="text-gray-600 mb-6">${message}</p>
+                        <div class="flex space-x-3 justify-end">
+                            <button type="button" onclick="this.closest('.fixed').remove()" class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="button" onclick="this.closest('.fixed').remove(); (${callback})();" class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                                Confirm
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Auto-hide existing flash messages after 6 seconds
+        setTimeout(() => {
+            const toasts = document.querySelectorAll('#toast-container .toast-item');
+            toasts.forEach(toast => {
+                const button = toast.querySelector('button');
+                if (button) removeToast(button);
+            });
+        }, 6000);
+        
+        // Initialize all functionality when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize notification system
+            initializeNotifications();
+            
+            // Initialize user menu dropdown
+            initializeUserMenu();
+        });
+        
+        // Notification System
+        function initializeNotifications() {
+            const notificationBell = document.getElementById('notification-bell');
+            const notificationDropdown = document.getElementById('notification-dropdown');
+            const markAllReadBtn = document.getElementById('mark-all-read');
+            
+            if (notificationBell && notificationDropdown) {
+                // Toggle notification dropdown
+                notificationBell.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    notificationDropdown.classList.toggle('hidden');
+                    
+                    // Load notifications when opening
+                    if (!notificationDropdown.classList.contains('hidden')) {
+                        loadNotifications();
+                    }
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(event) {
+                    if (!notificationBell.contains(event.target) && !notificationDropdown.contains(event.target)) {
+                        notificationDropdown.classList.add('hidden');
+                    }
+                });
+                
+                // Mark all as read
+                if (markAllReadBtn) {
+                    markAllReadBtn.addEventListener('click', function() {
+                        markAllNotificationsAsRead();
+                    });
+                }
+                
+                // Load initial notification count
+                updateNotificationCount();
+                
+                // Set up polling for new notifications (every 30 seconds)
+                setInterval(updateNotificationCount, 30000);
+            }
+        }
+        
+        function updateNotificationCount() {
+            fetch('/api/notifications/count')
+                .then(response => response.json())
+                .then(data => {
+                    const countElement = document.getElementById('notification-count');
+                    if (data.count > 0) {
+                        countElement.textContent = data.count > 99 ? '99+' : data.count;
+                        countElement.classList.remove('hidden');
+                    } else {
+                        countElement.classList.add('hidden');
+                    }
+                })
+                .catch(error => console.error('Error fetching notification count:', error));
+        }
+        
+        function loadNotifications() {
+            const notificationList = document.getElementById('notification-list');
+            
+            // Show loading state
+            notificationList.innerHTML = '<div class="p-4 text-center text-gray-500">' +
+                '<i class="fas fa-spinner fa-spin text-2xl mb-2"></i>' +
+                '<p>Loading notifications...</p>' +
+                '</div>';
+            
+            fetch('/api/notifications')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.notifications && data.notifications.length > 0) {
+                        notificationList.innerHTML = data.notifications.map(function(notification) {
+                            return '<div class="notification-item p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer ' + (notification.is_read ? 'opacity-75' : '') + '"' +
+                                ' data-notification-id="' + notification.id + '"' +
+                                ' onclick="markNotificationAsRead(' + notification.id + ')">' +
+                                '<div class="flex items-start space-x-3">' +
+                                    '<div class="flex-shrink-0">' +
+                                        '<div class="h-8 w-8 bg-indigo-100 rounded-full flex items-center justify-center">' +
+                                            '<i class="fas ' + getNotificationIcon(notification.type) + ' text-indigo-600 text-sm"></i>' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="flex-1 min-w-0">' +
+                                        '<p class="text-sm font-medium text-gray-900 ' + (notification.is_read ? '' : 'font-semibold') + '">' + notification.title + '</p>' +
+                                        '<p class="text-sm text-gray-500 mt-1">' + notification.message + '</p>' +
+                                        '<p class="text-xs text-gray-400 mt-1">' + formatTimestamp(notification.created_at) + '</p>' +
+                                    '</div>' +
+                                    (notification.is_read ? '' : '<div class="flex-shrink-0"><div class="h-2 w-2 bg-indigo-600 rounded-full"></div></div>') +
+                                '</div>' +
+                            '</div>';
+                        }).join('');
+                    } else {
+                        notificationList.innerHTML = '<div class="p-4 text-center text-gray-500">' +
+                            '<i class="fas fa-bell-slash text-2xl mb-2"></i>' +
+                            '<p>No notifications</p>' +
+                            '</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading notifications:', error);
+                    notificationList.innerHTML = '<div class="p-4 text-center text-red-500">' +
+                        '<i class="fas fa-exclamation-triangle text-2xl mb-2"></i>' +
+                        '<p>Error loading notifications</p>' +
+                        '</div>';
+                });
+        }
+        
+        function markNotificationAsRead(notificationId) {
+            fetch('/api/notifications/' + notificationId + '/read', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update UI
+                    const notificationElement = document.querySelector('[data-notification-id="' + notificationId + '"]');
+                    if (notificationElement) {
+                        notificationElement.classList.add('opacity-75');
+                        const unreadDot = notificationElement.querySelector('.bg-indigo-600');
+                        if (unreadDot) {
+                            unreadDot.remove();
+                        }
+                    }
+                    
+                    // Update count
+                    updateNotificationCount();
+                }
+            })
+            .catch(error => console.error('Error marking notification as read:', error));
+        }
+        
+        function markAllNotificationsAsRead() {
+            fetch('/api/notifications/mark-all-read', {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Reload notifications
+                    loadNotifications();
+                    updateNotificationCount();
+                    showToast('All notifications marked as read', 'success');
+                }
+            })
+            .catch(error => console.error('Error marking all notifications as read:', error));
+        }
+        
+        function getNotificationIcon(type) {
+            const icons = {
+                'game_created': 'fa-calendar-plus',
+                'member_joined': 'fa-user-plus',
+                'teams_published': 'fa-users',
+                'goal_scored': 'fa-futbol',
+                'match_finished': 'fa-flag-checkered',
+                'potm_announced': 'fa-trophy',
+                'poll_locked': 'fa-lock',
+                'game_reminder': 'fa-clock',
+                'default': 'fa-bell'
+            };
+            return icons[type] || icons['default'];
+        }
+        
+        function formatTimestamp(timestamp) {
+            const now = new Date();
+            const time = new Date(timestamp);
+            const diffInSeconds = Math.floor((now - time) / 1000);
+            
+            if (diffInSeconds < 60) {
+                return 'Just now';
+            } else if (diffInSeconds < 3600) {
+                const minutes = Math.floor(diffInSeconds / 60);
+                return minutes + 'm ago';
+            } else if (diffInSeconds < 86400) {
+                const hours = Math.floor(diffInSeconds / 3600);
+                return hours + 'h ago';
+            } else {
+                const days = Math.floor(diffInSeconds / 86400);
+                return days + 'd ago';
+            }
+        }
+        
+        // User menu dropdown functionality
+        function initializeUserMenu() {
+            const userMenuButton = document.getElementById('user-menu-button');
+            const userMenuDropdown = document.getElementById('user-menu-dropdown');
+            
+            if (userMenuButton && userMenuDropdown) {
+                console.log('Initializing user menu dropdown');
+                
+                userMenuButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    console.log('User menu button clicked');
+                    
+                    // Toggle dropdown
+                    userMenuDropdown.classList.toggle('hidden');
+                    
+                    // Update aria attributes
+                    const isExpanded = !userMenuDropdown.classList.contains('hidden');
+                    userMenuButton.setAttribute('aria-expanded', isExpanded);
+                    
+                    console.log('Dropdown is now:', isExpanded ? 'open' : 'closed');
+                });
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!userMenuButton.contains(e.target) && !userMenuDropdown.contains(e.target)) {
+                        userMenuDropdown.classList.add('hidden');
+                        userMenuButton.setAttribute('aria-expanded', 'false');
+                    }
+                });
+                
+                // Close dropdown on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && !userMenuDropdown.classList.contains('hidden')) {
+                        userMenuDropdown.classList.add('hidden');
+                        userMenuButton.setAttribute('aria-expanded', 'false');
+                        userMenuButton.focus();
+                    }
+                });
+            } else {
+                console.error('User menu elements not found:', {
+                    button: !!userMenuButton,
+                    dropdown: !!userMenuDropdown
+                });
+            }
+        }
+    </script>
+</body>
+</html>
