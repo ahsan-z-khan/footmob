@@ -38,6 +38,10 @@ app.register_blueprint(notifications_bp, url_prefix='/api/notifications')
 from routes.main import main_bp
 app.register_blueprint(main_bp)
 
+# Initialize database tables
+with app.app_context():
+    db.create_all()
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
