@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from flask_login import login_required, current_user
 from models import Group, GroupMembership, User, MatchEvent, POTMVote
 from database import db
-from werkzeug.security import check_password_hash, generate_password_hash
+from flask_bcrypt import check_password_hash, generate_password_hash
 from sqlalchemy import func
 
 main_bp = Blueprint('main', __name__)
