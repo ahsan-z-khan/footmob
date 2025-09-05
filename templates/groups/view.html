@@ -941,9 +941,16 @@ function showTab(tabName) {
     }
 }
 
-// Initialize with overview tab
+// Initialize with appropriate tab based on URL hash or default to overview
 document.addEventListener('DOMContentLoaded', function() {
-    showTab('overview');
+    const hash = window.location.hash;
+    const tabName = hash ? hash.substring(1) : 'overview';
+    
+    // Check if the tab exists, otherwise default to overview
+    const validTabs = ['overview', 'games', 'members', 'leaderboard', 'stats', 'attributes'];
+    const targetTab = validTabs.includes(tabName) ? tabName : 'overview';
+    
+    showTab(targetTab);
 });
 
 // Add click event listeners for tabs (backup in case onclick fails)
@@ -1504,8 +1511,11 @@ function savePlayerAttributes() {
         if (data.success) {
             showToast('Player attributes updated successfully!', 'success');
             closeAttributesModal();
-            // Reload the page to show updated attributes
-            window.location.reload();
+            // Stay on the attributes tab and update the player's card
+            showTab('attributes');
+            // Update the specific player's card with new data
+            const playerId = document.getElementById('attributes-form').querySelector('[name="player_id"]').value;
+            updatePlayerCard(playerId);
         } else {
             showToast(data.error || 'Failed to update attributes', 'error');
         }
@@ -1514,6 +1524,230 @@ function savePlayerAttributes() {
         console.error('Error saving player attributes:', error);
         showToast('Error saving attributes', 'error');
     });
+}
+
+function updatePlayerCard(playerId) {
+    // Fetch updated player data and re-render their card
+    fetch(`/groups/{{ group.id }}/players/${playerId}/attributes`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.attributes) {
+                // Find the player card element
+                const playerCard = document.querySelector(`[data-player-id="${playerId}"]`);
+                if (playerCard) {
+                    // Update the card content with new attributes
+                    updatePlayerCardDisplay(playerCard, data.attributes, data.player_name);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error updating player card:', error);
+            // If there's an error, fall back to page reload
+            showToast('Attributes saved. Refreshing page to show updates...', 'info');
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        });
+}
+
+function updatePlayerCardDisplay(playerCard, attributes, playerName) {
+    // Calculate category averages
+    const categories = {
+        physical: {
+            pace: attributes.pace || 5,
+            stamina: attributes.stamina || 5,
+            strength: attributes.strength || 5,
+            agility: attributes.agility || 5,
+            jumping: attributes.jumping || 5
+        },
+        technical: {
+            ball_control: attributes.ball_control || 5,
+            dribbling: attributes.dribbling || 5,
+            passing: attributes.passing || 5,
+            shooting: attributes.shooting || 5,
+            crossing: attributes.crossing || 5,
+            free_kicks: attributes.free_kicks || 5
+        },
+        tactical: {
+            positioning: attributes.positioning || 5,
+            marking: attributes.marking || 5,
+            tackling: attributes.tackling || 5,
+            interceptions: attributes.interceptions || 5,
+            vision: attributes.vision || 5,
+            decision_making: attributes.decision_making || 5
+        },
+        mental: {
+            composure: attributes.composure || 5,
+            concentration: attributes.concentration || 5,
+            determination: attributes.determination || 5,
+            leadership: attributes.leadership || 5,
+            teamwork: attributes.teamwork || 5
+        }
+    };
+
+    // Add goalkeeping if position is GK
+    if (attributes.preferred_position === 'GK') {
+        categories.goalkeeping = {
+            goalkeeping: attributes.goalkeeping || 1,
+            handling: attributes.handling || 1,
+            distribution: attributes.distribution || 1,
+            aerial_reach: attributes.aerial_reach || 1
+        };
+    }
+
+    // Calculate averages
+    const categoryAverages = {};
+    for (const [categoryName, categoryAttrs] of Object.entries(categories)) {
+        const values = Object.values(categoryAttrs);
+        categoryAverages[categoryName] = values.reduce((a, b) => a + b, 0) / values.length;
+    }
+
+    // Update the player card data attributes
+    playerCard.setAttribute('data-player-position', attributes.preferred_position || '');
+    
+    // Find the position badge and update it
+    const positionBadge = playerCard.querySelector('.bg-green-100');
+    if (positionBadge && attributes.preferred_position) {
+        let positionText = '';
+        let icon = '';
+        
+        switch(attributes.preferred_position) {
+            case 'GK':
+                icon = 'fas fa-hand-paper';
+                positionText = 'Goalkeeper';
+                break;
+            case 'DEF':
+                icon = 'fas fa-shield-alt';
+                positionText = 'Defender';
+                break;
+            case 'MID':
+                icon = 'fas fa-cogs';
+                positionText = 'Midfielder';
+                break;
+            case 'FWD':
+                icon = 'fas fa-running';
+                positionText = 'Forward';
+                break;
+        }
+        
+        positionBadge.innerHTML = `<i class="${icon} mr-1"></i>${positionText}`;
+    }
+
+    // Generate progress bars HTML
+    function generateProgressBars(categoryAttrs, colorClass) {
+        return Object.values(categoryAttrs).map(value => 
+            `<div class="flex-1 bg-${colorClass}-200 rounded-full h-2">
+                <div class="bg-${colorClass}-500 h-2 rounded-full" style="width: ${value * 10}%"></div>
+            </div>`
+        ).join('');
+    }
+
+    // Find the attributes container and update it
+    const attributesContainer = playerCard.querySelector('.space-y-3');
+    if (attributesContainer) {
+        let newContent = '';
+        
+        // Physical attributes
+        newContent += `
+            <div class="bg-red-50 rounded-lg p-3">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-red-700">
+                        <i class="fas fa-running mr-1"></i>Physical
+                    </span>
+                    <span class="text-sm font-bold text-red-800">
+                        ${categoryAverages.physical.toFixed(1)}
+                    </span>
+                </div>
+                <div class="flex space-x-1">
+                    ${generateProgressBars(categories.physical, 'red')}
+                </div>
+            </div>`;
+
+        // Technical attributes
+        newContent += `
+            <div class="bg-blue-50 rounded-lg p-3">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-blue-700">
+                        <i class="fas fa-futbol mr-1"></i>Technical
+                    </span>
+                    <span class="text-sm font-bold text-blue-800">
+                        ${categoryAverages.technical.toFixed(1)}
+                    </span>
+                </div>
+                <div class="flex space-x-1">
+                    ${generateProgressBars(categories.technical, 'blue')}
+                </div>
+            </div>`;
+
+        // Tactical attributes
+        newContent += `
+            <div class="bg-green-50 rounded-lg p-3">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-green-700">
+                        <i class="fas fa-chess mr-1"></i>Tactical
+                    </span>
+                    <span class="text-sm font-bold text-green-800">
+                        ${categoryAverages.tactical.toFixed(1)}
+                    </span>
+                </div>
+                <div class="flex space-x-1">
+                    ${generateProgressBars(categories.tactical, 'green')}
+                </div>
+            </div>`;
+
+        // Mental attributes
+        newContent += `
+            <div class="bg-purple-50 rounded-lg p-3">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-purple-700">
+                        <i class="fas fa-brain mr-1"></i>Mental
+                    </span>
+                    <span class="text-sm font-bold text-purple-800">
+                        ${categoryAverages.mental.toFixed(1)}
+                    </span>
+                </div>
+                <div class="flex space-x-1">
+                    ${generateProgressBars(categories.mental, 'purple')}
+                </div>
+            </div>`;
+
+        // Goalkeeping attributes (if applicable)
+        if (categories.goalkeeping) {
+            newContent += `
+                <div class="bg-yellow-50 rounded-lg p-3">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-yellow-700">
+                            <i class="fas fa-hand-paper mr-1"></i>Goalkeeping
+                        </span>
+                        <span class="text-sm font-bold text-yellow-800">
+                            ${categoryAverages.goalkeeping.toFixed(1)}
+                        </span>
+                    </div>
+                    <div class="flex space-x-1">
+                        ${generateProgressBars(categories.goalkeeping, 'yellow')}
+                    </div>
+                </div>`;
+        }
+
+        // Notes (if any)
+        if (attributes.notes) {
+            newContent += `
+                <div class="bg-gray-50 rounded-lg p-3">
+                    <p class="text-sm text-gray-600">
+                        <i class="fas fa-sticky-note mr-1 text-gray-400"></i>
+                        ${attributes.notes}
+                    </p>
+                </div>`;
+        }
+
+        attributesContainer.innerHTML = newContent;
+    }
+
+    // Update the button text if needed
+    const editButton = playerCard.querySelector('button');
+    if (editButton) {
+        editButton.innerHTML = '<i class="fas fa-edit mr-2"></i>Edit Attributes';
+    }
 }
 
 function closeAttributesModal() {

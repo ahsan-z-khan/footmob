@@ -129,6 +129,16 @@ def view(game_id):
     events = MatchEvent.query.filter_by(game_id=game_id).order_by(MatchEvent.minute).all()
     score = game.get_score() if game.status in ['live', 'finished'] else {'team_a': 0, 'team_b': 0}
     
+    # Get unvoted members for admin functionality
+    unvoted_members = []
+    if membership.is_admin and game.status == 'upcoming' and not game.is_poll_locked():
+        # Get all group members
+        all_members = game.group.get_members()
+        # Get members who have already voted
+        voted_user_ids = [vote.user_id for vote in game.availability_votes]
+        # Filter out members who haven't voted
+        unvoted_members = [member for member in all_members if member.id not in voted_user_ids]
+    
     return render_template('games/view.html', 
                          game=game, 
                          membership=membership,
@@ -140,7 +150,8 @@ def view(game_id):
                          user_potm_vote=user_potm_vote,
                          potm_results=potm_results,
                          events=events,
-                         score=score)
+                         score=score,
+                         unvoted_members=unvoted_members)
 
 @games_bp.route('/<int:game_id>/vote', methods=['POST'])
 @login_required
@@ -213,6 +224,71 @@ def lock_poll(game_id):
     
     flash('Poll locked')
     return redirect(url_for('games.view', game_id=game_id))
+
+@games_bp.route('/<int:game_id>/add-player', methods=['POST'])
+@login_required
+def add_player_to_poll(game_id):
+    game = Game.query.get_or_404(game_id)
+    
+    membership = GroupMembership.query.filter_by(
+        user_id=current_user.id,
+        group_id=game.group_id,
+        is_admin=True
+    ).first()
+    
+    if not membership:
+        return jsonify({'error': 'Only admins can add players to polls'}), 403
+    
+    if game.is_poll_locked():
+        return jsonify({'error': 'Poll is locked'}), 400
+    
+    player_id = request.json.get('player_id') if request.is_json else request.form.get('player_id')
+    status = request.json.get('status', 'in') if request.is_json else request.form.get('status', 'in')
+    
+    if not player_id:
+        return jsonify({'error': 'Player ID is required'}), 400
+    
+    if status not in ['in', 'out', 'maybe']:
+        return jsonify({'error': 'Invalid status'}), 400
+    
+    # Check if player is a member of the group
+    player_membership = GroupMembership.query.filter_by(
+        user_id=player_id,
+        group_id=game.group_id
+    ).first()
+    
+    if not player_membership:
+        return jsonify({'error': 'Player is not a member of this group'}), 400
+    
+    # Check if player already voted
+    existing_vote = AvailabilityVote.query.filter_by(
+        user_id=player_id,
+        game_id=game_id
+    ).first()
+    
+    if existing_vote:
+        return jsonify({'error': 'Player has already voted'}), 400
+    
+    # Add the vote
+    vote = AvailabilityVote(
+        user_id=player_id,
+        game_id=game_id,
+        status=status
+    )
+    db.session.add(vote)
+    
+    try:
+        db.session.commit()
+        player = User.query.get(player_id)
+        return jsonify({
+            'success': True,
+            'message': f'{player.display_name} added as {status.upper()}',
+            'player_name': player.display_name,
+            'status': status
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Failed to add player'}), 500
 
 @games_bp.route('/<int:game_id>/teams', methods=['GET', 'POST'])
 @login_required
@@ -567,7 +643,7 @@ def vote_potm(game_id):
     # Allow POTM voting on or after game day
     from datetime import date
     if game.datetime.date() > date.today():
-        flash('POTM voting is only available on or after the game date')
+        flash('Can only vote for POTM on or after the game date')
         return redirect(url_for('games.view', game_id=game_id))
     
     voted_for_id = request.form.get('voted_for_id', type=int)
@@ -595,9 +671,9 @@ def vote_potm(game_id):
     flash('POTM vote cast')
     return redirect(url_for('games.view', game_id=game_id))
 
-@games_bp.route('/<int:game_id>/auto-balance', methods=['POST'])
+@games_bp.route('/<int:game_id>/delete', methods=['POST'])
 @login_required
-def auto_balance_teams(game_id):
+def delete_game(game_id):
     game = Game.query.get_or_404(game_id)
     
     membership = GroupMembership.query.filter_by(
@@ -607,48 +683,125 @@ def auto_balance_teams(game_id):
     ).first()
     
     if not membership:
-        return jsonify({'error': 'Only admins can auto-balance teams'}), 403
+        flash('Only admins can delete games')
+        return redirect(url_for('games.view', game_id=game_id))
     
-    # Get available players (those who voted 'in')
-    in_players = game.get_in_players()
+    # Check if game can be deleted (not past games)
+    from datetime import datetime
+    if game.datetime < datetime.utcnow():
+        flash('Cannot delete games that have already passed')
+        return redirect(url_for('games.view', game_id=game_id))
     
-    if len(in_players) < 2:
-        return jsonify({'error': 'Need at least 2 players to form teams'}), 400
+    # Check if game has already started
+    if game.status == 'live':
+        flash('Cannot delete games that are currently live')
+        return redirect(url_for('games.view', game_id=game_id))
     
-    # Get balancing algorithm from request
-    algorithm = request.json.get('algorithm', 'smart_draft') if request.is_json else request.form.get('algorithm', 'smart_draft')
+    # Check if game is finished
+    if game.status == 'finished':
+        flash('Cannot delete finished games')
+        return redirect(url_for('games.view', game_id=game_id))
     
-    # Calculate player scores and balance teams using selected algorithm
-    if algorithm == 'bandit':
-        balanced_teams = calculate_bandit_balanced_teams(in_players, game.group_id)
-        method = 'Multi-Armed Bandit'
-    elif algorithm == 'simulated_annealing':
-        balanced_teams = calculate_simulated_annealing_teams(in_players, game.group_id)
-        method = 'Simulated Annealing'
-    else:  # smart_draft (default)
-        balanced_teams = calculate_balanced_teams(in_players, game.group_id)
-        method = 'Smart Draft'
+    group_id = game.group_id
+    game_datetime_str = game.datetime.strftime('%B %d at %I:%M %p')
     
-    # Calculate additional metrics for ML algorithms
-    response_data = {
-        'success': True,
-        'method': method,
-        'team_a': [{'id': p.id, 'name': p.display_name} for p in balanced_teams['team_a']],
-        'team_b': [{'id': p.id, 'name': p.display_name} for p in balanced_teams['team_b']],
-        'team_a_ratings': calculate_team_ratings(balanced_teams['team_a'], game.group_id),
-        'team_b_ratings': calculate_team_ratings(balanced_teams['team_b'], game.group_id)
-    }
-    
-    # Add fitness score and iteration count for ML algorithms
-    if algorithm in ['simulated_annealing']:
-        response_data['fitness_score'] = balanced_teams.get('fitness', 0.0)
-        response_data['iterations'] = balanced_teams.get('iterations', 0)
-    elif algorithm == 'bandit':
-        # Calculate final fitness for bandit
-        fitness = calculate_team_fitness(balanced_teams['team_a'], balanced_teams['team_b'], game.group_id)
-        response_data['fitness_score'] = fitness
-    
-    return jsonify(response_data)
+    try:
+        # Delete related records first (due to foreign key constraints)
+        AvailabilityVote.query.filter_by(game_id=game_id).delete()
+        TeamAssignment.query.filter_by(game_id=game_id).delete()
+        MatchEvent.query.filter_by(game_id=game_id).delete()
+        POTMVote.query.filter_by(game_id=game_id).delete()
+        FeedItem.query.filter_by(game_id=game_id).delete()
+        
+        # Delete the game itself
+        db.session.delete(game)
+        
+        # Create feed item for game deletion
+        feed_item = FeedItem(
+            group_id=group_id,
+            item_type='game_deleted',
+            content=f'Game scheduled for {game_datetime_str} has been cancelled'
+        )
+        db.session.add(feed_item)
+        
+        db.session.commit()
+        
+        # Create notifications for all group members
+        from routes.notifications import notify_group_members
+        notify_group_members(
+            group_id=group_id,
+            notification_type='game_cancelled',
+            title='Game Cancelled',
+            message=f'The game scheduled for {game_datetime_str} has been cancelled',
+            exclude_user_id=current_user.id
+        )
+        
+        flash(f'Game scheduled for {game_datetime_str} has been deleted successfully')
+        return redirect(url_for('groups.view', group_id=group_id))
+        
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred while deleting the game. Please try again.')
+        return redirect(url_for('games.view', game_id=game_id))
+
+@games_bp.route('/<int:game_id>/auto-balance', methods=['POST'])
+@login_required
+def auto_balance_teams(game_id):
+    try:
+        game = Game.query.get_or_404(game_id)
+        
+        membership = GroupMembership.query.filter_by(
+            user_id=current_user.id,
+            group_id=game.group_id,
+            is_admin=True
+        ).first()
+        
+        if not membership:
+            return jsonify({'error': 'Only admins can auto-balance teams'}), 403
+        
+        # Get available players (those who voted 'in')
+        in_players = game.get_in_players()
+        
+        if len(in_players) < 2:
+            return jsonify({'error': 'Need at least 2 players to form teams'}), 400
+        
+        # Get balancing algorithm from request
+        algorithm = request.json.get('algorithm', 'smart_draft') if request.is_json else request.form.get('algorithm', 'smart_draft')
+        
+        # Calculate player scores and balance teams using selected algorithm
+        if algorithm == 'bandit':
+            balanced_teams = calculate_bandit_balanced_teams(in_players, game.group_id)
+            method = 'Multi-Armed Bandit'
+        elif algorithm == 'simulated_annealing':
+            balanced_teams = calculate_simulated_annealing_teams(in_players, game.group_id)
+            method = 'Simulated Annealing'
+        else:  # smart_draft (default)
+            balanced_teams = calculate_balanced_teams(in_players, game.group_id)
+            method = 'Smart Draft'
+        
+        # Calculate additional metrics for ML algorithms
+        response_data = {
+            'success': True,
+            'method': method,
+            'team_a': [{'id': p.id, 'name': p.display_name} for p in balanced_teams['team_a']],
+            'team_b': [{'id': p.id, 'name': p.display_name} for p in balanced_teams['team_b']],
+            'team_a_ratings': calculate_team_ratings(balanced_teams['team_a'], game.group_id),
+            'team_b_ratings': calculate_team_ratings(balanced_teams['team_b'], game.group_id)
+        }
+        
+        # Add fitness score and iteration count for ML algorithms
+        if algorithm in ['simulated_annealing']:
+            response_data['fitness_score'] = balanced_teams.get('fitness', 0.0)
+            response_data['iterations'] = balanced_teams.get('iterations', 0)
+        elif algorithm == 'bandit':
+            # Calculate final fitness for bandit
+            fitness = calculate_team_fitness(balanced_teams['team_a'], balanced_teams['team_b'], game.group_id)
+            response_data['fitness_score'] = fitness
+        
+        return jsonify(response_data)
+    except Exception as e:
+        print(f"Error in auto_balance_teams: {str(e)}")
+        return jsonify({'error': f'Internal error: {str(e)}'}), 500
 
 @games_bp.route('/<int:game_id>/team-ratings', methods=['POST'])
 @login_required

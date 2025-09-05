@@ -48,6 +48,9 @@ def view(group_id):
         flash('You are not a member of this group')
         return redirect(url_for('main.dashboard'))
     
+    # Auto-update game statuses first
+    group.update_game_statuses()
+    
     next_game = group.get_next_game()
     last_game = group.get_last_game()
     
@@ -182,6 +185,12 @@ def get_player_attributes(group_id, user_id):
     if not target_membership:
         return jsonify({'error': 'User is not a member of this group'}), 404
     
+    # Get the user information
+    from models import User
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
     # Get existing attributes
     attributes = PlayerAttributes.query.filter_by(
         user_id=user_id,
@@ -219,9 +228,15 @@ def get_player_attributes(group_id, user_id):
             'preferred_position': attributes.preferred_position,
             'notes': attributes.notes
         }
-        return jsonify({'attributes': attributes_data})
+        return jsonify({
+            'attributes': attributes_data,
+            'player_name': user.display_name
+        })
     else:
-        return jsonify({'attributes': None})
+        return jsonify({
+            'attributes': None,
+            'player_name': user.display_name
+        })
 
 @groups_bp.route('/<int:group_id>/players/<int:user_id>/attributes', methods=['POST'])
 @login_required

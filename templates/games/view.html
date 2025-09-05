@@ -35,6 +35,14 @@
                     Form Teams
                 </a>
                 {% endif %}
+                
+                {% if game.status == 'upcoming' %}
+                <button onclick="confirmDeleteGame('{{ game.id }}', '{{ game.datetime.strftime('%A, %B %d at %I:%M %p') }}')" 
+                        class="inline-flex items-center px-3 py-2 border border-red-300 text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100">
+                    <i class="fas fa-trash mr-1"></i>
+                    Delete Game
+                </button>
+                {% endif %}
             </div>
             {% endif %}
         </div>
@@ -233,6 +241,62 @@
                             <div class="text-xs text-yellow-600 flex items-center">
                                 <i class="fas fa-exclamation-triangle mr-2"></i>
                                 Low turnout ({{ availability_counts.in }} players confirmed)
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Admin: Add Unvoted Players -->
+                            {% if membership.is_admin and unvoted_members %}
+                            <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                <div class="flex items-center space-x-2 mb-3">
+                                    <i class="fas fa-crown text-yellow-600"></i>
+                                    <h4 class="text-sm font-semibold text-gray-900">Admin: Add Missing Players</h4>
+                                </div>
+                                <p class="text-xs text-gray-600 mb-3">Search and add players who haven't responded yet:</p>
+                                
+                                <!-- Search Input -->
+                                <div class="relative">
+                                    <input 
+                                        type="text" 
+                                        id="playerSearch" 
+                                        placeholder="Type player name to search..."
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        autocomplete="off"
+                                        oninput="filterPlayers(this.value)"
+                                    >
+                                    
+                                    <!-- Search Results Dropdown -->
+                                    <div id="playerResults" class="absolute z-10 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-1 max-h-60 overflow-y-auto hidden">
+                                        {% for member in unvoted_members %}
+                                        <div class="player-option px-3 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-b-0" 
+                                             data-player-id="{{ member.id }}" 
+                                             data-player-name="{{ member.display_name }}"
+                                             onclick="addPlayerAsIn('{{ member.id }}', '{{ member.display_name }}')">
+                                            <div class="flex items-center space-x-2">
+                                                <div class="h-6 w-6 bg-gray-200 rounded-full flex items-center justify-center">
+                                                    <span class="text-xs font-bold text-gray-600">
+                                                        {{ member.display_name[0].upper() }}
+                                                    </span>
+                                                </div>
+                                                <span class="text-sm font-medium text-gray-900">{{ member.display_name }}</span>
+                                                <span class="text-xs text-green-600 ml-auto">Click to add as IN</span>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Hidden data for JavaScript -->
+                                <script type="application/json" id="unvotedPlayersData">
+                                    [
+                                        {% for member in unvoted_members %}
+                                        {
+                                            "id": "{{ member.id }}",
+                                            "name": "{{ member.display_name }}",
+                                            "searchText": "{{ member.display_name.lower() }}"
+                                        }{% if not loop.last %},{% endif %}
+                                        {% endfor %}
+                                    ]
+                                </script>
                             </div>
                             {% endif %}
                     </div>
@@ -763,6 +827,152 @@ function switchTeamTab(teamId) {
     }
 }
 
+// Game deletion functionality
+function confirmDeleteGame(gameId, gameDate) {
+    const message = `Are you sure you want to delete the game scheduled for ${gameDate}?\n\nThis action cannot be undone and will:\n• Remove all player availability votes\n• Delete any team assignments\n• Clear all game statistics\n• Cancel any notifications`;
+    
+    if (confirm(message)) {
+        // Create form and submit deletion request
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/games/${gameId}/delete`;
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+// Add player to poll functionality (Admin only)
+function addPlayerAsIn(playerId, playerName) {
+    const searchInput = document.getElementById('playerSearch');
+    const resultsDiv = document.getElementById('playerResults');
+    
+    // Hide search results and clear input
+    resultsDiv.classList.add('hidden');
+    searchInput.value = 'Adding...';
+    searchInput.disabled = true;
+    
+    fetch(`/games/{{ game.id }}/add-player`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            player_id: playerId,
+            status: 'in'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            showToast(`${playerName} added as IN`, 'success');
+            // Reload the page to update the UI
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        } else {
+            showToast(data.error || 'Failed to add player', 'error');
+            searchInput.disabled = false;
+            searchInput.value = '';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Network error occurred', 'error');
+        searchInput.disabled = false;
+        searchInput.value = '';
+    });
+}
+
+// Search functionality for unvoted players
+function filterPlayers(searchTerm) {
+    const resultsDiv = document.getElementById('playerResults');
+    const playerOptions = resultsDiv.querySelectorAll('.player-option');
+    
+    if (searchTerm.trim() === '') {
+        resultsDiv.classList.add('hidden');
+        return;
+    }
+    
+    const searchLower = searchTerm.toLowerCase();
+    let hasVisibleResults = false;
+    
+    playerOptions.forEach(option => {
+        const playerName = option.getAttribute('data-player-name').toLowerCase();
+        if (playerName.includes(searchLower)) {
+            option.style.display = 'block';
+            hasVisibleResults = true;
+        } else {
+            option.style.display = 'none';
+        }
+    });
+    
+    if (hasVisibleResults) {
+        resultsDiv.classList.remove('hidden');
+    } else {
+        resultsDiv.classList.add('hidden');
+    }
+}
+
+// Close search results when clicking outside
+document.addEventListener('click', function(event) {
+    const searchInput = document.getElementById('playerSearch');
+    const resultsDiv = document.getElementById('playerResults');
+    
+    if (searchInput && resultsDiv && !searchInput.contains(event.target) && !resultsDiv.contains(event.target)) {
+        resultsDiv.classList.add('hidden');
+    }
+});
+
+// Add player to poll functionality (Admin only) - Legacy function for backward compatibility
+function addPlayerToPoll(playerId, status, playerName) {
+    // This function is kept for backward compatibility but redirects to the new simplified function
+    if (status === 'in') {
+        addPlayerAsIn(playerId, playerName);
+    } else {
+        // For non-IN statuses, use the original implementation if needed
+        const button = event.target;
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Adding...';
+        
+        fetch(`/games/{{ game.id }}/add-player`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                player_id: playerId,
+                status: status
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast(`${playerName} added as ${status.toUpperCase()}`, 'success');
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
+            } else {
+                showToast(data.error || 'Failed to add player', 'error');
+                button.disabled = false;
+                button.textContent = originalText;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Network error occurred', 'error');
+            button.disabled = false;
+            button.textContent = originalText;
+        });
+    }
+}
+
 // Toast notifications are now handled globally by base.html
 </script>
+
+// Toast notifications are now handled globally by base.html
+</script>
+
 {% endblock %}

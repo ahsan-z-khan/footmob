@@ -20,6 +20,10 @@ def dashboard():
         GroupMembership.user_id == current_user.id
     ).all()
     
+    # Auto-update game statuses for all user groups
+    for group in user_groups:
+        group.update_game_statuses()
+    
     # Calculate stats for template
     upcoming_games = [group.get_next_game() for group in user_groups if group.get_next_game()]
     total_members = sum(len(group.get_members()) for group in user_groups)

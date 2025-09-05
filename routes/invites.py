@@ -12,6 +12,9 @@ invites_bp = Blueprint('invites', __name__)
 def join_preview(invite_code):
     group = Group.query.filter_by(invite_code=invite_code).first_or_404()
     
+    # Auto-update game statuses
+    group.update_game_statuses()
+    
     if current_user.is_authenticated:
         existing_membership = GroupMembership.query.filter_by(
             user_id=current_user.id,

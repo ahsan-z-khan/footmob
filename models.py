@@ -49,9 +49,27 @@ class Group(db.Model):
         ).all()
     
     def get_next_game(self):
+        from datetime import datetime, timedelta
+        
+        # First, auto-update any expired games
+        expired_games = Game.query.filter(
+            Game.group_id == self.id,
+            Game.status == 'upcoming',
+            Game.datetime < datetime.utcnow()
+        ).all()
+        
+        # Update expired games to 'finished' status if they weren't manually managed
+        for game in expired_games:
+            game.status = 'finished'
+        
+        if expired_games:
+            db.session.commit()
+        
+        # Now get the next upcoming or live game
         return Game.query.filter(
             Game.group_id == self.id,
-            Game.status.in_(['upcoming', 'live'])
+            Game.status.in_(['upcoming', 'live']),
+            Game.datetime >= datetime.utcnow() - timedelta(hours=6)  # Allow 6 hours grace period for live games
         ).order_by(Game.datetime.asc()).first()
     
     def get_last_game(self):
@@ -59,6 +77,27 @@ class Group(db.Model):
             Game.group_id == self.id,
             Game.status == 'finished'
         ).order_by(Game.datetime.desc()).first()
+    
+    def update_game_statuses(self):
+        """Auto-update game statuses based on current time"""
+        from datetime import datetime
+        
+        # Update expired upcoming games to finished
+        expired_games = Game.query.filter(
+            Game.group_id == self.id,
+            Game.status == 'upcoming',
+            Game.datetime < datetime.utcnow()
+        ).all()
+        
+        updated = False
+        for game in expired_games:
+            game.status = 'finished'
+            updated = True
+        
+        if updated:
+            db.session.commit()
+        
+        return len(expired_games)
 
 class GroupMembership(db.Model):
     id = db.Column(db.Integer, primary_key=True)
