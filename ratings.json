@@ -1,0 +1,3966 @@
+{
+  "group_id": 1,
+  "group_name": "seattle-soccer",
+  "players": [
+    {
+      "user_id": 1,
+      "username": "hmsajjad",
+      "display_name": "Balanced midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 9,
+          "shooting": 6,
+          "crossing": 6,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 8,
+          "tackling": 6,
+          "interceptions": 5,
+          "vision": 8,
+          "decision_making": 8
+        },
+        "mental": {
+          "composure": 8,
+          "concentration": 7,
+          "determination": 8,
+          "leadership": 8,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 5,
+          "handling": 2,
+          "distribution": 2,
+          "aerial_reach": 3
+        }
+      }
+    },
+    {
+      "user_id": 2,
+      "username": "riaj",
+      "display_name": "Attacking midfielder/Playmaker",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 7,
+          "strength": 5,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 9,
+          "dribbling": 8,
+          "passing": 9,
+          "shooting": 7,
+          "crossing": 7,
+          "free_kicks": 8
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 4,
+          "tackling": 3,
+          "interceptions": 5,
+          "vision": 9,
+          "decision_making": 8
+        },
+        "mental": {
+          "composure": 8,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 2,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 3,
+      "username": "sajjad",
+      "display_name": "Versatile player",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 8,
+          "shooting": 6,
+          "crossing": 6,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 6,
+          "interceptions": 6,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 7,
+          "determination": 8,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 2,
+          "handling": 2,
+          "distribution": 2,
+          "aerial_reach": 2
+        }
+      }
+    },
+    {
+      "user_id": 4,
+      "username": "toxic",
+      "display_name": "Defensive midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 8,
+          "strength": 8,
+          "agility": 5,
+          "jumping": 7
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 4,
+          "passing": 7,
+          "shooting": 4,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 8,
+          "tackling": 9,
+          "interceptions": 8,
+          "vision": 6,
+          "decision_making": 8
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 9,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 5,
+      "username": "aashik",
+      "display_name": "Aashik Azim - Pacey winger",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 7,
+          "strength": 8,
+          "agility": 8,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 9,
+          "dribbling": 8,
+          "passing": 8,
+          "shooting": 9,
+          "crossing": 8,
+          "free_kicks": 8
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 5,
+          "tackling": 6,
+          "interceptions": 4,
+          "vision": 7,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 6,
+      "username": "abra",
+      "display_name": "AbRa Munna - Central defender",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 7,
+          "strength": 8,
+          "agility": 5,
+          "jumping": 8
+        },
+        "technical": {
+          "ball_control": 8,
+          "dribbling": 7,
+          "passing": 7,
+          "shooting": 8,
+          "crossing": 8,
+          "free_kicks": 7
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 9,
+          "tackling": 8,
+          "interceptions": 8,
+          "vision": 5,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 8,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 8,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 7,
+      "username": "adib",
+      "display_name": "Adib Mosharrof - Technical midfielder",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 6,
+          "strength": 5,
+          "agility": 7,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 8,
+          "dribbling": 7,
+          "passing": 8,
+          "shooting": 5,
+          "crossing": 6,
+          "free_kicks": 7
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 5,
+          "tackling": 4,
+          "interceptions": 6,
+          "vision": 8,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 8,
+          "concentration": 7,
+          "determination": 6,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 2,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 8,
+      "username": "ahmad",
+      "display_name": "Ahmad Jarjis Hasan - Box-to-box midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 9,
+          "strength": 7,
+          "agility": 6,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 6,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 6,
+          "interceptions": 7,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 9,
+      "username": "ahmed",
+      "display_name": "Ahmed Farzan Anik - Striker",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 6,
+          "strength": 7,
+          "agility": 7,
+          "jumping": 7
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 3,
+          "passing": 5,
+          "shooting": 3,
+          "crossing": 4,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 4,
+          "tackling": 7,
+          "interceptions": 6,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 7,
+          "determination": 8,
+          "leadership": 6,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 10,
+      "username": "rafsan",
+      "display_name": "Ahmed Tashfiq Rafsan - Full-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 4,
+          "crossing": 7,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 7,
+          "tackling": 7,
+          "interceptions": 6,
+          "vision": 6,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 11,
+      "username": "ahsan",
+      "display_name": "Ahsan Z Khan - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 8,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 6,
+          "interceptions": 7,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 2,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 12,
+      "username": "alinda",
+      "display_name": "Alinda Gupta Abhro - Winger/Attacking midfielder",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 7,
+          "strength": 4,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 8,
+          "dribbling": 8,
+          "passing": 6,
+          "shooting": 6,
+          "crossing": 7,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 6,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 4,
+          "vision": 7,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 5,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 13,
+      "username": "andalib",
+      "display_name": "Andalib Kabir - Defensive midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 8,
+          "strength": 7,
+          "agility": 5,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 4,
+          "passing": 7,
+          "shooting": 4,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 7,
+          "tackling": 8,
+          "interceptions": 8,
+          "vision": 6,
+          "decision_making": 8
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 14,
+      "username": "ashker",
+      "display_name": "Ashker Mujib - Centre-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 4,
+          "stamina": 6,
+          "strength": 8,
+          "agility": 4,
+          "jumping": 9
+        },
+        "technical": {
+          "ball_control": 4,
+          "dribbling": 2,
+          "passing": 6,
+          "shooting": 2,
+          "crossing": 2,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 8,
+          "tackling": 8,
+          "interceptions": 7,
+          "vision": 5,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 8,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 15,
+      "username": "aungkon",
+      "display_name": "Aungkon Azim - Right winger",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 9,
+          "stamina": 7,
+          "strength": 4,
+          "agility": 9,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 8,
+          "passing": 6,
+          "shooting": 5,
+          "crossing": 8,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 6,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 5
+        },
+        "mental": {
+          "composure": 5,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 4,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 16,
+      "username": "aunik",
+      "display_name": "Aunik Ahmed - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 5,
+          "tackling": 5,
+          "interceptions": 6,
+          "vision": 7,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 6,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 17,
+      "username": "aurko",
+      "display_name": "Aurko Khandakar - Attacking midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 6,
+          "strength": 5,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 8,
+          "dribbling": 8,
+          "passing": 7,
+          "shooting": 7,
+          "crossing": 6,
+          "free_kicks": 7
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 4,
+          "vision": 8,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 6,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 18,
+      "username": "ayman",
+      "display_name": "Ayman Siraj - Full-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 6,
+          "passing": 6,
+          "shooting": 3,
+          "crossing": 7,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 7,
+          "tackling": 7,
+          "interceptions": 6,
+          "vision": 5,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 19,
+      "username": "azmayeen",
+      "display_name": "Azmayeen Rahman - Playmaker",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 7,
+          "strength": 5,
+          "agility": 7,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 9,
+          "dribbling": 7,
+          "passing": 9,
+          "shooting": 6,
+          "crossing": 7,
+          "free_kicks": 8
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 4,
+          "tackling": 3,
+          "interceptions": 5,
+          "vision": 9,
+          "decision_making": 8
+        },
+        "mental": {
+          "composure": 8,
+          "concentration": 8,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 2,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 20,
+      "username": "bulbul",
+      "display_name": "Bulbul Sharif Pias - Target man striker",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 6,
+          "strength": 9,
+          "agility": 5,
+          "jumping": 9
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 4,
+          "passing": 4,
+          "shooting": 8,
+          "crossing": 3,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 2,
+          "tackling": 2,
+          "interceptions": 2,
+          "vision": 5,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 8,
+          "leadership": 6,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 21,
+      "username": "debrata",
+      "display_name": "Debrata Saha - Centre-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 4,
+          "stamina": 7,
+          "strength": 8,
+          "agility": 4,
+          "jumping": 8
+        },
+        "technical": {
+          "ball_control": 5,
+          "dribbling": 3,
+          "passing": 6,
+          "shooting": 3,
+          "crossing": 2,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 8,
+          "tackling": 8,
+          "interceptions": 7,
+          "vision": 5,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 22,
+      "username": "deepto",
+      "display_name": "Deepto - Winger",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 7,
+          "strength": 4,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 8,
+          "passing": 5,
+          "shooting": 6,
+          "crossing": 8,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 6,
+          "marking": 2,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 5
+        },
+        "mental": {
+          "composure": 5,
+          "concentration": 5,
+          "determination": 6,
+          "leadership": 4,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 23,
+      "username": "elriajo",
+      "display_name": "El Riajo - Defensive midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 8,
+          "strength": 7,
+          "agility": 5,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 4,
+          "passing": 7,
+          "shooting": 4,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 7,
+          "tackling": 8,
+          "interceptions": 8,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 24,
+      "username": "enamul",
+      "display_name": "Enamul Haque - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 5,
+          "tackling": 5,
+          "interceptions": 6,
+          "vision": 7,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 25,
+      "username": "fahim",
+      "display_name": "Fahim Islam - Striker",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 6,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 7,
+          "passing": 5,
+          "shooting": 8,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 2,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 7,
+          "leadership": 5,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 26,
+      "username": "fahimrahman",
+      "display_name": "Fahim Rahman - Right-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 6,
+          "passing": 6,
+          "shooting": 3,
+          "crossing": 7,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 7,
+          "tackling": 7,
+          "interceptions": 6,
+          "vision": 5,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 6,
+          "leadership": 5,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 27,
+      "username": "fahmid",
+      "display_name": "Fahmid Swaikat - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 8,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 5,
+          "interceptions": 6,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 28,
+      "username": "farhanasif",
+      "display_name": "Farhan Asif Chowdhury Aumy - Left winger",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 9,
+          "stamina": 7,
+          "strength": 4,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 8,
+          "passing": 6,
+          "shooting": 6,
+          "crossing": 8,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 6,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 5
+        },
+        "mental": {
+          "composure": 5,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 4,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 29,
+      "username": "farhantanvir",
+      "display_name": "Farhan Tanvir - Box-to-box midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 9,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 6,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 6,
+          "interceptions": 7,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 30,
+      "username": "hamdan",
+      "display_name": "Hamdan Kabir - Centre-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 4,
+          "stamina": 7,
+          "strength": 8,
+          "agility": 4,
+          "jumping": 8
+        },
+        "technical": {
+          "ball_control": 5,
+          "dribbling": 3,
+          "passing": 6,
+          "shooting": 3,
+          "crossing": 2,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 8,
+          "tackling": 8,
+          "interceptions": 7,
+          "vision": 5,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 8,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 31,
+      "username": "hemon",
+      "display_name": "Hemon Boidya - Attacking midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 6,
+          "strength": 5,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 8,
+          "dribbling": 8,
+          "passing": 7,
+          "shooting": 7,
+          "crossing": 6,
+          "free_kicks": 7
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 4,
+          "vision": 8,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 6,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 32,
+      "username": "hisham",
+      "display_name": "Hisham Shamim - Goalkeeper",
+      "preferred_position": "GK",
+      "attributes": {
+        "physical": {
+          "pace": 4,
+          "stamina": 6,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 7
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 3,
+          "passing": 6,
+          "shooting": 2,
+          "crossing": 2,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 4,
+          "tackling": 2,
+          "interceptions": 5,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 8,
+          "concentration": 9,
+          "determination": 8,
+          "leadership": 7,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 8,
+          "handling": 8,
+          "distribution": 7,
+          "aerial_reach": 8
+        }
+      }
+    },
+    {
+      "user_id": 33,
+      "username": "inzamam",
+      "display_name": "Inzamam Ul Haque - Deep-lying playmaker",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 8,
+          "dribbling": 6,
+          "passing": 9,
+          "shooting": 5,
+          "crossing": 6,
+          "free_kicks": 7
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 5,
+          "tackling": 5,
+          "interceptions": 7,
+          "vision": 8,
+          "decision_making": 8
+        },
+        "mental": {
+          "composure": 8,
+          "concentration": 8,
+          "determination": 7,
+          "leadership": 8,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 2,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 34,
+      "username": "ishmam",
+      "display_name": "Ishmam Al Quddus - Winger",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 7,
+          "strength": 4,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 8,
+          "passing": 6,
+          "shooting": 6,
+          "crossing": 8,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 6,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 5
+        },
+        "mental": {
+          "composure": 5,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 4,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 35,
+      "username": "ishmamzabir",
+      "display_name": "Ishmam Zabir - Full-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 4,
+          "crossing": 7,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 7,
+          "tackling": 7,
+          "interceptions": 6,
+          "vision": 6,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 36,
+      "username": "ishraq",
+      "display_name": "Ishraq Faruk - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 6,
+          "interceptions": 7,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 37,
+      "username": "kazi",
+      "display_name": "Kazi Abdul Muktadir - Defensive midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 8,
+          "strength": 8,
+          "agility": 5,
+          "jumping": 7
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 4,
+          "passing": 7,
+          "shooting": 4,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 8,
+          "tackling": 9,
+          "interceptions": 8,
+          "vision": 6,
+          "decision_making": 8
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 9,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 38,
+      "username": "khandokar",
+      "display_name": "Khandokar Nayem - Striker",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 6,
+          "strength": 7,
+          "agility": 7,
+          "jumping": 7
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 7,
+          "passing": 5,
+          "shooting": 8,
+          "crossing": 4,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 2,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 7,
+          "determination": 8,
+          "leadership": 6,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 39,
+      "username": "khorshed",
+      "display_name": "Khorshed Alam - Centre-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 4,
+          "stamina": 6,
+          "strength": 9,
+          "agility": 4,
+          "jumping": 9
+        },
+        "technical": {
+          "ball_control": 4,
+          "dribbling": 2,
+          "passing": 5,
+          "shooting": 2,
+          "crossing": 2,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 9,
+          "tackling": 8,
+          "interceptions": 8,
+          "vision": 4,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 8,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 40,
+      "username": "madhusudan",
+      "display_name": "Madhusudan Banik - Attacking midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 6,
+          "strength": 5,
+          "agility": 7,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 8,
+          "dribbling": 7,
+          "passing": 7,
+          "shooting": 6,
+          "crossing": 6,
+          "free_kicks": 7
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 4,
+          "vision": 7,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 5,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 41,
+      "username": "mahmud",
+      "display_name": "Mahmud Rahman - Box-to-box midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 8,
+          "strength": 7,
+          "agility": 6,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 6,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 6,
+          "interceptions": 7,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 42,
+      "username": "mahmudul",
+      "display_name": "Mahmudul Hasan Razib - Right winger",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 9,
+          "stamina": 7,
+          "strength": 4,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 8,
+          "passing": 6,
+          "shooting": 6,
+          "crossing": 8,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 6,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 5
+        },
+        "mental": {
+          "composure": 5,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 4,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 43,
+      "username": "maruf",
+      "display_name": "Maruf Samu - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 8,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 5,
+          "interceptions": 6,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 44,
+      "username": "mashfiqui",
+      "display_name": "Mashfiqui Rabbi Shuva - Playmaker",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 7,
+          "strength": 5,
+          "agility": 7,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 9,
+          "dribbling": 7,
+          "passing": 9,
+          "shooting": 6,
+          "crossing": 7,
+          "free_kicks": 8
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 4,
+          "tackling": 3,
+          "interceptions": 5,
+          "vision": 9,
+          "decision_making": 8
+        },
+        "mental": {
+          "composure": 8,
+          "concentration": 8,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 2,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 45,
+      "username": "mdabid",
+      "display_name": "Md Abid Hossain Zim - Left-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 6,
+          "passing": 6,
+          "shooting": 3,
+          "crossing": 7,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 7,
+          "tackling": 7,
+          "interceptions": 6,
+          "vision": 5,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 6,
+          "leadership": 5,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 46,
+      "username": "mdforhad",
+      "display_name": "Md Forhad Hossain - Striker",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 6,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 7,
+          "passing": 5,
+          "shooting": 8,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 2,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 7,
+          "leadership": 5,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 47,
+      "username": "mdmirajul",
+      "display_name": "Md Mirajul Islam - Centre-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 4,
+          "stamina": 7,
+          "strength": 8,
+          "agility": 4,
+          "jumping": 8
+        },
+        "technical": {
+          "ball_control": 5,
+          "dribbling": 3,
+          "passing": 6,
+          "shooting": 3,
+          "crossing": 2,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 8,
+          "tackling": 8,
+          "interceptions": 7,
+          "vision": 5,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 48,
+      "username": "mdmonir",
+      "display_name": "Md Moniruzzaman Monir - Defensive midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 8,
+          "strength": 7,
+          "agility": 5,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 4,
+          "passing": 7,
+          "shooting": 4,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 7,
+          "tackling": 8,
+          "interceptions": 8,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 49,
+      "username": "mizanur",
+      "display_name": "Mizanur Rahman - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 5,
+          "tackling": 5,
+          "interceptions": 6,
+          "vision": 7,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 50,
+      "username": "mohaimen",
+      "display_name": "Mohaimen Khan - Attacking midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 6,
+          "strength": 5,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 8,
+          "dribbling": 8,
+          "passing": 7,
+          "shooting": 7,
+          "crossing": 6,
+          "free_kicks": 7
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 4,
+          "vision": 8,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 6,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 51,
+      "username": "mohammadali",
+      "display_name": "Mohammad Ahsan Ali - Defensive midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 7,
+          "strength": 7,
+          "agility": 5,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 5,
+          "passing": 7,
+          "shooting": 5,
+          "crossing": 4,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 7,
+          "interceptions": 7,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 7,
+          "determination": 8,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 52,
+      "username": "mohammadashraf",
+      "display_name": "Mohammad Ashrafuzzaman - Striker",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 6,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 7,
+          "passing": 5,
+          "shooting": 8,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 2,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 7,
+          "leadership": 5,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 53,
+      "username": "mohammadnadir",
+      "display_name": "Mohammad Nadir Uz Zaman - Defensive midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 8,
+          "strength": 8,
+          "agility": 5,
+          "jumping": 7
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 4,
+          "passing": 7,
+          "shooting": 4,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 8,
+          "tackling": 9,
+          "interceptions": 8,
+          "vision": 6,
+          "decision_making": 8
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 9,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 54,
+      "username": "muntasir",
+      "display_name": "Muntasir Muneer - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 8,
+          "shooting": 6,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 5,
+          "tackling": 5,
+          "interceptions": 6,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 55,
+      "username": "naimur",
+      "display_name": "Naimur Rahman Chowdhury - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 6,
+          "interceptions": 7,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 56,
+      "username": "nazmul",
+      "display_name": "Nazmul Hoque Shayento - Winger",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 7,
+          "strength": 4,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 8,
+          "passing": 6,
+          "shooting": 6,
+          "crossing": 8,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 6,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 5
+        },
+        "mental": {
+          "composure": 5,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 4,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 57,
+      "username": "nazmulshahan",
+      "display_name": "Nazmul Khan Shahan - Centre-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 4,
+          "stamina": 7,
+          "strength": 8,
+          "agility": 4,
+          "jumping": 8
+        },
+        "technical": {
+          "ball_control": 5,
+          "dribbling": 3,
+          "passing": 6,
+          "shooting": 3,
+          "crossing": 2,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 8,
+          "tackling": 8,
+          "interceptions": 7,
+          "vision": 5,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 58,
+      "username": "porag",
+      "display_name": "Porag Islam - Attacking midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 6,
+          "strength": 5,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 8,
+          "dribbling": 8,
+          "passing": 7,
+          "shooting": 7,
+          "crossing": 6,
+          "free_kicks": 7
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 4,
+          "vision": 8,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 6,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 59,
+      "username": "rakibul",
+      "display_name": "Rakibul Raju - Full-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 4,
+          "crossing": 7,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 7,
+          "tackling": 7,
+          "interceptions": 6,
+          "vision": 6,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 60,
+      "username": "rawnaq",
+      "display_name": "Rawnaq Chowdhury - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 8,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 5,
+          "interceptions": 6,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 61,
+      "username": "reashed",
+      "display_name": "Reashed Tasvir Omi - Striker",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 6,
+          "strength": 7,
+          "agility": 7,
+          "jumping": 7
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 7,
+          "passing": 5,
+          "shooting": 8,
+          "crossing": 4,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 2,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 7,
+          "determination": 8,
+          "leadership": 6,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 62,
+      "username": "redwan",
+      "display_name": "Redwan Khan - Defensive midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 8,
+          "strength": 7,
+          "agility": 5,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 4,
+          "passing": 7,
+          "shooting": 4,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 7,
+          "tackling": 8,
+          "interceptions": 8,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 63,
+      "username": "riad",
+      "display_name": "Riad Hossain - Winger",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 9,
+          "stamina": 7,
+          "strength": 4,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 8,
+          "passing": 6,
+          "shooting": 6,
+          "crossing": 8,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 6,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 5
+        },
+        "mental": {
+          "composure": 5,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 4,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 64,
+      "username": "rownak",
+      "display_name": "Rownak Islam - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 6,
+          "interceptions": 7,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 65,
+      "username": "rupu",
+      "display_name": "Rupu Zaman - Attacking midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 6,
+          "strength": 5,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 8,
+          "dribbling": 8,
+          "passing": 7,
+          "shooting": 7,
+          "crossing": 6,
+          "free_kicks": 7
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 4,
+          "vision": 8,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 6,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 66,
+      "username": "rushrukh",
+      "display_name": "Rushrukh Rayan - Full-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 6,
+          "passing": 6,
+          "shooting": 3,
+          "crossing": 7,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 7,
+          "tackling": 7,
+          "interceptions": 6,
+          "vision": 5,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 6,
+          "leadership": 5,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 67,
+      "username": "russell",
+      "display_name": "Russell Mumunil - Centre-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 4,
+          "stamina": 6,
+          "strength": 8,
+          "agility": 4,
+          "jumping": 9
+        },
+        "technical": {
+          "ball_control": 4,
+          "dribbling": 2,
+          "passing": 6,
+          "shooting": 2,
+          "crossing": 2,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 8,
+          "tackling": 8,
+          "interceptions": 7,
+          "vision": 5,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 8,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 68,
+      "username": "sadman",
+      "display_name": "Sadman Sakib Hasan - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 8,
+          "shooting": 6,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 5,
+          "tackling": 5,
+          "interceptions": 6,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 69,
+      "username": "safder",
+      "display_name": "Safder Meah - Playmaker",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 7,
+          "strength": 5,
+          "agility": 7,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 9,
+          "dribbling": 7,
+          "passing": 9,
+          "shooting": 6,
+          "crossing": 7,
+          "free_kicks": 8
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 4,
+          "tackling": 3,
+          "interceptions": 5,
+          "vision": 9,
+          "decision_making": 8
+        },
+        "mental": {
+          "composure": 8,
+          "concentration": 8,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 2,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 70,
+      "username": "sakib",
+      "display_name": "Sakib Abdur Rahman - Striker",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 6,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 7,
+          "passing": 5,
+          "shooting": 8,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 2,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 7,
+          "leadership": 5,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 71,
+      "username": "salahuddin",
+      "display_name": "Salahuddin Rony - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 8,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 5,
+          "interceptions": 6,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 72,
+      "username": "shahed",
+      "display_name": "Shahed Sheikh - Centre-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 4,
+          "stamina": 7,
+          "strength": 8,
+          "agility": 4,
+          "jumping": 8
+        },
+        "technical": {
+          "ball_control": 5,
+          "dribbling": 3,
+          "passing": 6,
+          "shooting": 3,
+          "crossing": 2,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 8,
+          "tackling": 8,
+          "interceptions": 7,
+          "vision": 5,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 73,
+      "username": "shajid",
+      "display_name": "Shajid Islam Amit - Winger",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 7,
+          "strength": 4,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 8,
+          "passing": 6,
+          "shooting": 6,
+          "crossing": 8,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 6,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 5
+        },
+        "mental": {
+          "composure": 5,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 4,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 74,
+      "username": "shaker",
+      "display_name": "Shaker Khaleque - Defensive midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 8,
+          "strength": 8,
+          "agility": 5,
+          "jumping": 7
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 4,
+          "passing": 7,
+          "shooting": 4,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 8,
+          "tackling": 9,
+          "interceptions": 8,
+          "vision": 6,
+          "decision_making": 8
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 9,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 75,
+      "username": "shazzad",
+      "display_name": "Shazzad Khan - Box-to-box midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 8,
+          "strength": 7,
+          "agility": 6,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 6,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 6,
+          "interceptions": 7,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 76,
+      "username": "siam",
+      "display_name": "Siam Abdullah - Winger",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 9,
+          "stamina": 7,
+          "strength": 4,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 8,
+          "passing": 6,
+          "shooting": 6,
+          "crossing": 8,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 6,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 5
+        },
+        "mental": {
+          "composure": 5,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 4,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 77,
+      "username": "smsohan",
+      "display_name": "SM Sohan - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 6,
+          "interceptions": 7,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 78,
+      "username": "sumit",
+      "display_name": "Sumit Chakma - Attacking midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 6,
+          "strength": 5,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 8,
+          "dribbling": 8,
+          "passing": 7,
+          "shooting": 7,
+          "crossing": 6,
+          "free_kicks": 7
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 4,
+          "vision": 8,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 6,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 79,
+      "username": "swadesh",
+      "display_name": "Swadesh Poddar - Full-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 6,
+          "passing": 6,
+          "shooting": 3,
+          "crossing": 7,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 7,
+          "tackling": 7,
+          "interceptions": 6,
+          "vision": 5,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 6,
+          "leadership": 5,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 80,
+      "username": "syedhafiz",
+      "display_name": "Syed Hafiz R - Playmaker",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 7,
+          "strength": 5,
+          "agility": 7,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 9,
+          "dribbling": 7,
+          "passing": 9,
+          "shooting": 6,
+          "crossing": 7,
+          "free_kicks": 8
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 4,
+          "tackling": 3,
+          "interceptions": 5,
+          "vision": 9,
+          "decision_making": 8
+        },
+        "mental": {
+          "composure": 8,
+          "concentration": 8,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 2,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 81,
+      "username": "syedsaqueb",
+      "display_name": "Syed Saqueb - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 8,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 5,
+          "interceptions": 6,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 82,
+      "username": "syedshakib",
+      "display_name": "Syed Shakib Sarwar - Striker",
+      "preferred_position": "FWD",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 6,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 7,
+          "passing": 5,
+          "shooting": 8,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 2,
+          "tackling": 2,
+          "interceptions": 3,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 7,
+          "leadership": 5,
+          "teamwork": 6
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 83,
+      "username": "tanzim",
+      "display_name": "Tanzim Ahmed - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 8,
+          "shooting": 6,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 5,
+          "tackling": 5,
+          "interceptions": 6,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 84,
+      "username": "tareq",
+      "display_name": "Tareq Anwar - Defensive midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 5,
+          "stamina": 8,
+          "strength": 7,
+          "agility": 5,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 4,
+          "passing": 7,
+          "shooting": 4,
+          "crossing": 4,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 7,
+          "tackling": 8,
+          "interceptions": 8,
+          "vision": 6,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 85,
+      "username": "uzzal",
+      "display_name": "Uzzal Sutradhar - Full-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 8,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 7,
+          "jumping": 6
+        },
+        "technical": {
+          "ball_control": 6,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 4,
+          "crossing": 7,
+          "free_kicks": 5
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 7,
+          "tackling": 7,
+          "interceptions": 6,
+          "vision": 6,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 86,
+      "username": "zahed",
+      "display_name": "Zahed Hossain - Centre-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 4,
+          "stamina": 7,
+          "strength": 8,
+          "agility": 4,
+          "jumping": 8
+        },
+        "technical": {
+          "ball_control": 5,
+          "dribbling": 3,
+          "passing": 6,
+          "shooting": 3,
+          "crossing": 2,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 8,
+          "tackling": 8,
+          "interceptions": 7,
+          "vision": 5,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 87,
+      "username": "zahid",
+      "display_name": "Zahid Hossain - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 7,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 5,
+          "tackling": 5,
+          "interceptions": 6,
+          "vision": 7,
+          "decision_making": 6
+        },
+        "mental": {
+          "composure": 6,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 6,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 88,
+      "username": "zaki",
+      "display_name": "Zaki Rahman - Attacking midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 7,
+          "stamina": 6,
+          "strength": 5,
+          "agility": 8,
+          "jumping": 4
+        },
+        "technical": {
+          "ball_control": 8,
+          "dribbling": 8,
+          "passing": 7,
+          "shooting": 7,
+          "crossing": 6,
+          "free_kicks": 7
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 3,
+          "tackling": 2,
+          "interceptions": 4,
+          "vision": 8,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 6,
+          "determination": 6,
+          "leadership": 6,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 89,
+      "username": "zillur",
+      "display_name": "Zillur Patwary - Centre-back",
+      "preferred_position": "DEF",
+      "attributes": {
+        "physical": {
+          "pace": 4,
+          "stamina": 6,
+          "strength": 9,
+          "agility": 4,
+          "jumping": 9
+        },
+        "technical": {
+          "ball_control": 4,
+          "dribbling": 2,
+          "passing": 5,
+          "shooting": 2,
+          "crossing": 2,
+          "free_kicks": 4
+        },
+        "tactical": {
+          "positioning": 8,
+          "marking": 9,
+          "tackling": 8,
+          "interceptions": 8,
+          "vision": 4,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 8,
+          "determination": 8,
+          "leadership": 8,
+          "teamwork": 7
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    },
+    {
+      "user_id": 90,
+      "username": "zoheb",
+      "display_name": "Zoheb Amin - Central midfielder",
+      "preferred_position": "MID",
+      "attributes": {
+        "physical": {
+          "pace": 6,
+          "stamina": 8,
+          "strength": 6,
+          "agility": 6,
+          "jumping": 5
+        },
+        "technical": {
+          "ball_control": 7,
+          "dribbling": 6,
+          "passing": 7,
+          "shooting": 5,
+          "crossing": 5,
+          "free_kicks": 6
+        },
+        "tactical": {
+          "positioning": 7,
+          "marking": 6,
+          "tackling": 6,
+          "interceptions": 7,
+          "vision": 7,
+          "decision_making": 7
+        },
+        "mental": {
+          "composure": 7,
+          "concentration": 7,
+          "determination": 7,
+          "leadership": 7,
+          "teamwork": 8
+        },
+        "goalkeeping": {
+          "goalkeeping": 1,
+          "handling": 1,
+          "distribution": 1,
+          "aerial_reach": 1
+        }
+      }
+    }
+  ]
+}
