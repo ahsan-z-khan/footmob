@@ -1594,7 +1594,6 @@ function savePlayerAttributes() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            showToast('Player attributes updated successfully!', 'success');
             closeAttributesModal();
             // Stay on the attributes tab and update the player's card
             showTab('attributes');
@@ -1622,16 +1621,19 @@ function updatePlayerCard(playerId) {
                 if (playerCard) {
                     // Update the card content with new attributes
                     updatePlayerCardDisplay(playerCard, data.attributes, data.player_name);
+                    showToast('Player attributes updated successfully!', 'success');
+                } else {
+                    // Card not found, just show success message
+                    showToast('Player attributes updated successfully!', 'success');
                 }
+            } else {
+                showToast('Player attributes updated successfully!', 'success');
             }
         })
         .catch(error => {
             console.error('Error updating player card:', error);
-            // If there's an error, fall back to page reload
-            showToast('Attributes saved. Refreshing page to show updates...', 'info');
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
+            // Show success message since the save actually worked
+            showToast('Player attributes updated successfully!', 'success');
         });
 }
 
