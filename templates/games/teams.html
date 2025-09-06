@@ -1436,68 +1436,200 @@ async function exportTeamsAsImage() {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         
-        // Set canvas dimensions for a compact layout
-        canvas.width = 600;
-        canvas.height = 400;
+        // Get team players and calculate required height
+        const teamAPlayers = document.querySelectorAll('#team-a .player-item');
+        const teamBPlayers = document.querySelectorAll('#team-b .player-item');
+        const maxPlayers = Math.max(teamAPlayers.length, teamBPlayers.length);
         
-        // Set background
-        ctx.fillStyle = '#f8fafc';
+        // Set canvas dimensions dynamically
+        canvas.width = 700;
+        const headerHeight = 120;
+        const playerHeight = 30;
+        const footerHeight = 50;
+        const padding = 40;
+        canvas.height = headerHeight + (maxPlayers * playerHeight) + footerHeight + padding;
+        
+        // Set background with gradient
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, '#f8fafc');
+        gradient.addColorStop(1, '#e2e8f0');
+        ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
+        // Add subtle border
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+        
         // Set fonts
-        ctx.font = 'bold 24px Inter, sans-serif';
+        ctx.font = 'bold 22px Inter, sans-serif';
         ctx.textAlign = 'center';
         
         // Draw title
         ctx.fillStyle = '#1f2937';
-        ctx.fillText('{{ game.group.name }} - {{ game.datetime.strftime("%B %d, %Y") }}', canvas.width / 2, 40);
+        ctx.fillText('{{ game.group.name }}', canvas.width / 2, 35);
         
-        // Draw column headers
-        ctx.font = 'bold 20px Inter, sans-serif';
-        ctx.fillStyle = '#2563eb'; // Blue for Team Blue
-        ctx.fillText('Team Blue', 150, 80);
+        // Draw subtitle
+        ctx.font = '16px Inter, sans-serif';
+        ctx.fillStyle = '#6b7280';
+        ctx.fillText('{{ game.datetime.strftime("%A, %B %d, %Y at %I:%M %p") }}', canvas.width / 2, 55);
         
-        ctx.fillStyle = '#dc2626'; // Red for Team Red  
-        ctx.fillText('Team Red', 450, 80);
+        // Draw column headers with background boxes
+        ctx.font = 'bold 18px Inter, sans-serif';
         
-        // Get team players
-        const teamAPlayers = document.querySelectorAll('#team-a .player-item');
-        const teamBPlayers = document.querySelectorAll('#team-b .player-item');
+        // Team Blue header box
+        ctx.fillStyle = '#dbeafe';
+        ctx.fillRect(40, 75, 280, 35);
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(40, 75, 280, 35);
+        
+        ctx.fillStyle = '#1e40af';
+        ctx.fillText('Team Blue', 180, 97);
+        
+        // Team Red header box
+        ctx.fillStyle = '#fee2e2';
+        ctx.fillRect(380, 75, 280, 35);
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(380, 75, 280, 35);
+        
+        ctx.fillStyle = '#dc2626';
+        ctx.fillText('Team Red', 520, 97);
+        
+        // Helper function to get player position
+        function getPlayerPosition(playerId) {
+            // Check if player is positioned on field
+            const positionedPlayer = document.querySelector(`.formation-positions .positioned-player[data-player-id="${playerId}"]`);
+            if (positionedPlayer) {
+                const positionSlot = positionedPlayer.closest('.position-slot');
+                if (positionSlot) {
+                    const position = positionSlot.getAttribute('data-position');
+                    switch(position) {
+                        case 'GK': return { short: 'GK', full: 'Goalkeeper', color: '#f59e0b' };
+                        case 'DEF': return { short: 'D', full: 'Defender', color: '#10b981' };
+                        case 'MID': return { short: 'M', full: 'Midfielder', color: '#3b82f6' };
+                        case 'FWD': return { short: 'F', full: 'Forward', color: '#ef4444' };
+                    }
+                }
+            }
+            return { short: '', full: '', color: '#9ca3af' };
+        }
         
         // Draw team players
-        ctx.font = '16px Inter, sans-serif';
+        ctx.font = '14px Inter, sans-serif';
         ctx.textAlign = 'left';
         
         // Team Blue (Team A in our system)
-        ctx.fillStyle = '#374151';
-        let yPos = 110;
+        let yPos = 130;
         teamAPlayers.forEach((player, index) => {
+            const playerId = player.getAttribute('data-player-id');
             const playerName = player.querySelector('span.text-gray-900').textContent.trim();
-            ctx.fillText(`${index + 1}. ${playerName}`, 50, yPos);
+            const position = getPlayerPosition(playerId);
+            
+            // Player background
+            ctx.fillStyle = index % 2 === 0 ? '#f1f5f9' : '#ffffff';
+            ctx.fillRect(50, yPos - 18, 260, 25);
+            
+            // Position badge
+            if (position.short) {
+                ctx.fillStyle = position.color;
+                ctx.fillRect(55, yPos - 15, 25, 19);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 11px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(position.short, 67.5, yPos - 3);
+                ctx.textAlign = 'left';
+            }
+            
+            // Player name
+            ctx.fillStyle = '#374151';
+            ctx.font = '14px Inter, sans-serif';
+            const nameX = position.short ? 85 : 60;
+            ctx.fillText(`${index + 1}. ${playerName}`, nameX, yPos);
+            
             yPos += 25;
         });
         
         // Team Red (Team B in our system)
-        yPos = 110;
+        yPos = 130;
         teamBPlayers.forEach((player, index) => {
+            const playerId = player.getAttribute('data-player-id');
             const playerName = player.querySelector('span.text-gray-900').textContent.trim();
-            ctx.fillText(`${index + 1}. ${playerName}`, 350, yPos);
+            const position = getPlayerPosition(playerId);
+            
+            // Player background
+            ctx.fillStyle = index % 2 === 0 ? '#f1f5f9' : '#ffffff';
+            ctx.fillRect(390, yPos - 18, 260, 25);
+            
+            // Position badge
+            if (position.short) {
+                ctx.fillStyle = position.color;
+                ctx.fillRect(395, yPos - 15, 25, 19);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 11px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(position.short, 407.5, yPos - 3);
+                ctx.textAlign = 'left';
+            }
+            
+            // Player name
+            ctx.fillStyle = '#374151';
+            ctx.font = '14px Inter, sans-serif';
+            const nameX = position.short ? 425 : 400;
+            ctx.fillText(`${index + 1}. ${playerName}`, nameX, yPos);
+            
             yPos += 25;
         });
         
         // Add dividing line
-        ctx.strokeStyle = '#d1d5db';
+        ctx.strokeStyle = '#cbd5e1';
         ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
         ctx.beginPath();
-        ctx.moveTo(300, 90);
-        ctx.lineTo(300, 370);
+        ctx.moveTo(350, 115);
+        ctx.lineTo(350, canvas.height - 40);
         ctx.stroke();
+        ctx.setLineDash([]);
         
-        // Add footer
-        ctx.font = '12px Inter, sans-serif';
+        // Add position legend at bottom
+        const legendY = canvas.height - 25;
+        ctx.font = '11px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillStyle = '#6b7280';
-        ctx.fillText('Generated by FootMob', canvas.width / 2, 390);
+        ctx.fillText('Position Legend:', canvas.width / 2, legendY - 15);
+        
+        // Legend items
+        const legends = [
+            { short: 'GK', full: 'Goalkeeper', color: '#f59e0b' },
+            { short: 'D', full: 'Defender', color: '#10b981' },
+            { short: 'M', full: 'Midfielder', color: '#3b82f6' },
+            { short: 'F', full: 'Forward', color: '#ef4444' }
+        ];
+        
+        let legendX = (canvas.width - (legends.length * 80)) / 2;
+        legends.forEach(legend => {
+            // Legend badge
+            ctx.fillStyle = legend.color;
+            ctx.fillRect(legendX, legendY - 10, 15, 12);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 9px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(legend.short, legendX + 7.5, legendY - 2);
+            
+            // Legend text
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '10px Inter, sans-serif';
+            ctx.fillText(legend.full, legendX + 20, legendY - 2);
+            
+            legendX += 80;
+        });
+        
+        // Add footer
+        ctx.font = '10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#9ca3af';
+        ctx.fillText('Generated by FootMob', canvas.width / 2, canvas.height - 8);
         
         // Convert canvas to blob
         canvas.toBlob(async (blob) => {
