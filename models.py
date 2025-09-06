@@ -192,6 +192,29 @@ class Game(db.Model):
         final_team_b_score = team_b_goals + team_a_own_goals
         
         return {'team_a': final_team_a_score, 'team_b': final_team_b_score}
+    
+    def get_responses(self):
+        """Get categorized availability responses for this game"""
+        attending = User.query.join(AvailabilityVote).filter(
+            AvailabilityVote.game_id == self.id,
+            AvailabilityVote.status == 'in'
+        ).all()
+        
+        not_attending = User.query.join(AvailabilityVote).filter(
+            AvailabilityVote.game_id == self.id,
+            AvailabilityVote.status == 'out'
+        ).all()
+        
+        maybe_attending = User.query.join(AvailabilityVote).filter(
+            AvailabilityVote.game_id == self.id,
+            AvailabilityVote.status == 'maybe'
+        ).all()
+        
+        return {
+            'attending': attending,
+            'not_attending': not_attending,
+            'maybe_attending': maybe_attending
+        }
 
 class AvailabilityVote(db.Model):
     id = db.Column(db.Integer, primary_key=True)
