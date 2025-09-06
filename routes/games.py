@@ -107,9 +107,13 @@ def view(game_id):
     team_b_players = game.get_team_b_players()
     
     # Get POTM votes if game is live or finished
+    # Check if teams are formed
+    team_assignments = TeamAssignment.query.filter_by(game_id=game_id).all()
+    teams_formed = len(team_assignments) > 0
+    
     user_potm_vote = None
     potm_results = []
-    if game.status in ['live', 'finished']:
+    if teams_formed or game.status == 'finished':
         user_potm_vote = POTMVote.query.filter_by(
             voter_id=current_user.id,
             game_id=game_id
@@ -127,7 +131,7 @@ def view(game_id):
             .order_by(func.count(POTMVote.id).desc()).all()
     
     events = MatchEvent.query.filter_by(game_id=game_id).order_by(MatchEvent.minute).all()
-    score = game.get_score() if game.status in ['live', 'finished'] else {'team_a': 0, 'team_b': 0}
+    score = game.get_score() if teams_formed or game.status == 'finished' else {'team_a': 0, 'team_b': 0}
     
     # Get unvoted members for admin functionality
     unvoted_members = []
@@ -403,8 +407,10 @@ def end_match(game_id):
         flash('Only admins can end matches')
         return redirect(url_for('games.view', game_id=game_id))
     
-    if game.status != 'live':
-        flash('Game is not live')
+    # Check if teams are formed
+    team_assignments = TeamAssignment.query.filter_by(game_id=game_id).all()
+    if not team_assignments:
+        flash('Cannot end match - teams not formed yet')
         return redirect(url_for('games.view', game_id=game_id))
     
     game.status = 'finished'
@@ -789,6 +795,12 @@ def auto_balance_teams(game_id):
             'team_b_ratings': calculate_team_ratings(balanced_teams['team_b'], game.group_id)
         }
         
+        # Add affinity information if available (for smart_draft algorithm)
+        if algorithm == 'smart_draft' and 'team_a_affinity' in balanced_teams:
+            response_data['team_a_affinity'] = balanced_teams['team_a_affinity']
+            response_data['team_b_affinity'] = balanced_teams['team_b_affinity']
+            response_data['affinity_considered'] = True
+        
         # Add fitness score and iteration count for ML algorithms
         if algorithm in ['simulated_annealing']:
             response_data['fitness_score'] = balanced_teams.get('fitness', 0.0)
@@ -951,6 +963,169 @@ def calculate_team_ratings(players, group_id):
         'pace': round(avg_pace, 1),
         'overall': round(overall, 1)
     }
+
+def calculate_player_affinity(players, group_id):
+    """
+    Calculate affinity scores between all pairs of players based on:
+    1. Games played together on the same team
+    2. Success rate when playing together (wins)
+    3. Combined performance (goals + assists) when together
+    4. Recent collaboration (more weight to recent games)
+    """
+    from sqlalchemy import func
+    from datetime import datetime, timedelta
+    
+    affinity_matrix = {}
+    
+    # Initialize affinity matrix
+    for player1 in players:
+        affinity_matrix[player1.id] = {}
+        for player2 in players:
+            if player1.id != player2.id:
+                affinity_matrix[player1.id][player2.id] = 0.0
+    
+    # Get all finished games in this group
+    finished_games = Game.query.filter_by(
+        group_id=group_id,
+        status='finished'
+    ).order_by(Game.datetime.desc()).all()
+    
+    # Calculate affinity for each pair
+    for player1 in players:
+        for player2 in players:
+            if player1.id == player2.id:
+                continue
+                
+            games_together = 0
+            wins_together = 0
+            combined_performance = 0.0
+            total_weight = 0.0
+            
+            for game_index, game in enumerate(finished_games):
+                # Get team assignments for both players
+                assignment1 = TeamAssignment.query.filter_by(
+                    game_id=game.id,
+                    user_id=player1.id
+                ).first()
+                
+                assignment2 = TeamAssignment.query.filter_by(
+                    game_id=game.id,
+                    user_id=player2.id
+                ).first()
+                
+                # Check if both players were assigned and on the same team
+                if assignment1 and assignment2 and assignment1.team == assignment2.team:
+                    games_together += 1
+                    
+                    # Calculate time-based weight (recent games matter more)
+                    # Games within last 30 days get full weight, older games get reduced weight
+                    days_ago = (datetime.utcnow() - game.datetime).days
+                    if days_ago <= 30:
+                        time_weight = 1.0
+                    elif days_ago <= 90:
+                        time_weight = 0.7
+                    elif days_ago <= 180:
+                        time_weight = 0.4
+                    else:
+                        time_weight = 0.2
+                    
+                    total_weight += time_weight
+                    
+                    # Check if they won together
+                    score = game.get_score()
+                    won_game = False
+                    if assignment1.team == 'A' and score['team_a'] > score['team_b']:
+                        won_game = True
+                    elif assignment1.team == 'B' and score['team_b'] > score['team_a']:
+                        won_game = True
+                    
+                    if won_game:
+                        wins_together += time_weight
+                    
+                    # Calculate combined performance in this game
+                    player1_goals = MatchEvent.query.filter_by(
+                        game_id=game.id,
+                        scorer_id=player1.id,
+                        event_type='goal'
+                    ).count()
+                    
+                    player1_assists = MatchEvent.query.filter_by(
+                        game_id=game.id,
+                        assist_id=player1.id
+                    ).count()
+                    
+                    player2_goals = MatchEvent.query.filter_by(
+                        game_id=game.id,
+                        scorer_id=player2.id,
+                        event_type='goal'
+                    ).count()
+                    
+                    player2_assists = MatchEvent.query.filter_by(
+                        game_id=game.id,
+                        assist_id=player2.id
+                    ).count()
+                    
+                    # Check for direct assist combinations (player1 assists player2's goal or vice versa)
+                    direct_combinations = MatchEvent.query.filter_by(
+                        game_id=game.id,
+                        event_type='goal'
+                    ).filter(
+                        ((MatchEvent.scorer_id == player1.id) & (MatchEvent.assist_id == player2.id)) |
+                        ((MatchEvent.scorer_id == player2.id) & (MatchEvent.assist_id == player1.id))
+                    ).count()
+                    
+                    game_performance = (
+                        (player1_goals + player2_goals) * 2.0 +
+                        (player1_assists + player2_assists) * 1.5 +
+                        direct_combinations * 3.0  # Extra bonus for direct combinations
+                    )
+                    
+                    combined_performance += game_performance * time_weight
+            
+            # Calculate final affinity score
+            if games_together > 0 and total_weight > 0:
+                # Base affinity on games played together
+                games_factor = min(1.0, games_together / 5.0)  # Normalize to max 5 games
+                
+                # Win rate when playing together
+                win_rate = wins_together / total_weight if total_weight > 0 else 0
+                
+                # Average performance when together
+                avg_performance = combined_performance / total_weight if total_weight > 0 else 0
+                performance_factor = min(1.0, avg_performance / 5.0)  # Normalize
+                
+                # Combined affinity score (0-10 scale)
+                affinity_score = (
+                    games_factor * 4.0 +      # 40% weight on games together
+                    win_rate * 4.0 +          # 40% weight on success rate
+                    performance_factor * 2.0  # 20% weight on performance
+                )
+                
+                affinity_matrix[player1.id][player2.id] = round(affinity_score, 2)
+            else:
+                # No history together - neutral affinity
+                affinity_matrix[player1.id][player2.id] = 0.0
+    
+    return affinity_matrix
+
+def calculate_team_affinity_score(team, affinity_matrix):
+    """
+    Calculate the total affinity score for a team based on all player pairs
+    """
+    if len(team) < 2:
+        return 0.0
+    
+    total_affinity = 0.0
+    pair_count = 0
+    
+    for i, player1 in enumerate(team):
+        for j, player2 in enumerate(team):
+            if i < j:  # Avoid counting same pair twice
+                affinity = affinity_matrix.get(player1.id, {}).get(player2.id, 0.0)
+                total_affinity += affinity
+                pair_count += 1
+    
+    return total_affinity / pair_count if pair_count > 0 else 0.0
 
 def calculate_balanced_teams(players, group_id):
     """
@@ -1123,10 +1298,13 @@ def calculate_balanced_teams(players, group_id):
         
         player_scores.append(score_data)
     
+    # Calculate player affinity matrix
+    affinity_matrix = calculate_player_affinity(players, group_id)
+    
     # Sort players by overall score (descending)
     player_scores.sort(key=lambda x: x['overall_score'], reverse=True)
     
-    # Balance teams using smart draft approach
+    # Enhanced team balancing with affinity considerations
     team_a = []
     team_b = []
     team_a_score = 0.0
@@ -1136,48 +1314,67 @@ def calculate_balanced_teams(players, group_id):
     team_a_positions = {'GK': 0, 'DEF': 0, 'MID': 0, 'FWD': 0}
     team_b_positions = {'GK': 0, 'DEF': 0, 'MID': 0, 'FWD': 0}
     
-    # Draft players alternating, but with intelligence
+    # Draft players with affinity-aware logic
     for i, player_data in enumerate(player_scores):
         player = player_data['player']
         score = player_data['overall_score']
         position = player_data['position'] or 'MID'  # Default to midfielder
         
-        # Decide which team to add to based on:
-        # 1. Overall score balance
-        # 2. Position needs
-        # 3. Some randomization to avoid predictable teams
+        # Calculate affinity scores for both teams
+        team_a_affinity = 0.0
+        team_b_affinity = 0.0
         
+        if len(team_a) > 0:
+            # Calculate average affinity with Team A players
+            total_affinity = sum(affinity_matrix.get(player.id, {}).get(teammate.id, 0.0) for teammate in team_a)
+            team_a_affinity = total_affinity / len(team_a)
+        
+        if len(team_b) > 0:
+            # Calculate average affinity with Team B players  
+            total_affinity = sum(affinity_matrix.get(player.id, {}).get(teammate.id, 0.0) for teammate in team_b)
+            team_b_affinity = total_affinity / len(team_b)
+        
+        # Calculate position needs
         team_a_needs_position = team_a_positions[position] < (len(team_a) / 4 + 1)
         team_b_needs_position = team_b_positions[position] < (len(team_b) / 4 + 1)
         
-        score_diff = abs(team_a_score - team_b_score)
+        # Decision factors (weighted scoring)
+        team_a_factors = {
+            'score_balance': max(0, team_b_score - team_a_score),  # Favor weaker team
+            'affinity': team_a_affinity * 1.5,  # 1.5x multiplier for affinity
+            'position_need': 2.0 if team_a_needs_position else 0.0,
+            'size_balance': max(0, len(team_b) - len(team_a)) * 1.0
+        }
         
-        # Add to weaker team, but consider position needs
-        if len(team_a) == len(team_b):
-            # Equal team sizes - use score and position logic
-            if team_a_score <= team_b_score and team_a_needs_position:
-                target_team = 'A'
-            elif team_b_score <= team_a_score and team_b_needs_position:
-                target_team = 'B'
-            else:
-                # Random with slight bias toward score balance
-                target_team = 'A' if team_a_score <= team_b_score else 'B'
+        team_b_factors = {
+            'score_balance': max(0, team_a_score - team_b_score),  # Favor weaker team
+            'affinity': team_b_affinity * 1.5,  # 1.5x multiplier for affinity  
+            'position_need': 2.0 if team_b_needs_position else 0.0,
+            'size_balance': max(0, len(team_a) - len(team_b)) * 1.0
+        }
+        
+        # Calculate total scores for each team
+        team_a_total = sum(team_a_factors.values())
+        team_b_total = sum(team_b_factors.values())
+        
+        # Add some randomization to avoid completely predictable teams (10% random factor)
+        randomization_factor = random.uniform(-0.5, 0.5)
+        team_a_total += randomization_factor
+        team_b_total -= randomization_factor
+        
+        # Decide team assignment
+        if team_a_total > team_b_total:
+            target_team = 'A'
         else:
-            # Different team sizes - add to smaller team unless major score imbalance
-            smaller_team = 'A' if len(team_a) < len(team_b) else 'B'
-            
-            # But if adding to smaller team would create huge imbalance, add to other team
-            if smaller_team == 'A' and (team_a_score + score) - team_b_score > 3.0:
-                target_team = 'B'
-            elif smaller_team == 'B' and (team_b_score + score) - team_a_score > 3.0:
-                target_team = 'A'
-            else:
-                target_team = smaller_team
+            target_team = 'B'
         
-        # Add slight randomization (10% chance to switch)
-        if random.random() < 0.1:
-            target_team = 'B' if target_team == 'A' else 'A'
+        # Ensure we don't create massive score imbalances (safety check)
+        if target_team == 'A' and (team_a_score + score) - team_b_score > 4.0 and len(team_b) > 0:
+            target_team = 'B'
+        elif target_team == 'B' and (team_b_score + score) - team_a_score > 4.0 and len(team_a) > 0:
+            target_team = 'A'
         
+        # Apply the assignment
         if target_team == 'A':
             team_a.append(player)
             team_a_score += score
@@ -1187,11 +1384,18 @@ def calculate_balanced_teams(players, group_id):
             team_b_score += score
             team_b_positions[position] += 1
     
+    # Calculate final team affinity scores
+    team_a_affinity = calculate_team_affinity_score(team_a, affinity_matrix)
+    team_b_affinity = calculate_team_affinity_score(team_b, affinity_matrix)
+    
     return {
         'team_a': team_a,
         'team_b': team_b,
         'team_a_score': team_a_score,
-        'team_b_score': team_b_score
+        'team_b_score': team_b_score,
+        'team_a_affinity': team_a_affinity,
+        'team_b_affinity': team_b_affinity,
+        'affinity_matrix': affinity_matrix
     }
 
 def calculate_team_fitness(team_a, team_b, group_id):

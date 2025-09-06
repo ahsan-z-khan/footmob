@@ -33,6 +33,21 @@ def dashboard():
                          upcoming_games=upcoming_games,
                          total_members=total_members)
 
+@main_bp.route('/history')
+@login_required
+def game_history():
+    """Show all games for the user"""
+    from models import Game, GroupMembership
+    
+    # Get all games for user's groups (both upcoming and finished)
+    user_group_ids = [membership.group_id for membership in GroupMembership.query.filter_by(user_id=current_user.id).all()]
+    
+    all_games = Game.query.filter(
+        Game.group_id.in_(user_group_ids)
+    ).order_by(Game.datetime.desc()).all()
+    
+    return render_template('game_history.html', all_games=all_games)
+
 @main_bp.route('/join', methods=['GET', 'POST'])
 @login_required
 def join_group():

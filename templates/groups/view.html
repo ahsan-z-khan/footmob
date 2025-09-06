@@ -12,15 +12,15 @@
                     {{ group.emoji }}
                 </div>
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900">{{ group.name }}</h1>
+                    <h1 class="text-3xl font-black text-gray-900">{{ group.name }}</h1>
                     <div class="flex items-center mt-2">
-                        <span class="text-sm text-gray-600">
+                        <span class="text-sm text-gray-600 font-medium">
                             {{ members|length }} member{{ 's' if members|length != 1 else '' }}
                         </span>
                         <span class="mx-2 text-gray-300">•</span>
-                        <span class="text-sm text-gray-600">
+                        <span class="text-sm text-gray-600 font-medium">
                             {% if membership.is_admin %}
-                            <span class="text-blue-600 font-medium">You're an admin</span>
+                            <span class="text-blue-600 font-bold">You're an admin</span>
                             {% else %}
                             Member
                             {% endif %}
@@ -31,12 +31,12 @@
             
             {% if membership.is_admin %}
             <div class="mt-6 flex flex-col sm:flex-row gap-3 sm:mt-0">
-                <a href="{{ url_for('invites.manage_invite', group_id=group.id) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                <a href="{{ url_for('invites.manage_invite', group_id=group.id) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-semibold rounded-md text-gray-700 bg-white hover:bg-gray-50">
                     <i class="fas fa-user-plus mr-2"></i>
                     <span class="hidden sm:inline">Invite Members</span>
                     <span class="sm:hidden">Invite</span>
                 </a>
-                <a href="{{ url_for('games.create', group_id=group.id) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                <a href="{{ url_for('games.create', group_id=group.id) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-semibold rounded-md text-white bg-blue-600 hover:bg-blue-700">
                     <i class="fas fa-plus mr-2"></i>
                     <span class="hidden sm:inline">Create Game</span>
                     <span class="sm:hidden">Game</span>
@@ -51,28 +51,28 @@
         <div class="border-b border-gray-200">
             <nav class="overflow-x-auto" aria-label="Tabs">
                 <div class="flex space-x-1 sm:space-x-8 px-4 sm:px-6 min-w-max">
-                    <button onclick="showTab('overview')" id="overview-tab" class="tab-button flex-shrink-0 py-4 px-2 sm:px-1 border-b-2 border-blue-500 text-blue-600 font-medium text-xs sm:text-sm whitespace-nowrap">
+                    <button onclick="showTab('overview')" id="overview-tab" class="tab-button flex-shrink-0 py-4 px-2 sm:px-1 border-b-2 border-blue-500 text-blue-600 font-bold text-xs sm:text-sm whitespace-nowrap">
                         <span class="hidden sm:inline">Overview</span>
                         <span class="sm:hidden">Home</span>
                     </button>
-                    <button onclick="showTab('games')" id="games-tab" class="tab-button flex-shrink-0 py-4 px-2 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-xs sm:text-sm whitespace-nowrap">
+                    <button onclick="showTab('games')" id="games-tab" class="tab-button flex-shrink-0 py-4 px-2 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-bold text-xs sm:text-sm whitespace-nowrap">
                         <span class="hidden sm:inline">Games & History</span>
                         <span class="sm:hidden">Games</span>
                     </button>
-                    <button onclick="showTab('members')" id="members-tab" class="tab-button flex-shrink-0 py-4 px-2 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-xs sm:text-sm whitespace-nowrap">
+                    <button onclick="showTab('members')" id="members-tab" class="tab-button flex-shrink-0 py-4 px-2 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-bold text-xs sm:text-sm whitespace-nowrap">
                         <span class="hidden sm:inline">Members ({{ members|length }})</span>
                         <span class="sm:hidden">Members</span>
                     </button>
-                    <button onclick="showTab('leaderboard')" id="leaderboard-tab" class="tab-button flex-shrink-0 py-4 px-2 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-xs sm:text-sm whitespace-nowrap">
+                    <button onclick="showTab('leaderboard')" id="leaderboard-tab" class="tab-button flex-shrink-0 py-4 px-2 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-bold text-xs sm:text-sm whitespace-nowrap">
                         <span class="hidden sm:inline">Leaderboard</span>
                         <span class="sm:hidden">Ranks</span>
                     </button>
-                    <button onclick="showTab('stats')" id="stats-tab" class="tab-button flex-shrink-0 py-4 px-2 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-xs sm:text-sm whitespace-nowrap">
+                    <button onclick="showTab('stats')" id="stats-tab" class="tab-button flex-shrink-0 py-4 px-2 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-bold text-xs sm:text-sm whitespace-nowrap">
                         <span class="hidden sm:inline">Statistics</span>
                         <span class="sm:hidden">Stats</span>
                     </button>
                     {% if membership.is_admin %}
-                    <button onclick="showTab('attributes')" id="attributes-tab" class="tab-button flex-shrink-0 py-4 px-2 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-xs sm:text-sm whitespace-nowrap">
+                    <button onclick="showTab('attributes')" id="attributes-tab" class="tab-button flex-shrink-0 py-4 px-2 sm:px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-bold text-xs sm:text-sm whitespace-nowrap">
                         <span class="hidden sm:inline">Player Attributes</span>
                         <span class="sm:hidden">Attrs</span>
                     </button>
@@ -93,10 +93,10 @@
                         <i class="fas fa-calendar text-blue-600"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Next Game</h3>
-                        <p class="text-sm text-gray-600 mt-1">{{ next_game.datetime.strftime('%A, %B %d at %I:%M %p') }}</p>
+                        <h3 class="text-lg font-bold text-gray-900">Next Game</h3>
+                        <p class="text-sm text-gray-600 mt-1 font-medium">{{ next_game.datetime.strftime('%A, %B %d at %I:%M %p') }}</p>
                         {% if next_game.location %}
-                            <p class="text-xs text-gray-500 flex items-center mt-1">
+                            <p class="text-xs text-gray-500 flex items-center mt-1 font-medium">
                                 <i class="fas fa-map-marker-alt mr-1"></i>
                                 {{ next_game.location }}
                             </p>
@@ -133,7 +133,7 @@
                     <i class="fas fa-trophy text-green-600"></i>
                 </div>
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-900">Last Result</h3>
+                    <h3 class="text-lg font-black text-gray-900">Last Result</h3>
                     <p class="text-xs text-gray-500 mt-1">{{ last_game.datetime.strftime('%B %d, %Y') }}</p>
                 </div>
             </div>
@@ -172,7 +172,7 @@
                         <i class="fas fa-pulse text-orange-600"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Recent Activity</h3>
+                        <h3 class="text-lg font-black text-gray-900">Recent Activity</h3>
                         <p class="text-xs text-gray-500">Latest group updates and events</p>
                     </div>
                 </div>
@@ -234,101 +234,111 @@
     <!-- Games & History Tab -->
     <div id="games-content" class="tab-content hidden">
         <div class="space-y-6">
-            <!-- Upcoming Games -->
+            <!-- All Games -->
             <div class="bg-white rounded-lg border border-gray-200 p-6">
-                <div class="flex items-center space-x-3 mb-4">
-                    <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-calendar-alt text-blue-600"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Upcoming Games</h3>
-                        <p class="text-xs text-gray-500">Scheduled matches</p>
-                    </div>
-                </div>
-                
-                <!-- Sample upcoming games - replace with actual data -->
-                <div class="space-y-3">
-                    {% if next_game %}
-                    <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h4 class="font-semibold text-blue-900">{{ next_game.datetime.strftime('%A, %B %d') }}</h4>
-                                <p class="text-blue-700 text-sm">{{ next_game.datetime.strftime('%I:%M %p') }}</p>
-                                {% if next_game.location %}
-                                <p class="text-blue-600 text-xs mt-1">
-                                    <i class="fas fa-map-marker-alt mr-1"></i>{{ next_game.location }}
-                                </p>
-                                {% endif %}
-                            </div>
-                            <div class="text-right">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{{ next_game.status.title() }}</span>
-                                <a href="{{ url_for('games.view', game_id=next_game.id) }}" class="block mt-2 text-xs text-blue-600 hover:text-blue-800">View Details →</a>
-                            </div>
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center space-x-3">
+                        <div class="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-calendar text-blue-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-black text-gray-900">All Games</h3>
+                            <p class="text-xs text-gray-500">Upcoming and completed matches</p>
                         </div>
                     </div>
-                    {% else %}
-                    <div class="text-center py-8 text-gray-500">
-                        <i class="fas fa-calendar-plus text-3xl mb-4"></i>
-                        <p>No upcoming games scheduled</p>
+                    {% if membership.is_admin %}
+                    <a href="{{ url_for('games.create', group_id=group.id) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                        <i class="fas fa-plus mr-2"></i>
+                        New Game
+                    </a>
+                    {% endif %}
+                </div>
+                
+                {% if all_games %}
+                    <div class="space-y-4">
+                        {% for game in all_games %}
+                            {% if game.status == 'upcoming' %}
+                                {% set status_class = 'bg-blue-50 border-blue-200 text-blue-800' %}
+                                {% set status_icon = 'fas fa-clock text-blue-600' %}
+                                {% set badge_class = 'bg-blue-100 text-blue-800' %}
+                            {% elif game.status == 'finished' %}
+                                {% set status_class = 'bg-green-50 border-green-200 text-green-800' %}
+                                {% set status_icon = 'fas fa-check-circle text-green-600' %}
+                                {% set badge_class = 'bg-green-100 text-green-800' %}
+                            {% else %}
+                                {% set status_class = 'bg-gray-50 border-gray-200 text-gray-800' %}
+                                {% set status_icon = 'fas fa-circle text-gray-600' %}
+                                {% set badge_class = 'bg-gray-100 text-gray-800' %}
+                            {% endif %}
+                            
+                            <div class="p-4 {{ status_class }} border rounded-lg hover:shadow-sm transition-shadow">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex items-start space-x-3">
+                                        <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center border shadow-sm">
+                                            <i class="{{ status_icon }} text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-gray-900">{{ game.datetime.strftime('%A, %B %d, %Y') }}</h4>
+                                            <p class="text-sm text-gray-600">{{ game.datetime.strftime('%I:%M %p') }}</p>
+                                            {% if game.location %}
+                                            <p class="text-xs text-gray-500 mt-1 flex items-center">
+                                                <i class="fas fa-map-marker-alt mr-1"></i>{{ game.location }}
+                                            </p>
+                                            {% endif %}
+                                            {% if game.notes %}
+                                            <p class="text-xs text-gray-500 mt-1 flex items-start">
+                                                <i class="fas fa-sticky-note mr-1 mt-0.5"></i>{{ game.notes }}
+                                            </p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ badge_class }} mb-2">
+                                            {{ game.status.title() }}
+                                        </span>
+                                        
+                                        {% if game.status == 'finished' %}
+                                            {% set score = game.get_score() %}
+                                            <div class="bg-white rounded-md px-3 py-2 border border-gray-200 shadow-sm mb-2">
+                                                <div class="text-lg font-bold text-gray-900 font-mono">
+                                                    <span class="text-blue-600">{{ score.team_a }}</span>
+                                                    <span class="text-gray-300 mx-1">-</span>
+                                                    <span class="text-red-600">{{ score.team_b }}</span>
+                                                </div>
+                                                <p class="text-xs text-gray-500">Final Score</p>
+                                            </div>
+                                        {% elif game.status == 'upcoming' %}
+                                            {% set responses = game.get_responses() %}
+                                            <div class="text-xs text-gray-600 mb-2">
+                                                <div>{{ responses.attending|length }} attending</div>
+                                                <div>{{ responses.not_attending|length }} not attending</div>
+                                                {% if game.is_poll_locked() %}
+                                                    <div class="text-orange-600 font-medium">Poll Locked</div>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                        
+                                        <a href="{{ url_for('games.view', game_id=game.id) }}" class="inline-flex items-center text-xs text-blue-600 hover:text-blue-800 font-medium">
+                                            View Details <i class="fas fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-12 text-gray-500">
+                        <i class="fas fa-calendar-plus text-4xl mb-4"></i>
+                        <h4 class="text-lg font-medium text-gray-900 mb-2">No games scheduled</h4>
+                        <p class="text-sm mb-6">Start organizing matches for your group</p>
                         {% if membership.is_admin %}
-                        <a href="{{ url_for('games.create', group_id=group.id) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 mt-4">
+                        <a href="{{ url_for('games.create', group_id=group.id) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
                             <i class="fas fa-plus mr-2"></i>
-                            Schedule a Game
+                            Create First Game
                         </a>
                         {% endif %}
                     </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Game History -->
-            <div class="bg-white rounded-lg border border-gray-200 p-6">
-                <div class="flex items-center space-x-3 mb-4">
-                    <div class="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-history text-green-600"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Game History</h3>
-                        <p class="text-xs text-gray-500">Past matches and results</p>
-                    </div>
-                </div>
-
-                <!-- Sample game history - replace with actual data -->
-                <div class="space-y-3">
-                    {% if last_game and last_game.status == 'finished' %}
-                    <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h4 class="font-semibold text-gray-900">{{ last_game.datetime.strftime('%B %d, %Y') }}</h4>
-                                <p class="text-gray-600 text-sm">{{ last_game.datetime.strftime('%I:%M %p') }}</p>
-                                {% if last_game.location %}
-                                <p class="text-gray-500 text-xs mt-1">
-                                    <i class="fas fa-map-marker-alt mr-1"></i>{{ last_game.location }}
-                                </p>
-                                {% endif %}
-                            </div>
-                            <div class="text-right">
-                                {% set score = last_game.get_score() %}
-                                <div class="bg-white rounded-md px-3 py-2 border border-gray-200 shadow-sm">
-                                    <div class="text-xl font-bold text-gray-900 font-mono">
-                                        <span class="text-blue-600">{{ score.team_a }}</span>
-                                        <span class="text-gray-300 mx-1">:</span>
-                                        <span class="text-red-600">{{ score.team_b }}</span>
-                                    </div>
-                                    <p class="text-xs text-gray-500 mt-1">Team A vs Team B</p>
-                                </div>
-                                <a href="{{ url_for('games.view', game_id=last_game.id) }}" class="block mt-2 text-xs text-blue-600 hover:text-blue-800">View Details →</a>
-                            </div>
-                        </div>
-                    </div>
-                    {% else %}
-                    <div class="text-center py-8 text-gray-500">
-                        <i class="fas fa-trophy text-3xl mb-4"></i>
-                        <p>No completed games yet</p>
-                        <p class="text-xs mt-2">Game results will appear here after matches are finished</p>
-                    </div>
-                    {% endif %}
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -342,8 +352,8 @@
                         <i class="fas fa-users text-purple-600"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">All Members</h3>
-                        <p class="text-xs text-gray-500">{{ members|length }} total member{{ 's' if members|length != 1 else '' }}</p>
+                        <h3 class="text-lg font-black text-gray-900">All Members</h3>
+                        <p class="text-xs text-gray-500 font-medium">{{ members|length }} total member{{ 's' if members|length != 1 else '' }}</p>
                     </div>
                 </div>
                 {% if membership.is_admin %}
@@ -365,26 +375,35 @@
                 {% set member_membership = member.memberships|selectattr('group_id', 'equalto', group.id)|first %}
                 <div class="p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
                     <div class="flex items-center space-x-3">
-                        <div class="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-                            <span class="text-sm font-semibold text-blue-700">
-                                {{ member.display_name[0].upper() }}
-                            </span>
+                        <div class="relative inline-block h-10 w-10">
+                            <img 
+                                class="h-10 w-10 rounded-full object-cover border-2 border-indigo-200 shadow-sm" 
+                                src="#" 
+                                data-user-id="{{ member.id }}"
+                                data-user-name="{{ member.display_name }}"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                            />
+                            <div class="h-10 w-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-full flex items-center justify-center border-2 border-indigo-200 shadow-sm" style="display: none;">
+                                <span class="text-sm font-bold text-white">
+                                    {{ member.display_name[0].upper() }}
+                                </span>
+                            </div>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <h4 class="text-sm font-semibold text-gray-900 truncate">{{ member.display_name }}</h4>
+                            <h4 class="text-sm font-bold text-gray-900 truncate">{{ member.display_name }}</h4>
                             <div class="flex items-center space-x-2 mt-1">
                                 {% if member_membership.is_admin %}
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
                                     <i class="fas fa-crown mr-1"></i>
                                     Admin
                                 </span>
                                 {% else %}
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
                                     Member
                                 </span>
                                 {% endif %}
                             </div>
-                            <p class="text-xs text-gray-500 mt-1">Joined {{ member_membership.joined_at.strftime('%b %Y') }}</p>
+                            <p class="text-xs text-gray-500 mt-1 font-medium">Joined {{ member_membership.joined_at.strftime('%b %Y') }}</p>
                         </div>
                     </div>
                 </div>
@@ -403,8 +422,8 @@
                             <i class="fas fa-trophy text-yellow-600"></i>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900">Group Leaderboard</h3>
-                            <p class="text-sm text-gray-500">Player rankings based on match performance</p>
+                            <h3 class="text-lg font-black text-gray-900">Group Leaderboard</h3>
+                            <p class="text-sm text-gray-500 font-medium">Player rankings based on match performance</p>
                         </div>
                     </div>
                     <div class="hidden sm:flex text-sm text-gray-600 bg-gray-50 px-3 py-1 rounded-lg">
@@ -525,15 +544,24 @@
                             </td>
                             <td class="px-2 sm:px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center">
-                                    <div class="h-8 w-8 sm:h-10 sm:w-10 bg-blue-100 rounded-full flex items-center justify-center mr-2 sm:mr-3">
-                                        <span class="text-xs sm:text-sm font-medium text-blue-700">
-                                            {{ player.display_name[0].upper() }}
-                                        </span>
+                                    <div class="relative inline-block h-8 w-8 sm:h-10 sm:w-10 mr-2 sm:mr-3">
+                                        <img 
+                                            class="h-8 w-8 sm:h-10 sm:w-10 rounded-full object-cover border border-gray-200" 
+                                            src="#" 
+                                            data-user-id="{{ player.user_id }}"
+                                            data-user-name="{{ player.display_name }}"
+                                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                        />
+                                        <div class="h-8 w-8 sm:h-10 sm:w-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center border border-gray-200" style="display: none;">
+                                            <span class="text-xs sm:text-sm font-bold text-white">
+                                                {{ player.display_name[0].upper() }}
+                                            </span>
+                                        </div>
                                     </div>
                                     <div>
-                                        <div class="text-xs sm:text-sm font-medium text-gray-900 truncate max-w-24 sm:max-w-none">{{ player.display_name }}</div>
+                                        <div class="text-xs sm:text-sm font-semibold text-gray-900 truncate max-w-24 sm:max-w-none">{{ player.display_name }}</div>
                                         {% if player.user_id == current_user.id %}
-                                        <div class="text-xs text-blue-600 font-medium">You</div>
+                                        <div class="text-xs text-blue-600 font-bold">You</div>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -625,8 +653,8 @@
                             </div>
                         </div>
                         <div class="ml-4">
-                            <div class="text-2xl font-bold text-gray-900">0</div>
-                            <div class="text-sm text-gray-500">Total Games</div>
+                            <div class="text-2xl font-bold text-gray-900">{{ group_stats.total_games if group_stats else 0 }}</div>
+                            <div class="text-sm text-gray-500 font-medium">Total Games</div>
                         </div>
                     </div>
                 </div>
@@ -639,8 +667,8 @@
                             </div>
                         </div>
                         <div class="ml-4">
-                            <div class="text-2xl font-bold text-gray-900">0</div>
-                            <div class="text-sm text-gray-500">Goals Scored</div>
+                            <div class="text-2xl font-bold text-gray-900">{{ group_stats.total_goals if group_stats else 0 }}</div>
+                            <div class="text-sm text-gray-500 font-medium">Goals Scored</div>
                         </div>
                     </div>
                 </div>
@@ -653,8 +681,8 @@
                             </div>
                         </div>
                         <div class="ml-4">
-                            <div class="text-2xl font-bold text-gray-900">0%</div>
-                            <div class="text-sm text-gray-500">Attendance Rate</div>
+                            <div class="text-2xl font-bold text-gray-900">{{ group_stats.attendance_rate if group_stats else 0 }}%</div>
+                            <div class="text-sm text-gray-500 font-medium">Attendance Rate</div>
                         </div>
                     </div>
                 </div>
@@ -667,16 +695,73 @@
                         <i class="fas fa-star text-yellow-600"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Top Players</h3>
-                        <p class="text-xs text-gray-500">Based on goals and participation</p>
+                        <h3 class="text-lg font-black text-gray-900">Top Players</h3>
+                        <p class="text-xs text-gray-500 font-medium">Based on goals and participation</p>
                     </div>
                 </div>
                 
+                {% if group_stats and group_stats.total_games > 0 %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {% if group_stats.top_scorer %}
+                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-4 border border-yellow-200">
+                        <div class="flex items-center space-x-3">
+                            <div class="h-10 w-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-crown text-yellow-600"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-gray-900">Top Scorer</div>
+                                <div class="text-lg font-black text-yellow-800">{{ group_stats.top_scorer[0] }}</div>
+                                <div class="text-xs text-gray-600 font-medium">{{ group_stats.top_scorer[1] }} goal{{ 's' if group_stats.top_scorer[1] != 1 else '' }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if group_stats.most_active_player %}
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                        <div class="flex items-center space-x-3">
+                            <div class="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-medal text-blue-600"></i>
+                            </div>
+                            <div>
+                                <div class="text-sm font-bold text-gray-900">Most Active</div>
+                                <div class="text-lg font-black text-blue-800">{{ group_stats.most_active_player[0] }}</div>
+                                <div class="text-xs text-gray-600 font-medium">{{ group_stats.most_active_player[1] }} game{{ 's' if group_stats.most_active_player[1] != 1 else '' }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Additional Stats -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h4 class="text-sm font-bold text-gray-900 mb-3">Quick Stats</h4>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div>
+                            <div class="text-lg font-bold text-gray-900">{{ group_stats.average_goals_per_game }}</div>
+                            <div class="text-xs text-gray-500 font-medium">Avg Goals/Game</div>
+                        </div>
+                        <div>
+                            <div class="text-lg font-bold text-gray-900">{{ group_stats.total_assists }}</div>
+                            <div class="text-xs text-gray-500 font-medium">Total Assists</div>
+                        </div>
+                        <div>
+                            <div class="text-lg font-bold text-gray-900">{{ group_stats.upcoming_games }}</div>
+                            <div class="text-xs text-gray-500 font-medium">Upcoming Games</div>
+                        </div>
+                        <div>
+                            <div class="text-lg font-bold text-gray-900">{{ group_stats.total_own_goals }}</div>
+                            <div class="text-xs text-gray-500 font-medium">Own Goals</div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
                 <div class="text-center py-8 text-gray-500">
                     <i class="fas fa-chart-bar text-3xl mb-4"></i>
-                    <p>Statistics will appear after games are played</p>
-                    <p class="text-xs mt-2">Goals, assists, and POTM awards will be tracked here</p>
+                    <p class="font-medium">Statistics will appear after games are played</p>
+                    <p class="text-xs mt-2 font-medium">Goals, assists, and POTM awards will be tracked here</p>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -691,8 +776,8 @@
                         <i class="fas fa-chart-radar text-indigo-600"></i>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Player Attributes</h3>
-                        <p class="text-sm text-gray-500">Manage and rate player skills and abilities</p>
+                        <h3 class="text-lg font-black text-gray-900">Player Attributes</h3>
+                        <p class="text-sm text-gray-500 font-medium">Manage and rate player skills and abilities</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-2">

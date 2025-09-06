@@ -54,6 +54,9 @@ def view(group_id):
     next_game = group.get_next_game()
     last_game = group.get_last_game()
     
+    # Get all games for this group
+    all_games = Game.query.filter_by(group_id=group_id).order_by(Game.datetime.desc()).all()
+    
     feed_items = FeedItem.query.filter_by(group_id=group_id).order_by(
         FeedItem.created_at.desc()
     ).limit(10).all()
@@ -62,6 +65,9 @@ def view(group_id):
     
     # Calculate leaderboard data
     leaderboard_data = calculate_leaderboard(group_id)
+    
+    # Calculate group statistics
+    group_stats = calculate_group_statistics(group_id)
     
     # Get player attributes for all members
     player_attributes = {}
@@ -75,9 +81,11 @@ def view(group_id):
                          membership=membership,
                          next_game=next_game,
                          last_game=last_game,
+                         all_games=all_games,
                          feed_items=feed_items,
                          members=members,
                          leaderboard_data=leaderboard_data,
+                         group_stats=group_stats,
                          player_attributes=player_attributes)
 
 @groups_bp.route('/<int:group_id>/members')
@@ -444,6 +452,91 @@ def calculate_leaderboard(group_id):
     leaderboard.sort(key=lambda x: (x['points'], x['total_contributions'], x['goals']), reverse=True)
     
     return leaderboard
+
+
+def calculate_group_statistics(group_id):
+    """Calculate overall group statistics"""
+    # Get all finished games for this group
+    finished_games = Game.query.filter_by(group_id=group_id, status='finished').all()
+    
+    # Get all games (including upcoming)
+    all_games = Game.query.filter_by(group_id=group_id).all()
+    
+    # Get all group members
+    group_members = User.query.join(GroupMembership).filter(
+        GroupMembership.group_id == group_id
+    ).all()
+    
+    stats = {
+        'total_games': len(finished_games),
+        'upcoming_games': len([g for g in all_games if g.status == 'upcoming']),
+        'total_goals': 0,
+        'total_assists': 0,
+        'total_own_goals': 0,
+        'attendance_rate': 0,
+        'average_goals_per_game': 0,
+        'most_active_player': None,
+        'top_scorer': None
+    }
+    
+    if finished_games:
+        # Count total goals and assists
+        stats['total_goals'] = MatchEvent.query.filter(
+            MatchEvent.event_type == 'goal',
+            MatchEvent.game_id.in_([game.id for game in finished_games])
+        ).count()
+        
+        stats['total_assists'] = MatchEvent.query.filter(
+            MatchEvent.assist_id.isnot(None),
+            MatchEvent.game_id.in_([game.id for game in finished_games])
+        ).count()
+        
+        stats['total_own_goals'] = MatchEvent.query.filter(
+            MatchEvent.event_type == 'own_goal',
+            MatchEvent.game_id.in_([game.id for game in finished_games])
+        ).count()
+        
+        # Calculate average goals per game
+        if len(finished_games) > 0:
+            stats['average_goals_per_game'] = round(stats['total_goals'] / len(finished_games), 1)
+        
+        # Calculate attendance rate
+        total_possible_attendances = len(finished_games) * len(group_members)
+        actual_attendances = TeamAssignment.query.filter(
+            TeamAssignment.game_id.in_([game.id for game in finished_games])
+        ).count()
+        
+        if total_possible_attendances > 0:
+            stats['attendance_rate'] = round((actual_attendances / total_possible_attendances) * 100, 1)
+        
+        # Find most active player (most games played)
+        player_games = {}
+        for member in group_members:
+            games_played = TeamAssignment.query.filter(
+                TeamAssignment.user_id == member.id,
+                TeamAssignment.game_id.in_([game.id for game in finished_games])
+            ).count()
+            if games_played > 0:
+                player_games[member.display_name] = games_played
+        
+        if player_games:
+            stats['most_active_player'] = max(player_games.items(), key=lambda x: x[1])
+        
+        # Find top scorer
+        scorer_goals = {}
+        for member in group_members:
+            goals = MatchEvent.query.filter(
+                MatchEvent.scorer_id == member.id,
+                MatchEvent.event_type == 'goal',
+                MatchEvent.game_id.in_([game.id for game in finished_games])
+            ).count()
+            if goals > 0:
+                scorer_goals[member.display_name] = goals
+        
+        if scorer_goals:
+            stats['top_scorer'] = max(scorer_goals.items(), key=lambda x: x[1])
+    
+    return stats
 
 @groups_bp.route('/<int:group_id>/activity')
 @login_required

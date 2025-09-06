@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Game History - FootMob{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">All Games</h1>
+            <p class="text-xl text-gray-600">Your upcoming and finished matches</p>
+        </div>
+
+        {% if all_games %}
+            <div class="space-y-6">
+                {% for game in all_games %}
+                    {% set score = game.get_score() if game.status == 'finished' else {'team_a': 0, 'team_b': 0} %}
+                    {% if game.status == 'upcoming' %}
+                        {% set status_class = 'bg-blue-100 text-blue-800' %}
+                        {% set status_icon = 'fas fa-clock' %}
+                        {% set card_border = 'border-blue-200' %}
+                        {% set header_bg = 'bg-gradient-to-r from-blue-50 to-indigo-50' %}
+                    {% elif game.status == 'finished' %}
+                        {% set status_class = 'bg-green-100 text-green-800' %}
+                        {% set status_icon = 'fas fa-check-circle' %}
+                        {% set card_border = 'border-green-200' %}
+                        {% set header_bg = 'bg-gradient-to-r from-green-50 to-emerald-50' %}
+                    {% else %}
+                        {% set status_class = 'bg-gray-100 text-gray-800' %}
+                        {% set status_icon = 'fas fa-circle' %}
+                        {% set card_border = 'border-gray-200' %}
+                        {% set header_bg = 'bg-gradient-to-r from-gray-50 to-slate-50' %}
+                    {% endif %}
+                    
+                    <div class="bg-white rounded-xl shadow-sm border {{ card_border }} overflow-hidden hover:shadow-md transition-shadow">
+                        <div class="{{ header_bg }} p-4 border-b border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 {{ header_bg }} rounded-lg flex items-center justify-center border">
+                                        <i class="{{ status_icon }} text-lg"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">{{ game.group.name }}</h3>
+                                        <p class="text-sm text-gray-600">{{ game.datetime.strftime('%A, %B %d, %Y at %I:%M %p') }}</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ status_class }}">
+                                        {{ game.status.title() }}
+                                    </span>
+                                    {% if game.status == 'finished' %}
+                                    <div class="text-2xl font-bold text-gray-900 font-mono mt-2">
+                                        <span class="text-blue-600">{{ score.team_a }}</span>
+                                        <span class="text-gray-300 mx-2">-</span>
+                                        <span class="text-red-600">{{ score.team_b }}</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4">
+                            {% if game.location %}
+                            <div class="flex items-center text-sm text-gray-600 mb-3">
+                                <i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>
+                                {{ game.location }}
+                            </div>
+                            {% endif %}
+                            
+                            {% if game.notes %}
+                            <div class="flex items-start text-sm text-gray-600 mb-3">
+                                <i class="fas fa-sticky-note mr-2 text-gray-400 mt-1"></i>
+                                <p>{{ game.notes }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="text-sm text-gray-500">
+                                    {% if game.status == 'upcoming' %}
+                                        Poll {% if game.is_poll_locked() %}locked{% else %}open{% endif %}
+                                        {% set responses = game.get_responses() %}
+                                        • {{ responses.attending|length }} attending, {{ responses.not_attending|length }} not attending
+                                    {% elif game.status == 'finished' %}
+                                        Game completed on {{ game.datetime.strftime('%b %d, %Y') }}
+                                    {% endif %}
+                                </div>
+                                <a href="{{ url_for('games.view', game_id=game.id) }}" 
+                                   class="inline-flex items-center px-3 py-2 text-sm font-medium text-blue-600 hover:text-blue-800">
+                                    View Details
+                                    <i class="fas fa-arrow-right ml-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-12">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-calendar text-gray-400 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No games yet</h3>
+                <p class="text-gray-500">Your scheduled and completed matches will appear here</p>
+            </div>
+        {% endif %}
+        
+        <div class="text-center mt-12">
+            <a href="{{ url_for('main.dashboard') }}" 
+               class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

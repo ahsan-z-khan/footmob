@@ -161,22 +161,30 @@ class Game(db.Model):
     def get_score(self):
         # Regular goals for Team A
         team_a_goals = MatchEvent.query.filter_by(game_id=self.id, event_type='goal').join(
-            TeamAssignment, MatchEvent.scorer_id == TeamAssignment.user_id
+            TeamAssignment, 
+            (MatchEvent.scorer_id == TeamAssignment.user_id) & 
+            (TeamAssignment.game_id == self.id)
         ).filter(TeamAssignment.team == 'A').count()
         
         # Regular goals for Team B
         team_b_goals = MatchEvent.query.filter_by(game_id=self.id, event_type='goal').join(
-            TeamAssignment, MatchEvent.scorer_id == TeamAssignment.user_id
+            TeamAssignment, 
+            (MatchEvent.scorer_id == TeamAssignment.user_id) & 
+            (TeamAssignment.game_id == self.id)
         ).filter(TeamAssignment.team == 'B').count()
         
         # Own goals by Team A players (add to Team B's score)
         team_a_own_goals = MatchEvent.query.filter_by(game_id=self.id, event_type='own_goal').join(
-            TeamAssignment, MatchEvent.scorer_id == TeamAssignment.user_id
+            TeamAssignment, 
+            (MatchEvent.scorer_id == TeamAssignment.user_id) & 
+            (TeamAssignment.game_id == self.id)
         ).filter(TeamAssignment.team == 'A').count()
         
         # Own goals by Team B players (add to Team A's score)
         team_b_own_goals = MatchEvent.query.filter_by(game_id=self.id, event_type='own_goal').join(
-            TeamAssignment, MatchEvent.scorer_id == TeamAssignment.user_id
+            TeamAssignment, 
+            (MatchEvent.scorer_id == TeamAssignment.user_id) & 
+            (TeamAssignment.game_id == self.id)
         ).filter(TeamAssignment.team == 'B').count()
         
         # Final scores: own goals add to opponent's score

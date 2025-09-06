@@ -9,15 +9,191 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Avatar generation script -->
     <script>
-        // Tailwind configuration - suppress development warnings
+                // Generate avatar URL based on username
+        function generateAvatar(username, size = 40) {
+            const seed = username.toLowerCase().replace(/\s+/g, '');
+            
+            // Use only non-human avatar styles - animals, robots, cartoons
+            const styles = ['bottts', 'croodles', 'identicon', 'initials', 'pixel-art', 'shapes'];
+            const hashCode = seed.split('').reduce((hash, char) => {
+                hash = ((hash << 5) - hash) + char.charCodeAt(0);
+                return hash & hash;
+            }, 0);
+            const styleIndex = Math.abs(hashCode) % styles.length;
+            const selectedStyle = styles[styleIndex];
+            
+            return `https://api.dicebear.com/7.x/${selectedStyle}/svg?seed=${encodeURIComponent(seed)}&size=${size}&backgroundColor=f0f4f8,e2e8f0,cbd5e1,94a3b8&radius=50`;
+        }
+        
+        // Generate fallback character/icon based on username - only animals and objects
+        function getFallbackIcon(username) {
+            const icons = ['🤖', '👾', '🐱', '🐶', '🐺', '🦊', '🐯', '🦁', '🐸', '🐵', '🐼', '🐨', '🐰', '🦝', '🎯', '⚽', '🏆', '⭐', '🔥', '💎'];
+            const hashCode = username.split('').reduce((hash, char) => {
+                hash = ((hash << 5) - hash) + char.charCodeAt(0);
+                return hash & hash;
+            }, 0);
+            return icons[Math.abs(hashCode) % icons.length];
+        }
+        
+        // Generate fallback character/icon based on username
+        function getFallbackIcon(username) {
+            const icons = ['�', '🧑', '🦸‍♂️', '🏃‍♂️', '�‍♂️', '🚀', '⚽', '�', '⭐', '�', '🥅', '👑', '🔥', '💪', '�', '�'];
+            const hashCode = username.split('').reduce((hash, char) => {
+                hash = ((hash << 5) - hash) + char.charCodeAt(0);
+                return hash & hash;
+            }, 0);
+            return icons[Math.abs(hashCode) % icons.length];
+        }
+        
+        // Update all user avatars on page load
+        function initializeAvatars() {
+            // Handle data-username attribute
+            document.querySelectorAll('[data-username]').forEach(element => {
+                const username = element.getAttribute('data-username');
+                const size = element.getAttribute('data-size') || 40;
+                
+                if (element.tagName === 'IMG') {
+                    element.src = generateAvatar(username, size);
+                    element.style.display = 'block';
+                    
+                    // Set a timeout to show fallback if avatar doesn't load within 3 seconds
+                    const timeoutId = setTimeout(() => {
+                        if (!element.complete || element.naturalWidth === 0) {
+                            element.style.display = 'none';
+                            if (element.nextElementSibling) {
+                                const fallbackDiv = element.nextElementSibling;
+                                fallbackDiv.style.display = 'flex';
+                                const textSpan = fallbackDiv.querySelector('span');
+                                if (textSpan) {
+                                    textSpan.textContent = getFallbackIcon(username);
+                                    textSpan.style.fontSize = '1.2em';
+                                }
+                            }
+                        }
+                    }, 3000);
+                    
+                    element.onload = function() {
+                        clearTimeout(timeoutId);
+                        this.style.display = 'block';
+                        if (this.nextElementSibling) {
+                            this.nextElementSibling.style.display = 'none';
+                        }
+                    };
+                    
+                    element.onerror = function() {
+                        clearTimeout(timeoutId);
+                        // Fallback to icon if avatar fails to load
+                        this.style.display = 'none';
+                        if (this.nextElementSibling) {
+                            const fallbackDiv = this.nextElementSibling;
+                            fallbackDiv.style.display = 'flex';
+                            // Replace text with icon
+                            const textSpan = fallbackDiv.querySelector('span');
+                            if (textSpan) {
+                                textSpan.textContent = getFallbackIcon(username);
+                                textSpan.style.fontSize = '1.2em';
+                            }
+                        }
+                    };
+                } else if (element.classList.contains('avatar-bg')) {
+                    element.style.backgroundImage = `url(${generateAvatar(username, size)})`;
+                }
+            });
+            
+            // Handle data-user-name attribute (for new avatar system)
+            document.querySelectorAll('[data-user-name]').forEach(element => {
+                const userName = element.getAttribute('data-user-name');
+                const userId = element.getAttribute('data-user-id');
+                const size = element.getAttribute('data-size') || 40;
+                
+                // Use a combined seed for more uniqueness
+                const seed = userId ? `${userId}-${userName}` : userName;
+                
+                if (element.tagName === 'IMG') {
+                    // Generate and set the avatar immediately
+                    const avatarUrl = generateAvatar(seed, size);
+                    element.src = avatarUrl;
+                    element.style.display = 'block';
+                    
+                    // Set a timeout to show fallback if avatar doesn't load within 3 seconds
+                    const timeoutId = setTimeout(() => {
+                        if (!element.complete || element.naturalWidth === 0) {
+                            element.style.display = 'none';
+                            if (element.nextElementSibling) {
+                                const fallbackDiv = element.nextElementSibling;
+                                fallbackDiv.style.display = 'flex';
+                                const textSpan = fallbackDiv.querySelector('span');
+                                if (textSpan) {
+                                    textSpan.textContent = getFallbackIcon(userName);
+                                    textSpan.style.fontSize = '1.2em';
+                                }
+                            }
+                        }
+                    }, 3000);
+                    
+                    // Set up load handler for successful loading
+                    element.onload = function() {
+                        clearTimeout(timeoutId);
+                        this.style.display = 'block';
+                        // Hide the fallback div initially since we're showing the avatar
+                        if (this.nextElementSibling) {
+                            this.nextElementSibling.style.display = 'none';
+                        }
+                    };
+                    
+                    // Set up error handler for fallback
+                    element.onerror = function() {
+                        clearTimeout(timeoutId);
+                        // Fallback to icon if avatar fails to load
+                        this.style.display = 'none';
+                        if (this.nextElementSibling) {
+                            const fallbackDiv = this.nextElementSibling;
+                            fallbackDiv.style.display = 'flex';
+                            // Replace text with icon
+                            const textSpan = fallbackDiv.querySelector('span');
+                            if (textSpan) {
+                                textSpan.textContent = getFallbackIcon(userName);
+                                textSpan.style.fontSize = '1.2em';
+                            }
+                        }
+                    };
+                    
+                    // Hide the fallback div initially since we're showing the avatar
+                    if (element.nextElementSibling) {
+                        element.nextElementSibling.style.display = 'none';
+                    }
+                }
+            });
+        }
+        
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', initializeAvatars);
+    </script>
+    
+    <script>
+        // Enhanced Tailwind configuration
         if (typeof tailwind !== 'undefined') {
             tailwind.config = {
                 theme: {
                     extend: {
                         fontFamily: {
-                            sans: ['Inter', 'ui-sans-serif', 'system-ui']
+                            sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+                            mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+                        },
+                        fontWeight: {
+                            'ultra-light': 100,
+                            'extra-light': 200,
+                            'light': 300,
+                            'normal': 400,
+                            'medium': 500,
+                            'semibold': 600,
+                            'bold': 700,
+                            'extra-bold': 800,
+                            'black': 900
                         }
                     }
                 }
@@ -83,14 +259,23 @@
                             </div>
                         </div>
                         <div class="hidden sm:flex items-center space-x-3">
-                            <div class="h-8 w-8 bg-gray-100 rounded-full flex items-center justify-center">
-                                <span class="text-sm font-medium text-gray-700">
-                                    {{ current_user.display_name[0].upper() }}
-                                </span>
+                            <div class="relative inline-block h-8 w-8">
+                                <img 
+                                    class="h-8 w-8 rounded-full object-cover border-2 border-white shadow-sm" 
+                                    src="#" 
+                                    data-user-id="{{ current_user.id }}"
+                                    data-user-name="{{ current_user.display_name }}"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                />
+                                <div class="h-8 w-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center border-2 border-white shadow-sm" style="display: none;">
+                                    <span class="text-sm font-bold text-white">
+                                        {{ current_user.display_name[0].upper() }}
+                                    </span>
+                                </div>
                             </div>
                             <div class="hidden lg:block">
-                                <div class="text-sm font-medium text-gray-900">{{ current_user.display_name }}</div>
-                                <div class="text-sm text-gray-500">Member</div>
+                                <div class="text-sm font-semibold text-gray-900">{{ current_user.display_name }}</div>
+                                <div class="text-xs text-gray-500 font-medium">Member</div>
                             </div>
                         </div>
                         <div class="relative">
@@ -570,6 +755,11 @@
                 });
             }
         }
+        
+        // Initialize all avatars on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAvatars();
+        });
     </script>
 </body>
 </html>

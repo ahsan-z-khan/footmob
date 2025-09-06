@@ -36,6 +36,15 @@
                 </a>
                 {% endif %}
                 
+                {% if game.status == 'upcoming' and team_a_players and team_b_players %}
+                <form method="POST" action="{{ url_for('games.end_match', game_id=game.id) }}" class="inline" onsubmit="return confirm('Are you sure you want to finish this game?')">
+                    <button type="submit" class="inline-flex items-center px-3 py-2 border border-green-300 text-xs font-medium rounded-md text-green-700 bg-green-50 hover:bg-green-100">
+                        <i class="fas fa-flag-checkered mr-1"></i>
+                        Finish Game
+                    </button>
+                </form>
+                {% endif %}
+                
                 {% if game.status == 'upcoming' %}
                 <button onclick="confirmDeleteGame('{{ game.id }}', '{{ game.datetime.strftime('%A, %B %d at %I:%M %p') }}')" 
                         class="inline-flex items-center px-3 py-2 border border-red-300 text-xs font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100">
@@ -82,7 +91,7 @@
                 {% else %}
                 <div class="mb-4 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
                     <i class="fas fa-clock mr-2"></i>
-                    Upcoming Match
+                    Teams Formed - Ready to Play
                 </div>
                 {% endif %}
 
@@ -371,12 +380,13 @@
                             <div class="grid grid-cols-7 gap-3 items-center p-3 border-b">
                                 <!-- Player Info -->
                                 <div class="col-span-2 flex items-center space-x-2">
-                                    <div class="h-8 w-8 bg-blue-200 rounded-full flex items-center justify-center">
-                                        <span class="text-xs font-bold text-blue-800">
+                                    <div class="h-8 w-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center overflow-hidden border border-blue-300 shadow-sm">
+                                        <img data-username="{{ player.display_name }}" data-size="32" class="w-full h-full object-cover" alt="{{ player.display_name }}" />
+                                        <span class="text-xs font-semibold text-white" style="display: none;">
                                             {{ player.display_name[0].upper() }}
                                         </span>
                                     </div>
-                                    <span class="text-sm font-medium text-gray-900">{{ player.display_name }}</span>
+                                    <span class="text-sm font-semibold text-gray-900">{{ player.display_name }}</span>
                                 </div>
                                 
                                 <!-- Goals Column -->
@@ -471,12 +481,13 @@
                             <div class="grid grid-cols-7 gap-3 items-center p-3 border-b">
                                 <!-- Player Info -->
                                 <div class="col-span-2 flex items-center space-x-2">
-                                    <div class="h-8 w-8 bg-red-200 rounded-full flex items-center justify-center">
-                                        <span class="text-xs font-bold text-red-800">
+                                    <div class="h-8 w-8 bg-gradient-to-br from-red-400 to-red-600 rounded-full flex items-center justify-center overflow-hidden border border-red-300 shadow-sm">
+                                        <img data-username="{{ player.display_name }}" data-size="32" class="w-full h-full object-cover" alt="{{ player.display_name }}" />
+                                        <span class="text-xs font-semibold text-white" style="display: none;">
                                             {{ player.display_name[0].upper() }}
                                         </span>
                                     </div>
-                                    <span class="text-sm font-medium text-gray-900">{{ player.display_name }}</span>
+                                    <span class="text-sm font-semibold text-gray-900">{{ player.display_name }}</span>
                                 </div>
                                 
                                 <!-- Goals Column -->
@@ -610,7 +621,8 @@ function addGoal(playerId) {
         // Add hidden fields
         const fields = [
             {name: 'event_type', value: 'goal'},
-            {name: 'scorer_id', value: playerId}
+            {name: 'scorer_id', value: playerId},
+            {name: 'minute', value: 0}
         ];
         
         fields.forEach(field => {
@@ -719,7 +731,8 @@ function addOwnGoal(playerId) {
         
         const fields = [
             {name: 'event_type', value: 'own_goal'},
-            {name: 'scorer_id', value: playerId}
+            {name: 'scorer_id', value: playerId},
+            {name: 'minute', value: 0}
         ];
         
         fields.forEach(field => {
@@ -968,11 +981,6 @@ function addPlayerToPoll(playerId, status, playerName) {
         });
     }
 }
-
-// Toast notifications are now handled globally by base.html
-</script>
-
-// Toast notifications are now handled globally by base.html
 </script>
 
 {% endblock %}
