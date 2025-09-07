@@ -3,17 +3,17 @@
 {% block title %}Form Teams - Game{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-8">
     <div class="max-w-4xl mx-auto">
         <!-- Header -->
-        <div class="flex justify-between items-center mb-6">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 lg:mb-6 gap-4">
             <div class="flex items-center space-x-3">
                 <a href="{{ url_for('games.view', game_id=game.id) }}" class="inline-flex items-center p-2 text-gray-400 hover:text-gray-600 rounded-full">
                     <i class="fas fa-arrow-left"></i>
                 </a>
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900">Form Teams</h1>
-                    <p class="text-sm text-gray-600 mt-1">
+                    <h1 class="text-2xl lg:text-3xl font-bold text-gray-900">Form Teams</h1>
+                    <p class="text-xs lg:text-sm text-gray-600 mt-1">
                         <i class="fas fa-crown text-yellow-500 mr-1"></i>
                         Admin Only - Organize players into balanced teams
                     </p>
@@ -21,21 +21,21 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-lg border border-gray-200 p-6">
-                <form method="POST" class="space-y-6">
+        <div class="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
+                <form method="POST" class="space-y-4 lg:space-y-6">
                     <!-- Formation Selection -->
-                    <div class="bg-green-50 rounded-lg p-4 border border-green-200">
-                        <h3 class="text-lg font-semibold text-green-800 mb-4 flex items-center">
+                    <div class="bg-green-50 rounded-lg p-3 lg:p-4 border border-green-200">
+                        <h3 class="text-base lg:text-lg font-semibold text-green-800 mb-3 lg:mb-4 flex items-center">
                             <i class="fas fa-futbol mr-2"></i>
                             Formation & Field Setup
                         </h3>
-                        <div class="grid md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             <!-- Formation Selector -->
                             <div>
                                 <label for="formation" class="block text-sm font-medium text-gray-700 mb-2">
                                     Select Formation
                                 </label>
-                                <select id="formation" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <select id="formation" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm lg:text-base focus:outline-none focus:ring-2 focus:ring-green-500">
                                     <option value="4-4-2">4-4-2 (Classic)</option>
                                     <option value="4-3-3">4-3-3 (Attacking)</option>
                                     <option value="3-5-2">3-5-2 (Wing Play)</option>
@@ -51,11 +51,11 @@
                                     View Mode
                                 </label>
                                 <div class="flex space-x-2">
-                                    <button type="button" id="list-view" class="view-toggle active px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
-                                        <i class="fas fa-list mr-1"></i> List
+                                    <button type="button" id="list-view" class="view-toggle active px-3 py-2 border border-gray-300 rounded-md text-xs lg:text-sm hover:bg-gray-50 flex-1 lg:flex-none">
+                                        <i class="fas fa-list mr-1"></i> <span class="hidden sm:inline">List</span>
                                     </button>
-                                    <button type="button" id="field-view" class="view-toggle px-3 py-2 border border-gray-300 rounded-md text-sm hover:bg-gray-50">
-                                        <i class="fas fa-futbol mr-1"></i> Field
+                                    <button type="button" id="field-view" class="view-toggle px-3 py-2 border border-gray-300 rounded-md text-xs lg:text-sm hover:bg-gray-50 flex-1 lg:flex-none">
+                                        <i class="fas fa-futbol mr-1"></i> <span class="hidden sm:inline">Field</span>
                                     </button>
                                 </div>
                             </div>
@@ -63,26 +63,26 @@
                     </div>
 
                     <!-- List View (Original) -->
-                    <div id="list-view-content" class="grid md:grid-cols-3 gap-6">
+                    <div id="list-view-content" class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
                         <!-- Available Players -->
-                        <div class="bg-white rounded-lg border border-gray-200 p-6">
-                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Available Players ({{ in_players|length }})</h3>
-                                <div id="available-players" class="space-y-2 min-h-[200px]">
+                        <div class="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
+                            <h3 class="text-base lg:text-lg font-semibold text-gray-900 mb-3 lg:mb-4">Available Players ({{ in_players|length }})</h3>
+                                <div id="available-players" class="space-y-2 min-h-[150px] lg:min-h-[200px]">
                                     {% for player in in_players %}
                                     {% if player not in current_team_a and player not in current_team_b %}
                                     <div 
-                                        class="player-item p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors" 
+                                        class="player-item p-2 lg:p-3 border border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors" 
                                         data-player-id="{{ player.id }}"
                                         draggable="true"
                                     >
                                         <div class="flex items-center space-x-2">
-                                            <div class="h-7 w-7 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center overflow-hidden border border-gray-300 shadow-sm">
+                                            <div class="h-6 w-6 lg:h-7 lg:w-7 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center overflow-hidden border border-gray-300 shadow-sm">
                                                 <img data-username="{{ player.display_name }}" data-size="28" class="w-full h-full object-cover" alt="{{ player.display_name }}" />
                                                 <span class="text-xs font-semibold text-white" style="display: none;">
                                                     {{ player.display_name[0].upper() }}
                                                 </span>
                                             </div>
-                                            <span class="text-gray-900 font-medium">{{ player.display_name }}</span>
+                                            <span class="text-gray-900 font-medium text-sm lg:text-base truncate">{{ player.display_name }}</span>
                                         </div>
                                     </div>
                                     {% endif %}
@@ -91,10 +91,10 @@
                         </div>
 
                         <!-- Team A -->
-                        <div class="bg-white rounded-lg border border-gray-200 p-6">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-lg font-semibold text-blue-600">Team A</h3>
-                                <span id="team-a-count" class="text-sm text-gray-500">0 players</span>
+                        <div class="bg-white rounded-lg border border-gray-200 p-4 lg:p-6">
+                            <div class="flex justify-between items-center mb-3 lg:mb-4">
+                                <h3 class="text-base lg:text-lg font-semibold text-blue-600">Team A</h3>
+                                <span id="team-a-count" class="text-xs lg:text-sm text-gray-500">0 players</span>
                             </div>
                             
                             <!-- Team A Ratings -->
@@ -1436,70 +1436,58 @@ async function exportTeamsAsImage() {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         
-        // Get team players and calculate required height
+        // Get team players
         const teamAPlayers = document.querySelectorAll('#team-a .player-item');
         const teamBPlayers = document.querySelectorAll('#team-b .player-item');
         const maxPlayers = Math.max(teamAPlayers.length, teamBPlayers.length);
         
-        // Set canvas dimensions dynamically
-        canvas.width = 700;
-        const headerHeight = 120;
-        const playerHeight = 30;
-        const footerHeight = 50;
-        const padding = 40;
-        canvas.height = headerHeight + (maxPlayers * playerHeight) + footerHeight + padding;
+        // Professional matchday dimensions
+        canvas.width = 800;
+        canvas.height = 600;
         
-        // Set background with gradient
-        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-        gradient.addColorStop(0, '#f8fafc');
-        gradient.addColorStop(1, '#e2e8f0');
+        // Create dark professional background
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, '#0f172a');
+        gradient.addColorStop(0.5, '#1e293b');
+        gradient.addColorStop(1, '#0f172a');
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Add subtle border
-        ctx.strokeStyle = '#cbd5e1';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(10, 10, canvas.width - 20, canvas.height - 20);
+        // Add subtle pattern overlay
+        ctx.globalAlpha = 0.05;
+        for (let i = 0; i < canvas.width; i += 40) {
+            for (let j = 0; j < canvas.height; j += 40) {
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(i, j, 2, 2);
+            }
+        }
+        ctx.globalAlpha = 1;
         
-        // Set fonts
-        ctx.font = 'bold 22px Inter, sans-serif';
+        // Header section with accent
+        ctx.fillStyle = '#059669';
+        ctx.fillRect(0, 0, canvas.width, 8);
+        
+        // Main title
+        ctx.font = 'bold 28px Inter, -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.fillStyle = '#ffffff';
         ctx.textAlign = 'center';
+        ctx.fillText('MATCHDAY SQUAD', canvas.width / 2, 50);
         
-        // Draw title
-        ctx.fillStyle = '#1f2937';
-        ctx.fillText('{{ game.group.name }}', canvas.width / 2, 35);
-        
-        // Draw subtitle
+        // Subtitle with game info
         ctx.font = '16px Inter, sans-serif';
-        ctx.fillStyle = '#6b7280';
-        ctx.fillText('{{ game.datetime.strftime("%A, %B %d, %Y at %I:%M %p") }}', canvas.width / 2, 55);
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('{{ game.group.name }}', canvas.width / 2, 75);
+        ctx.fillText('{{ game.datetime.strftime("%A, %B %d, %Y - %I:%M %p") }}', canvas.width / 2, 95);
         
-        // Draw column headers with background boxes
-        ctx.font = 'bold 18px Inter, sans-serif';
-        
-        // Team Blue header box
-        ctx.fillStyle = '#dbeafe';
-        ctx.fillRect(40, 75, 280, 35);
-        ctx.strokeStyle = '#3b82f6';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(40, 75, 280, 35);
-        
-        ctx.fillStyle = '#1e40af';
-        ctx.fillText('Team Blue', 180, 97);
-        
-        // Team Red header box
-        ctx.fillStyle = '#fee2e2';
-        ctx.fillRect(380, 75, 280, 35);
-        ctx.strokeStyle = '#ef4444';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(380, 75, 280, 35);
-        
-        ctx.fillStyle = '#dc2626';
-        ctx.fillText('Team Red', 520, 97);
+        // Team containers
+        const teamWidth = 340;
+        const teamHeight = 420;
+        const teamY = 130;
+        const team1X = 50;
+        const team2X = 410;
         
         // Helper function to get player position
         function getPlayerPosition(playerId) {
-            // Check if player is positioned on field
             const positionedPlayer = document.querySelector(`.formation-positions .positioned-player[data-player-id="${playerId}"]`);
             if (positionedPlayer) {
                 const positionSlot = positionedPlayer.closest('.position-slot');
@@ -1507,129 +1495,153 @@ async function exportTeamsAsImage() {
                     const position = positionSlot.getAttribute('data-position');
                     switch(position) {
                         case 'GK': return { short: 'GK', full: 'Goalkeeper', color: '#f59e0b' };
-                        case 'DEF': return { short: 'D', full: 'Defender', color: '#10b981' };
-                        case 'MID': return { short: 'M', full: 'Midfielder', color: '#3b82f6' };
-                        case 'FWD': return { short: 'F', full: 'Forward', color: '#ef4444' };
+                        case 'DEF': return { short: 'DEF', full: 'Defender', color: '#059669' };
+                        case 'MID': return { short: 'MID', full: 'Midfielder', color: '#0ea5e9' };
+                        case 'FWD': return { short: 'ATT', full: 'Attacker', color: '#dc2626' };
                     }
                 }
             }
-            return { short: '', full: '', color: '#9ca3af' };
+            return null;
         }
         
-        // Draw team players
-        ctx.font = '14px Inter, sans-serif';
-        ctx.textAlign = 'left';
-        
-        // Team Blue (Team A in our system)
-        let yPos = 130;
-        teamAPlayers.forEach((player, index) => {
-            const playerId = player.getAttribute('data-player-id');
-            const playerName = player.querySelector('span.text-gray-900').textContent.trim();
-            const position = getPlayerPosition(playerId);
+        // Draw team containers
+        function drawTeamContainer(x, y, teamName, teamColor, players) {
+            // Team container background
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(x, y, teamWidth, teamHeight);
             
-            // Player background
-            ctx.fillStyle = index % 2 === 0 ? '#f1f5f9' : '#ffffff';
-            ctx.fillRect(50, yPos - 18, 260, 25);
+            // Team container border
+            ctx.strokeStyle = teamColor;
+            ctx.lineWidth = 3;
+            ctx.strokeRect(x, y, teamWidth, teamHeight);
             
-            // Position badge
-            if (position.short) {
-                ctx.fillStyle = position.color;
-                ctx.fillRect(55, yPos - 15, 25, 19);
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 11px Inter, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(position.short, 67.5, yPos - 3);
+            // Team header
+            ctx.fillStyle = teamColor;
+            ctx.fillRect(x, y, teamWidth, 50);
+            
+            // Team name
+            ctx.font = 'bold 20px Inter, sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.fillText(teamName, x + teamWidth/2, y + 32);
+            
+            // Player count
+            ctx.font = '12px Inter, sans-serif';
+            ctx.fillStyle = '#e2e8f0';
+            ctx.fillText(`${players.length} PLAYERS`, x + teamWidth/2, y + teamHeight - 15);
+            
+            // Players list
+            let playerY = y + 70;
+            players.forEach((player, index) => {
+                const playerId = player.getAttribute('data-player-id');
+                const playerName = player.querySelector('span.text-gray-900').textContent.trim();
+                const position = getPlayerPosition(playerId);
+                
+                // Player row background (alternating)
+                if (index % 2 === 0) {
+                    ctx.fillStyle = '#334155';
+                    ctx.fillRect(x + 10, playerY - 15, teamWidth - 20, 28);
+                }
+                
+                // Player number
+                ctx.font = 'bold 14px Inter, sans-serif';
+                ctx.fillStyle = '#94a3b8';
                 ctx.textAlign = 'left';
-            }
-            
-            // Player name
-            ctx.fillStyle = '#374151';
-            ctx.font = '14px Inter, sans-serif';
-            const nameX = position.short ? 85 : 60;
-            ctx.fillText(`${index + 1}. ${playerName}`, nameX, yPos);
-            
-            yPos += 25;
-        });
-        
-        // Team Red (Team B in our system)
-        yPos = 130;
-        teamBPlayers.forEach((player, index) => {
-            const playerId = player.getAttribute('data-player-id');
-            const playerName = player.querySelector('span.text-gray-900').textContent.trim();
-            const position = getPlayerPosition(playerId);
-            
-            // Player background
-            ctx.fillStyle = index % 2 === 0 ? '#f1f5f9' : '#ffffff';
-            ctx.fillRect(390, yPos - 18, 260, 25);
-            
-            // Position badge
-            if (position.short) {
-                ctx.fillStyle = position.color;
-                ctx.fillRect(395, yPos - 15, 25, 19);
+                ctx.fillText((index + 1).toString().padStart(2, '0'), x + 20, playerY + 5);
+                
+                // Position badge
+                if (position) {
+                    ctx.fillStyle = position.color;
+                    ctx.fillRect(x + 50, playerY - 8, 35, 16);
+                    ctx.font = 'bold 10px Inter, sans-serif';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(position.short, x + 67.5, playerY + 2);
+                }
+                
+                // Player name
+                ctx.font = '14px Inter, sans-serif';
                 ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 11px Inter, sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(position.short, 407.5, yPos - 3);
                 ctx.textAlign = 'left';
-            }
-            
-            // Player name
-            ctx.fillStyle = '#374151';
-            ctx.font = '14px Inter, sans-serif';
-            const nameX = position.short ? 425 : 400;
-            ctx.fillText(`${index + 1}. ${playerName}`, nameX, yPos);
-            
-            yPos += 25;
-        });
+                const nameX = position ? x + 95 : x + 50;
+                const maxNameWidth = teamWidth - (nameX - x) - 20;
+                
+                // Truncate long names
+                let displayName = playerName.toUpperCase();
+                ctx.fillStyle = '#ffffff';
+                const nameWidth = ctx.measureText(displayName).width;
+                if (nameWidth > maxNameWidth) {
+                    while (ctx.measureText(displayName + '...').width > maxNameWidth && displayName.length > 0) {
+                        displayName = displayName.slice(0, -1);
+                    }
+                    displayName += '...';
+                }
+                
+                ctx.fillText(displayName, nameX, playerY + 5);
+                
+                playerY += 28;
+            });
+        }
         
-        // Add dividing line
-        ctx.strokeStyle = '#cbd5e1';
+        // Draw both teams
+        drawTeamContainer(team1X, teamY, 'TEAM BLUE', '#0ea5e9', Array.from(teamAPlayers));
+        drawTeamContainer(team2X, teamY, 'TEAM RED', '#dc2626', Array.from(teamBPlayers));
+        
+        // Center divider line
+        ctx.strokeStyle = '#475569';
         ctx.lineWidth = 2;
-        ctx.setLineDash([5, 5]);
+        ctx.setLineDash([10, 10]);
         ctx.beginPath();
-        ctx.moveTo(350, 115);
-        ctx.lineTo(350, canvas.height - 40);
+        ctx.moveTo(canvas.width / 2, teamY);
+        ctx.lineTo(canvas.width / 2, teamY + teamHeight);
         ctx.stroke();
         ctx.setLineDash([]);
         
-        // Add position legend at bottom
-        const legendY = canvas.height - 25;
-        ctx.font = '11px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#6b7280';
-        ctx.fillText('Position Legend:', canvas.width / 2, legendY - 15);
+        // VS indicator
+        ctx.fillStyle = '#334155';
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, teamY + teamHeight/2, 25, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.strokeStyle = '#059669';
+        ctx.lineWidth = 3;
+        ctx.stroke();
         
-        // Legend items
+        ctx.font = 'bold 16px Inter, sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.fillText('VS', canvas.width / 2, teamY + teamHeight/2 + 5);
+        
+        // Position legend
+        const legendY = 570;
         const legends = [
-            { short: 'GK', full: 'Goalkeeper', color: '#f59e0b' },
-            { short: 'D', full: 'Defender', color: '#10b981' },
-            { short: 'M', full: 'Midfielder', color: '#3b82f6' },
-            { short: 'F', full: 'Forward', color: '#ef4444' }
+            { short: 'GK', color: '#f59e0b', label: 'Goalkeeper' },
+            { short: 'DEF', color: '#059669', label: 'Defender' },
+            { short: 'MID', color: '#0ea5e9', label: 'Midfielder' },
+            { short: 'ATT', color: '#dc2626', label: 'Attacker' }
         ];
+        
+        ctx.font = '10px Inter, sans-serif';
+        ctx.fillStyle = '#64748b';
+        ctx.textAlign = 'center';
+        ctx.fillText('POSITIONS', canvas.width / 2, legendY - 15);
         
         let legendX = (canvas.width - (legends.length * 80)) / 2;
         legends.forEach(legend => {
             // Legend badge
             ctx.fillStyle = legend.color;
-            ctx.fillRect(legendX, legendY - 10, 15, 12);
+            ctx.fillRect(legendX, legendY - 8, 20, 12);
+            ctx.font = 'bold 8px Inter, sans-serif';
             ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 9px Inter, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText(legend.short, legendX + 7.5, legendY - 2);
+            ctx.fillText(legend.short, legendX + 10, legendY - 1);
             
-            // Legend text
-            ctx.fillStyle = '#6b7280';
-            ctx.font = '10px Inter, sans-serif';
-            ctx.fillText(legend.full, legendX + 20, legendY - 2);
+            // Legend label
+            ctx.font = '9px Inter, sans-serif';
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText(legend.label, legendX + 25, legendY - 1);
             
             legendX += 80;
         });
-        
-        // Add footer
-        ctx.font = '10px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#9ca3af';
-        ctx.fillText('Generated by FootMob', canvas.width / 2, canvas.height - 8);
         
         // Convert canvas to blob
         canvas.toBlob(async (blob) => {
@@ -1641,7 +1653,7 @@ async function exportTeamsAsImage() {
                     })
                 ]);
                 
-                showToast('Teams exported to clipboard! You can now paste it anywhere.', 'success');
+                showToast('Professional matchday squad exported to clipboard!', 'success');
             } catch (clipboardError) {
                 console.error('Clipboard error:', clipboardError);
                 
@@ -1649,19 +1661,19 @@ async function exportTeamsAsImage() {
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `teams-{{ game.datetime.strftime("%Y%m%d") }}.png`;
+                a.download = `matchday-squad-{{ game.datetime.strftime("%Y%m%d") }}.png`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                showToast('Teams exported as download (clipboard not supported)', 'info');
+                showToast('Matchday squad downloaded (clipboard not supported)', 'info');
             }
         }, 'image/png');
         
     } catch (error) {
         console.error('Export error:', error);
-        showToast('Failed to export teams', 'error');
+        showToast('Failed to export matchday squad', 'error');
     }
 }
 

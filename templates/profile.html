@@ -40,9 +40,9 @@
                         </div>
                         
                         <!-- User Info -->
-                        <h2 class="text-xl font-bold text-gray-900 mb-1 mt-4">{{ current_user.display_name }}</h2>
+                        <h2 class="text-xl font-semibold text-gray-900 mb-1 mt-4">{{ current_user.display_name }}</h2>
                         <p class="text-sm text-gray-500 mb-2 font-mono">@{{ current_user.username }}</p>
-                        <p class="text-xs text-gray-400 font-medium">
+                        <p class="text-xs text-gray-400 font-normal">
                             <i class="fas fa-calendar-plus mr-1"></i>
                             Joined {{ current_user.created_at.strftime('%B %Y') }}
                         </p>
