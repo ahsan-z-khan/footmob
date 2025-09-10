@@ -103,6 +103,8 @@ def view(game_id):
     availability_counts = game.get_availability_counts()
     
     in_players = game.get_in_players()
+    maybe_players = game.get_maybe_players()
+    out_players = game.get_out_players()
     team_a_players = game.get_team_a_players()
     team_b_players = game.get_team_b_players()
     
@@ -149,6 +151,8 @@ def view(game_id):
                          user_vote=user_vote,
                          availability_counts=availability_counts,
                          in_players=in_players,
+                         maybe_players=maybe_players,
+                         out_players=out_players,
                          team_a_players=team_a_players,
                          team_b_players=team_b_players,
                          user_potm_vote=user_potm_vote,
@@ -293,6 +297,54 @@ def add_player_to_poll(game_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': 'Failed to add player'}), 500
+
+@games_bp.route('/<int:game_id>/remove-player', methods=['POST'])
+@login_required
+def remove_player_from_poll(game_id):
+    game = Game.query.get_or_404(game_id)
+    
+    membership = GroupMembership.query.filter_by(
+        user_id=current_user.id,
+        group_id=game.group_id,
+        is_admin=True
+    ).first()
+    
+    if not membership:
+        return jsonify({'error': 'Only admins can remove players from polls'}), 403
+    
+    if game.is_poll_locked():
+        return jsonify({'error': 'Poll is locked'}), 400
+    
+    player_id = request.json.get('player_id') if request.is_json else request.form.get('player_id')
+    
+    if not player_id:
+        return jsonify({'error': 'Player ID is required'}), 400
+    
+    # Check if player has voted
+    existing_vote = AvailabilityVote.query.filter_by(
+        user_id=player_id,
+        game_id=game_id
+    ).first()
+    
+    if not existing_vote:
+        return jsonify({'error': 'Player has not voted yet'}), 400
+    
+    # Remove the vote
+    try:
+        player = User.query.get(player_id)
+        player_name = player.display_name if player else f"Player {player_id}"
+        
+        db.session.delete(existing_vote)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': f'{player_name} removed from poll',
+            'player_name': player_name
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Failed to remove player'}), 500
 
 @games_bp.route('/<int:game_id>/teams', methods=['GET', 'POST'])
 @login_required

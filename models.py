@@ -158,6 +158,18 @@ class Game(db.Model):
             TeamAssignment.team == 'B'
         ).all()
     
+    def get_maybe_players(self):
+        return User.query.join(AvailabilityVote).filter(
+            AvailabilityVote.game_id == self.id,
+            AvailabilityVote.status == 'maybe'
+        ).all()
+    
+    def get_out_players(self):
+        return User.query.join(AvailabilityVote).filter(
+            AvailabilityVote.game_id == self.id,
+            AvailabilityVote.status == 'out'
+        ).all()
+    
     def get_score(self):
         # Regular goals for Team A
         team_a_goals = MatchEvent.query.filter_by(game_id=self.id, event_type='goal').join(
