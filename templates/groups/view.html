@@ -1617,9 +1617,9 @@ function loadPlayerAttributes(playerId) {
     fetch(`/groups/{{ group.id }}/players/${playerId}/attributes`)
         .then(response => response.json())
         .then(data => {
-            if (data.attributes) {
+            if (data.admin_attributes) {
                 const form = document.getElementById('attributes-form');
-                const attributes = data.attributes;
+                const attributes = data.admin_attributes;
                 
                 // Set position
                 if (attributes.preferred_position) {
@@ -1695,12 +1695,12 @@ function updatePlayerCard(playerId) {
     fetch(`/groups/{{ group.id }}/players/${playerId}/attributes`)
         .then(response => response.json())
         .then(data => {
-            if (data.attributes) {
+            if (data.averaged_attributes) {
                 // Find the player card element
                 const playerCard = document.querySelector(`[data-player-id="${playerId}"]`);
                 if (playerCard) {
                     // Update the card content with new attributes
-                    updatePlayerCardDisplay(playerCard, data.attributes, data.player_name);
+                    updatePlayerCardDisplay(playerCard, data.averaged_attributes, data.player_name);
                     showToast('Player attributes updated successfully!', 'success');
                 } else {
                     // Card not found, just show success message

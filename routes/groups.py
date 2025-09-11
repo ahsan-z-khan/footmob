@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
-from models import Group, GroupMembership, User, FeedItem, Game, TeamAssignment, MatchEvent, POTMVote, PlayerAttributes
+from models import Group, GroupMembership, User, FeedItem, Game, TeamAssignment, MatchEvent, POTMVote, PlayerAttributes, AdminPlayerRating
 from database import db
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import func
 
 groups_bp = Blueprint('groups', __name__)
@@ -199,52 +199,91 @@ def get_player_attributes(group_id, user_id):
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
-    # Get existing attributes
-    attributes = PlayerAttributes.query.filter_by(
+    # Get current admin's rating for this player
+    admin_rating = AdminPlayerRating.query.filter_by(
+        user_id=user_id,
+        admin_id=current_user.id,
+        group_id=group_id
+    ).first()
+    
+    # Get averaged attributes
+    averaged_attributes = PlayerAttributes.query.filter_by(
         user_id=user_id,
         group_id=group_id
     ).first()
     
-    if attributes:
-        attributes_data = {
-            'pace': attributes.pace,
-            'stamina': attributes.stamina,
-            'strength': attributes.strength,
-            'agility': attributes.agility,
-            'jumping': attributes.jumping,
-            'ball_control': attributes.ball_control,
-            'dribbling': attributes.dribbling,
-            'passing': attributes.passing,
-            'shooting': attributes.shooting,
-            'crossing': attributes.crossing,
-            'free_kicks': attributes.free_kicks,
-            'positioning': attributes.positioning,
-            'marking': attributes.marking,
-            'tackling': attributes.tackling,
-            'interceptions': attributes.interceptions,
-            'vision': attributes.vision,
-            'decision_making': attributes.decision_making,
-            'composure': attributes.composure,
-            'concentration': attributes.concentration,
-            'determination': attributes.determination,
-            'leadership': attributes.leadership,
-            'teamwork': attributes.teamwork,
-            'goalkeeping': attributes.goalkeeping,
-            'handling': attributes.handling,
-            'distribution': attributes.distribution,
-            'aerial_reach': attributes.aerial_reach,
-            'preferred_position': attributes.preferred_position,
-            'notes': attributes.notes
+    if admin_rating:
+        admin_attributes_data = {
+            'pace': admin_rating.pace,
+            'stamina': admin_rating.stamina,
+            'strength': admin_rating.strength,
+            'agility': admin_rating.agility,
+            'jumping': admin_rating.jumping,
+            'ball_control': admin_rating.ball_control,
+            'dribbling': admin_rating.dribbling,
+            'passing': admin_rating.passing,
+            'shooting': admin_rating.shooting,
+            'crossing': admin_rating.crossing,
+            'free_kicks': admin_rating.free_kicks,
+            'positioning': admin_rating.positioning,
+            'marking': admin_rating.marking,
+            'tackling': admin_rating.tackling,
+            'interceptions': admin_rating.interceptions,
+            'vision': admin_rating.vision,
+            'decision_making': admin_rating.decision_making,
+            'composure': admin_rating.composure,
+            'concentration': admin_rating.concentration,
+            'determination': admin_rating.determination,
+            'leadership': admin_rating.leadership,
+            'teamwork': admin_rating.teamwork,
+            'goalkeeping': admin_rating.goalkeeping,
+            'handling': admin_rating.handling,
+            'distribution': admin_rating.distribution,
+            'aerial_reach': admin_rating.aerial_reach,
+            'preferred_position': admin_rating.preferred_position,
+            'notes': admin_rating.notes
         }
-        return jsonify({
-            'attributes': attributes_data,
-            'player_name': user.display_name
-        })
     else:
-        return jsonify({
-            'attributes': None,
-            'player_name': user.display_name
-        })
+        admin_attributes_data = None
+    
+    averaged_attributes_data = None
+    if averaged_attributes:
+        averaged_attributes_data = {
+            'pace': averaged_attributes.pace,
+            'stamina': averaged_attributes.stamina,
+            'strength': averaged_attributes.strength,
+            'agility': averaged_attributes.agility,
+            'jumping': averaged_attributes.jumping,
+            'ball_control': averaged_attributes.ball_control,
+            'dribbling': averaged_attributes.dribbling,
+            'passing': averaged_attributes.passing,
+            'shooting': averaged_attributes.shooting,
+            'crossing': averaged_attributes.crossing,
+            'free_kicks': averaged_attributes.free_kicks,
+            'positioning': averaged_attributes.positioning,
+            'marking': averaged_attributes.marking,
+            'tackling': averaged_attributes.tackling,
+            'interceptions': averaged_attributes.interceptions,
+            'vision': averaged_attributes.vision,
+            'decision_making': averaged_attributes.decision_making,
+            'composure': averaged_attributes.composure,
+            'concentration': averaged_attributes.concentration,
+            'determination': averaged_attributes.determination,
+            'leadership': averaged_attributes.leadership,
+            'teamwork': averaged_attributes.teamwork,
+            'goalkeeping': averaged_attributes.goalkeeping,
+            'handling': averaged_attributes.handling,
+            'distribution': averaged_attributes.distribution,
+            'aerial_reach': averaged_attributes.aerial_reach,
+            'preferred_position': averaged_attributes.preferred_position,
+            'notes': averaged_attributes.notes
+        }
+    
+    return jsonify({
+        'admin_attributes': admin_attributes_data,
+        'averaged_attributes': averaged_attributes_data,
+        'player_name': user.display_name
+    })
 
 @groups_bp.route('/<int:group_id>/players/<int:user_id>/attributes', methods=['POST'])
 @login_required
@@ -269,64 +308,64 @@ def update_player_attributes(group_id, user_id):
     if not target_membership:
         return jsonify({'error': 'User is not a member of this group'}), 404
     
-    # Get existing attributes or create new ones
-    attributes = PlayerAttributes.query.filter_by(
+    # Get or create admin rating for this player
+    admin_rating = AdminPlayerRating.query.filter_by(
         user_id=user_id,
+        admin_id=current_user.id,
         group_id=group_id
     ).first()
     
-    if not attributes:
-        attributes = PlayerAttributes(
+    if not admin_rating:
+        admin_rating = AdminPlayerRating(
             user_id=user_id,
-            group_id=group_id,
-            last_updated_by=current_user.id
+            admin_id=current_user.id,
+            group_id=group_id
         )
-        db.session.add(attributes)
+        db.session.add(admin_rating)
     else:
-        attributes.last_updated_by = current_user.id
-        attributes.updated_at = datetime.utcnow()
+        admin_rating.updated_at = datetime.now(timezone.utc)
     
     # Update all attributes from form data
     try:
         # Physical attributes
-        attributes.pace = int(request.form.get('pace', 5))
-        attributes.stamina = int(request.form.get('stamina', 5))
-        attributes.strength = int(request.form.get('strength', 5))
-        attributes.agility = int(request.form.get('agility', 5))
-        attributes.jumping = int(request.form.get('jumping', 5))
+        admin_rating.pace = int(request.form.get('pace', 5))
+        admin_rating.stamina = int(request.form.get('stamina', 5))
+        admin_rating.strength = int(request.form.get('strength', 5))
+        admin_rating.agility = int(request.form.get('agility', 5))
+        admin_rating.jumping = int(request.form.get('jumping', 5))
         
         # Technical attributes
-        attributes.ball_control = int(request.form.get('ball_control', 5))
-        attributes.dribbling = int(request.form.get('dribbling', 5))
-        attributes.passing = int(request.form.get('passing', 5))
-        attributes.shooting = int(request.form.get('shooting', 5))
-        attributes.crossing = int(request.form.get('crossing', 5))
-        attributes.free_kicks = int(request.form.get('free_kicks', 5))
+        admin_rating.ball_control = int(request.form.get('ball_control', 5))
+        admin_rating.dribbling = int(request.form.get('dribbling', 5))
+        admin_rating.passing = int(request.form.get('passing', 5))
+        admin_rating.shooting = int(request.form.get('shooting', 5))
+        admin_rating.crossing = int(request.form.get('crossing', 5))
+        admin_rating.free_kicks = int(request.form.get('free_kicks', 5))
         
         # Tactical attributes
-        attributes.positioning = int(request.form.get('positioning', 5))
-        attributes.marking = int(request.form.get('marking', 5))
-        attributes.tackling = int(request.form.get('tackling', 5))
-        attributes.interceptions = int(request.form.get('interceptions', 5))
-        attributes.vision = int(request.form.get('vision', 5))
-        attributes.decision_making = int(request.form.get('decision_making', 5))
+        admin_rating.positioning = int(request.form.get('positioning', 5))
+        admin_rating.marking = int(request.form.get('marking', 5))
+        admin_rating.tackling = int(request.form.get('tackling', 5))
+        admin_rating.interceptions = int(request.form.get('interceptions', 5))
+        admin_rating.vision = int(request.form.get('vision', 5))
+        admin_rating.decision_making = int(request.form.get('decision_making', 5))
         
         # Mental attributes
-        attributes.composure = int(request.form.get('composure', 5))
-        attributes.concentration = int(request.form.get('concentration', 5))
-        attributes.determination = int(request.form.get('determination', 5))
-        attributes.leadership = int(request.form.get('leadership', 5))
-        attributes.teamwork = int(request.form.get('teamwork', 5))
+        admin_rating.composure = int(request.form.get('composure', 5))
+        admin_rating.concentration = int(request.form.get('concentration', 5))
+        admin_rating.determination = int(request.form.get('determination', 5))
+        admin_rating.leadership = int(request.form.get('leadership', 5))
+        admin_rating.teamwork = int(request.form.get('teamwork', 5))
         
         # Goalkeeping attributes
-        attributes.goalkeeping = int(request.form.get('goalkeeping', 1))
-        attributes.handling = int(request.form.get('handling', 1))
-        attributes.distribution = int(request.form.get('distribution', 1))
-        attributes.aerial_reach = int(request.form.get('aerial_reach', 1))
+        admin_rating.goalkeeping = int(request.form.get('goalkeeping', 1))
+        admin_rating.handling = int(request.form.get('handling', 1))
+        admin_rating.distribution = int(request.form.get('distribution', 1))
+        admin_rating.aerial_reach = int(request.form.get('aerial_reach', 1))
         
         # Position and notes
-        attributes.preferred_position = request.form.get('preferred_position', '')
-        attributes.notes = request.form.get('notes', '')
+        admin_rating.preferred_position = request.form.get('preferred_position', '')
+        admin_rating.notes = request.form.get('notes', '')
         
         # Validate attribute values (1-10 range)
         attribute_fields = [
@@ -337,18 +376,22 @@ def update_player_attributes(group_id, user_id):
         ]
         
         for field in attribute_fields:
-            value = getattr(attributes, field)
+            value = getattr(admin_rating, field)
             if not (1 <= value <= 10):
                 return jsonify({'error': f'{field} must be between 1 and 10'}), 400
         
         # Validate goalkeeping attributes (1-10 range)
         gk_fields = ['goalkeeping', 'handling', 'distribution', 'aerial_reach']
         for field in gk_fields:
-            value = getattr(attributes, field)
+            value = getattr(admin_rating, field)
             if not (1 <= value <= 10):
                 return jsonify({'error': f'{field} must be between 1 and 10'}), 400
         
         db.session.commit()
+        
+        # Recalculate averaged attributes
+        PlayerAttributes.calculate_and_update(user_id, group_id)
+        
         return jsonify({'success': True, 'message': 'Player attributes updated successfully'})
         
     except ValueError as e:

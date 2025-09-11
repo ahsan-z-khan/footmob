@@ -1,16 +1,17 @@
 from database import db
 from flask_login import UserMixin
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import DateTime
 import secrets
 import string
+from sqlalchemy import func
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
     display_name = db.Column(db.String(100), nullable=False)
-    created_at = db.Column(DateTime, default=lambda: datetime.utcnow())
+    created_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     memberships = db.relationship('GroupMembership', back_populates='user', cascade='all, delete-orphan')
     availability_votes = db.relationship('AvailabilityVote', back_populates='user', cascade='all, delete-orphan')
@@ -23,7 +24,7 @@ class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     emoji = db.Column(db.String(10), default='⚽')
-    created_at = db.Column(DateTime, default=lambda: datetime.utcnow())
+    created_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
     invite_code = db.Column(db.String(8), unique=True)
     
     memberships = db.relationship('GroupMembership', back_populates='group', cascade='all, delete-orphan')
@@ -55,7 +56,7 @@ class Group(db.Model):
         expired_games = Game.query.filter(
             Game.group_id == self.id,
             Game.status == 'upcoming',
-            Game.datetime < datetime.utcnow()
+            Game.datetime < datetime.now(timezone.utc)
         ).all()
         
         # Update expired games to 'finished' status if they weren't manually managed
@@ -69,7 +70,7 @@ class Group(db.Model):
         return Game.query.filter(
             Game.group_id == self.id,
             Game.status.in_(['upcoming', 'live']),
-            Game.datetime >= datetime.utcnow() - timedelta(hours=6)  # Allow 6 hours grace period for live games
+            Game.datetime >= datetime.now(timezone.utc) - timedelta(hours=6)  # Allow 6 hours grace period for live games
         ).order_by(Game.datetime.asc()).first()
     
     def get_last_game(self):
@@ -86,7 +87,7 @@ class Group(db.Model):
         expired_games = Game.query.filter(
             Game.group_id == self.id,
             Game.status == 'upcoming',
-            Game.datetime < datetime.utcnow()
+            Game.datetime < datetime.now(timezone.utc)
         ).all()
         
         updated = False
@@ -104,7 +105,7 @@ class GroupMembership(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
-    joined_at = db.Column(DateTime, default=lambda: datetime.utcnow())
+    joined_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     user = db.relationship('User', back_populates='memberships')
     group = db.relationship('Group', back_populates='memberships')
@@ -119,7 +120,7 @@ class Game(db.Model):
     notes = db.Column(db.Text)
     status = db.Column(db.String(20), default='upcoming')  # upcoming, live, finished
     poll_lock_datetime = db.Column(DateTime)
-    created_at = db.Column(DateTime, default=lambda: datetime.utcnow())
+    created_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
     started_at = db.Column(DateTime)
     ended_at = db.Column(DateTime)
     
@@ -130,7 +131,7 @@ class Game(db.Model):
     potm_votes = db.relationship('POTMVote', back_populates='game', cascade='all, delete-orphan')
     
     def is_poll_locked(self):
-        if self.poll_lock_datetime and datetime.utcnow() > self.poll_lock_datetime:
+        if self.poll_lock_datetime and datetime.now(timezone.utc) > self.poll_lock_datetime:
             return True
         return self.status != 'upcoming'
     
@@ -233,7 +234,7 @@ class AvailabilityVote(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'), nullable=False)
     status = db.Column(db.String(10), nullable=False)  # in, out, maybe
-    voted_at = db.Column(DateTime, default=lambda: datetime.utcnow())
+    voted_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     user = db.relationship('User', back_populates='availability_votes')
     game = db.relationship('Game', back_populates='availability_votes')
@@ -246,7 +247,7 @@ class TeamAssignment(db.Model):
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'), nullable=False)
     team = db.Column(db.String(1), nullable=False)  # A or B
     position = db.Column(db.String(20))  # optional position
-    created_at = db.Column(DateTime, default=lambda: datetime.utcnow())
+    created_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     user = db.relationship('User')
     game = db.relationship('Game', back_populates='team_assignments')
@@ -260,7 +261,7 @@ class MatchEvent(db.Model):
     scorer_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     assist_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     minute = db.Column(db.Integer)
-    created_at = db.Column(DateTime, default=lambda: datetime.utcnow())
+    created_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     game = db.relationship('Game', back_populates='events')
     scorer = db.relationship('User', foreign_keys=[scorer_id], back_populates='events_scored')
@@ -271,7 +272,7 @@ class POTMVote(db.Model):
     voter_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'), nullable=False)
     voted_for_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    voted_at = db.Column(DateTime, default=lambda: datetime.utcnow())
+    voted_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     voter = db.relationship('User', foreign_keys=[voter_id], back_populates='potm_votes')
     game = db.relationship('Game', back_populates='potm_votes')
@@ -285,14 +286,15 @@ class FeedItem(db.Model):
     item_type = db.Column(db.String(50), nullable=False)  # game_created, poll_locked, teams_published, goal_scored, match_finished, potm_announced
     content = db.Column(db.Text, nullable=False)
     game_id = db.Column(db.Integer, db.ForeignKey('game.id'))
-    created_at = db.Column(DateTime, default=lambda: datetime.utcnow())
+    created_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     group = db.relationship('Group', back_populates='feed_items')
     game = db.relationship('Game')
 
-class PlayerAttributes(db.Model):
+class AdminPlayerRating(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Player being rated
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Admin doing the rating
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
     
     # Physical Attributes (1-10 scale)
@@ -334,16 +336,116 @@ class PlayerAttributes(db.Model):
     # Meta information
     preferred_position = db.Column(db.String(20))  # GK, DEF, MID, FWD
     notes = db.Column(db.Text)  # Additional notes from admin
-    last_updated_by = db.Column(db.Integer, db.ForeignKey('user.id'))  # Admin who updated
-    updated_at = db.Column(DateTime, default=lambda: datetime.utcnow())
-    created_at = db.Column(DateTime, default=lambda: datetime.utcnow())
+    updated_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    
+    # Relationships
+    user = db.relationship('User', foreign_keys=[user_id])
+    admin = db.relationship('User', foreign_keys=[admin_id])
+    group = db.relationship('Group')
+    
+    __table_args__ = (db.UniqueConstraint('user_id', 'admin_id', 'group_id'),)
+
+class PlayerAttributes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
+    
+    # Physical Attributes (1-10 scale) - calculated averages
+    pace = db.Column(db.Float, default=5.0)
+    stamina = db.Column(db.Float, default=5.0)
+    strength = db.Column(db.Float, default=5.0)
+    agility = db.Column(db.Float, default=5.0)
+    jumping = db.Column(db.Float, default=5.0)
+    
+    # Technical Attributes (1-10 scale) - calculated averages
+    ball_control = db.Column(db.Float, default=5.0)
+    dribbling = db.Column(db.Float, default=5.0)
+    passing = db.Column(db.Float, default=5.0)
+    shooting = db.Column(db.Float, default=5.0)
+    crossing = db.Column(db.Float, default=5.0)
+    free_kicks = db.Column(db.Float, default=5.0)
+    
+    # Tactical Attributes (1-10 scale) - calculated averages
+    positioning = db.Column(db.Float, default=5.0)
+    marking = db.Column(db.Float, default=5.0)
+    tackling = db.Column(db.Float, default=5.0)
+    interceptions = db.Column(db.Float, default=5.0)
+    vision = db.Column(db.Float, default=5.0)
+    decision_making = db.Column(db.Float, default=5.0)
+    
+    # Mental Attributes (1-10 scale) - calculated averages
+    composure = db.Column(db.Float, default=5.0)
+    concentration = db.Column(db.Float, default=5.0)
+    determination = db.Column(db.Float, default=5.0)
+    leadership = db.Column(db.Float, default=5.0)
+    teamwork = db.Column(db.Float, default=5.0)
+    
+    # Goalkeeping Attributes (1-10 scale) - calculated averages
+    goalkeeping = db.Column(db.Float, default=1.0)
+    handling = db.Column(db.Float, default=1.0)
+    distribution = db.Column(db.Float, default=1.0)
+    aerial_reach = db.Column(db.Float, default=1.0)
+    
+    # Meta information - from most recent rating
+    preferred_position = db.Column(db.String(20))
+    notes = db.Column(db.Text)
+    updated_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
     
     # Relationships
     user = db.relationship('User', foreign_keys=[user_id])
     group = db.relationship('Group')
-    updated_by = db.relationship('User', foreign_keys=[last_updated_by])
     
     __table_args__ = (db.UniqueConstraint('user_id', 'group_id'),)
+    
+    @classmethod
+    def calculate_and_update(cls, user_id, group_id):
+        """Calculate averaged attributes from all admin ratings"""
+        
+        # Get all admin ratings for this player
+        ratings = AdminPlayerRating.query.filter_by(
+            user_id=user_id, 
+            group_id=group_id
+        ).all()
+        
+        if not ratings:
+            return None
+            
+        # Calculate averages
+        attr_fields = [
+            'pace', 'stamina', 'strength', 'agility', 'jumping',
+            'ball_control', 'dribbling', 'passing', 'shooting', 'crossing', 'free_kicks',
+            'positioning', 'marking', 'tackling', 'interceptions', 'vision', 'decision_making',
+            'composure', 'concentration', 'determination', 'leadership', 'teamwork',
+            'goalkeeping', 'handling', 'distribution', 'aerial_reach'
+        ]
+        
+        averages = {}
+        for field in attr_fields:
+            values = [getattr(rating, field) for rating in ratings]
+            averages[field] = sum(values) / len(values)
+        
+        player_attrs = cls.query.filter_by(
+            user_id=user_id, 
+            group_id=group_id
+        ).first()
+        
+        if not player_attrs:
+            player_attrs = cls(user_id=user_id, group_id=group_id)
+            db.session.add(player_attrs)
+        
+        for field, avg_value in averages.items():
+            setattr(player_attrs, field, round(avg_value, 1))
+        
+        # Use most recent rating for position and notes
+        latest_rating = max(ratings, key=lambda r: r.updated_at)
+        player_attrs.preferred_position = latest_rating.preferred_position
+        player_attrs.notes = latest_rating.notes
+        player_attrs.updated_at = datetime.now(timezone.utc)
+        
+        db.session.commit()
+        return player_attrs
     
     def get_overall_rating(self):
         """Calculate overall rating based on all attributes"""
@@ -425,7 +527,7 @@ class Notification(db.Model):
     is_read = db.Column(db.Boolean, default=False, nullable=False)
     
     # Timestamps
-    created_at = db.Column(DateTime, default=lambda: datetime.utcnow())
+    created_at = db.Column(DateTime, default=lambda: datetime.now(timezone.utc))
     read_at = db.Column(DateTime, nullable=True)
     
     # Relationships
@@ -441,7 +543,7 @@ class Notification(db.Model):
         """Mark notification as read"""
         if not self.is_read:
             self.is_read = True
-            self.read_at = datetime.utcnow()
+            self.read_at = datetime.now(timezone.utc)
             db.session.commit()
     
     def to_dict(self):

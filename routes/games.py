@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import login_required, current_user
 from models import Game, Group, GroupMembership, AvailabilityVote, TeamAssignment, MatchEvent, POTMVote, FeedItem, User, PlayerAttributes
 from database import db
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import numpy as np
 
 games_bp = Blueprint('games', __name__)
@@ -191,7 +191,7 @@ def vote_availability(game_id):
     
     if vote:
         vote.status = status
-        vote.voted_at = datetime.utcnow()
+        vote.voted_at = datetime.now(timezone.utc)
     else:
         vote = AvailabilityVote(
             user_id=current_user.id,
@@ -218,7 +218,7 @@ def lock_poll(game_id):
         flash('Only admins can lock polls')
         return redirect(url_for('games.view', game_id=game_id))
     
-    game.poll_lock_datetime = datetime.utcnow()
+    game.poll_lock_datetime = datetime.now(timezone.utc)
     
     # Create feed item
     feed_item = FeedItem(
@@ -438,7 +438,7 @@ def start_match(game_id):
         return redirect(url_for('games.view', game_id=game_id))
     
     game.status = 'live'
-    game.started_at = datetime.utcnow()
+    game.started_at = datetime.now(timezone.utc)
     db.session.commit()
     
     flash('Match started')
@@ -466,7 +466,7 @@ def end_match(game_id):
         return redirect(url_for('games.view', game_id=game_id))
     
     game.status = 'finished'
-    game.ended_at = datetime.utcnow()
+    game.ended_at = datetime.now(timezone.utc)
     
     score = game.get_score()
     
@@ -716,7 +716,7 @@ def vote_potm(game_id):
     
     if vote:
         vote.voted_for_id = voted_for_id
-        vote.voted_at = datetime.utcnow()
+        vote.voted_at = datetime.now(timezone.utc)
     else:
         vote = POTMVote(
             voter_id=current_user.id,
@@ -746,7 +746,7 @@ def delete_game(game_id):
     
     # Check if game can be deleted (not past games)
     from datetime import datetime
-    if game.datetime < datetime.utcnow():
+    if game.datetime < datetime.now(timezone.utc):
         flash('Cannot delete games that have already passed')
         return redirect(url_for('games.view', game_id=game_id))
     
@@ -1071,7 +1071,7 @@ def calculate_player_affinity(players, group_id):
                     
                     # Calculate time-based weight (recent games matter more)
                     # Games within last 30 days get full weight, older games get reduced weight
-                    days_ago = (datetime.utcnow() - game.datetime).days
+                    days_ago = (datetime.now(timezone.utc) - game.datetime).days
                     if days_ago <= 30:
                         time_weight = 1.0
                     elif days_ago <= 90:

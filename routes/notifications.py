@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from models import Notification, User, Group, Game
 from database import db
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy import desc
 
 notifications_bp = Blueprint('notifications', __name__)
@@ -59,7 +59,7 @@ def mark_all_notifications_read():
     
     for notification in notifications:
         notification.is_read = True
-        notification.read_at = datetime.utcnow()
+        notification.read_at = datetime.now(timezone.utc)
     
     db.session.commit()
     
